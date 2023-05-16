@@ -1,189 +1,123 @@
+# Webserve project journey documentation:
+please start by reading getting-started-tutrial-webserve.md
 
+# Subject pdf notes:
+HTTP:  Hypertext Transfer Protocol, it's the foudnation of data communication on the world wide web
 OSI: open system intercommunication model, standardize the communication regardless the underlying technology.
 Layer 4: Ensure data transferred from one point to another reliably and without errors (ex: TCP, UDP, SPX)
             -> Provide flow control
             -> Error handling
-TCP: usually use port 80,however you can use other ports if you want
-Socket: Mechanism that gives prgrams access to network, allows message send
-and recieving bettween application of unrelated procceses
-N.B:Socket is independant from any specific type of network or IP
+User agent: web browser or crawlers
+Primary function of webserver is:
+    Store, process, and deliver web pages to clients, also it can recieve content frorm client like while filling the forms.
 
-Steps to program TCP/IP socket:
--------------------------------
-    1-Create the socket
-    2-Identify the socket
-    3-Wait for incoming connection on server side
-    4-Send and recieve messages
-    5-Close the socket
+Documetation of some of the allowed functions:
+execve():
+dup():
+dup2():
+pipe():
+strerror():
+gai_strerror():
+errno():
+fork():
+htons():
+htonls():
+ntohs():
+ntohl():
+select():
+poll():
+epoll():
+epoll_create():
+epoll_ctl():
+epoll_wait():
+kqueue():
+kevent():
+any equivelant to pool select kqueue epoll:
+socket():
+accept():
+listen():
+send():
+revc():
+bind():
+connect():
+getaddrinfo():
+freeadrinfo():
+setsockopt():
+getsockname():
+getprotobyname():
+fcntl():
+close():
+read():
+write():
+waitpid():
+kill():
+signal():
+access():
+opendir():
+readdir():
+closedir():
+fcntl(): for macos, only as follows fcntl(fd, F_SETFL, O_NONBLOCK);
+Any defined macro like D_SET, FD_CLR, FD_ISSET, FD_ZERO:
+C++98
 
-A socket is like requesting a phone line from the telephone company, it generates a phone number, then the next step is assign this phone number to you;
-the phone number is the file descriptor where you can send and recieve data from other applications on the network, then assigning the phone number to you is binding step, it bind this socket to specific port.
-Now you have phone number when you can reciecve or call you friends, the same here you have an open socket where you can send and recieve data on it.
+RFC:
+telnet:
+NGINX:
+CGI:
 
-# 1-Creating the socket:
+# Requirments:
+1-Take config file as argument or use default path
+2-Never block client, bounce back properly if necessary
+3-Non blocking and using 1 poll() or equivelent for all the I/O oeprations(listen included)
+    -poll() or equivelent must check read and write at the same time
+    -Any read or write or send or recieve must go through poll()
+    -Don't use poll or equivelent before reading the configuration file
+    Use file descriptor in non blocking mode
+4-Request for our server should never hang forever
+5-server should be compatible with browser of our choice
+6-Compare webserve to NGINX HTTP/1.1
+7-HTTP status code must be accurate
+8-Must have default error page if none provided
+9-fork() used only in CGI(PHP, python, bash..etc)
+10-serve fully static website
+11-Client must be able to upload files
+->Implement at least:
+    12-GET
+    13-POST
+    14-DELETE
+15-Server must be available at all cost even in stress tests
+16-Server must be able to listen to multiple ports
+---------------------------
+in the configuration file:
+17-Choose host port and host for each server
+18-setup server_names or not
+19-the first server for host:port will be the default for this host:port(it will answer all the requests that don't belong to another server)
+20-Limit client body size
+21-Setup default error page
+22-setup routes with one or multiple of the following (no regix):
+    23-define list of accepted HTTP methods
+    24-define HTTP redierction
+    25-define directory or a path where a file should be searched(for example, if url /kapouet is rooted to /tmp/www, url /kapouet/pouic/toto/pouet is /tmp/www/pouic/toto/pouet)
+    26-turn off directory listing
+    27-Set a defualt file to answer if request directory
+    28-Execute CGI based on certain file extention
+    29-Make it work with GET and POST
+    30-Make the route accept uploading file and configure where should be saved
+--------------------
+CGI
+31-use full path as PATH_INFO
+32-for chunked request serrver has to unchunck it and expect EOF 
+33-Call CGI with the file requested as first argument
+34-CGI myst run in the correct directory for relative path file access
+35-Serve should work with one CGI (Python, php-CGI...)
+36-must provide some configuration and defualt basic files to test and demonstrate every feature during the 
+# Bonus inshalla
+37-Support cookies and session managment
+38-Handle multiple CGI
 
-
-    int server_fd = socket(domain, type, protocol);
-    
-int domain, or address family:
-    is it:
-          IPV4                              AF_INET
-          IPv6                              AF_INET6 
-          local channel, similar to pipes   AF_UNIX 
-          ISO protocols                     AF_ISO 
-          Xerox Network Systems protocols   AF_NS 
-
-int type:
-    type of service according to the properties required by the application:
-    virtual circuit service         SOCK_STREAM  -->there is only one type of virtual circuit service, no variations
-    datagran service                SOCK_DGRAM
-    direct IP service               SOCK_RAW
-
-int protocol:
-    indicate use of specific protocol to support socket operation( ^ type) 
-                                                                   | 
-    this is useful as some families may have more than one protocol, it returnin a file descriptor.
-
-So here is the server_fd resulted from socket creation:
-    int server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    AF_INET     ---> IPV4
-    SOCK_STREAM ---> virtual circuit service
-    0           --->  only one type of virtual circuit service supported,that's why we put 0 "No variation"
-
-Implementation example:
-
-    if (server_fd = socket(AF_INET, SOCK_STREAM, 0) < 0)
-    {
-        perror("cannot create a socket");
-        return (0);
-    }
-# 2-Identify (name) a socket
-    int bind(int sock, const struct sockaddr *address, socklen_t address_len)
-    Naming in this context means assigning transport address to the socket (a port number in IP networking)
-    This operation here called binding an address
-    We do this through bind system call
-    Becuase there are different type of socket address structure whe use sockeaddr struct,
-    sockaddd  -->determines: address family(type of network : UNIX domain socket, ...)
-
-    bind creates an file in the filesystem 
-
-    int bind(
-        int socket,
-        const struct sockaddr *address,
-        socklen_t address_len)
-
-    socket  --> the socket that was created above
-    sockaddr --> Identify address family by allowing the OS to read the first couple bytes
-
-
-    for IP networking we use the following address family (struct sockaddr_in) defined in:
-    # include <netinet/in.h>
-   
-    as follows:
-    //struct sockaddr_in 
-    { 
-        __uint8_t         sin_len; 
-        sa_family_t       sin_family; 
-        in_port_t         sin_port; 
-        struct in_addr    sin_addr; 
-        char              sin_zero[8]; 
-    };
-    Before calling bind we should fill 3 key parts:
-    sin_family:
-        AF_INET : this is the address family we use to setup our socket (this is for the TCP/IP as I remember)
-
-    sin_port:
-        Assigning port number (the transport the address)
-        if (I am server)
-        {
-            I will assign the port number, since clients wants to know which port number I want to be used to communicate with me
-        }
-        else if (I am client)
-        {
-            Usually I will let the operating system decide the port for me 
-        }
-
-    sin_addr:
-        IP of my machine, which means my machine will have one IP for each interface
-        If (I have WIFI and Ethernet, I might have two IPS)
-        {
-            Usually we let the system decide for my, the special used for this is 0.0.0.0
-            defined by INADDR_ANY 
-        }
-
-address_len: 
-    What is the length of this address,
-    we specify this becuase address structure may differ based on the address family
-    it's simply:
-        
-        sizeof(struct sockaddr_in);
-Example for filling the bind() function:
-
-    struct sockaddr_in address;
-    const int PORT = 8080; // the port I will open as server allowing other to connect to me 
-
-    memset((char *)&address, 0, sizeof(address);
-    addres.sin_family = AF_INET;
-    address.sin_addr.s_addr = htonl(INADDR_ANY) //convert to ip bits
-    address.sin_port = htons(PORT)
-
-    if (bind(server_fd, (struct sockaddrs *)& address, sizeof(address)) < 0)
-    {
-        perror("bind fialed);
-        return (0);
-    }
-
-# 3-Server side wait for incoming connections:
-    Before a client connect to a server, there must be open socket waiting for connection
-    listen() do this job (also a function that do system call)
-    int listen(int socket, int backlog);
-
-    int backlog: define maximum number of connection that can be quered up before connections are refused
-
-    int accept(int socket, struct sockaddr *restrict address, socketlen_t *restricted address_len)
-    the accept connection take the first connection in the queue and create socket to serve it 
-    
-    N.B: The original socket is set up for listening for only accepting connections NOT FOR EXCHANGIN DATA.
-    By default socket operations are  blocking (synchronous) and accept will block until a connection is present on the queue 
-   
-    int accept(int socket, struct sockaddr *restrict address, socketlen_t *restricted address_len)
-    int socket   ----> the socket set to accept the connection
-    address     -----> filed with the address and the port of the client, this allow us to examine ip and port
-    address_len ------> size of address as each address family has different size
-
-Example code:
-
-    if (listen(server_fd, 3) < 0)
-    {
-        perror("In lishten error");
-        exit(EXIT_FAILURE);
-    }
-
-    if ((new_socket = accept(server_fd, (struct sockaddr *) & address, (socklen_t *)& addrlen)) < 0)
-    {
-        perror("accept() Error!");
-        exit(EXIT_FAILURE);
-    }
-
-# 4 -Send and recieve messages
-    At this moment we successfully connected sockets bettween clinet and server, 
-    Communication is happen through simply reading and writing file descriptors
-
-Example code:
-
-    char *buffer[1024 = {0};
-
-    if (read(new_socket, buffer, 1024) < 0)
-        printf("No bytes to read");
-    printf("%s\n", buffer);
-
-    //this hello is very important, the work of HTTP is based on it, will tell you later why
-    char *hello = "Hello from the server";
-    write(new_socket, hello, strlen(hello));
-
-# 5-Close the scoket
-
-    this is the easiest part, just close the socket with close()
-
-    close(new_socket);
-
+evaluation
+questions:
+what is poll()?
+what is telnet?
+can I do man in the middle with telnet/myserver?
+what is CGI:
