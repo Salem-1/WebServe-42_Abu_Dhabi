@@ -54,6 +54,7 @@ int main(int argc, char **argv)
         printf(" > ");
         valread = read(sock, buffer, 1024);
         printf("%s\n", buffer);
+        close (sock);
         sleep(1);
     }
     return (0);

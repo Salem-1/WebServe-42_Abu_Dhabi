@@ -47,8 +47,7 @@ int main(int argc, char **argv)
         exit(EXIT_FAILURE);
     }
         print_time();
-        printf("> Connection opened waiting for client
-        ");
+        printf("> Connection opened waiting for client ");
     while(1)
     {
         //3-send and recieve
