@@ -1,4 +1,5 @@
 # Webserve project journey documentation:
+Bism Ellah Elrahman Elraheem
 please start by reading getting-started-tutrial-webserve.md
 
 # Subject pdf notes:
@@ -12,19 +13,318 @@ Primary function of webserver is:
     Store, process, and deliver web pages to clients, also it can recieve content frorm client like while filling the forms.
 
 Documetation of some of the allowed functions:
-execve():
-dup():
-dup2():
-pipe():
-strerror():
-gai_strerror():
-errno():
-fork():
-htons():
-htonls():
-ntohs():
-ntohl():
+
+socket():
+    #include <sys/socket.h>
+
+         int
+         socket(int domain, int type, int protocol);
+
+    Socket creates an endpoint for communication, think of it as if you want to communicate with your family in home country, so you need weather telephone line or mail, socket creates that telephone line or email depending on your sepecification, but this is not enough there are more steps you should do to make the acutal phone call like: assiging this phone number to your name, then dial the number of your family to call, or put sim card in your mobile to get a phone call, all those extra steps are done by other function as we are going to see below inshalla.
+
+    int
+         socket(int domain, int type, int protocol);
+
+    int domain:
+    the protocol of communication like
+    PF_INET / AF_INET : for IPV4
+    PF_INET6          : for IPV6
+
+    int type:
+    Defines the semantic(system) of communication 
+    SOCK_STREAM : (virtual circuit servce which like elictric circuits but with logical endpoints)like phone call, reliable and ordered stream of data, ensure messages are send and gurantee integrity
+    SOCK_DGRAM: like sending letters, allow you to send small pieces of information called datagram, faster and lighter than SOCK_STREAM, but ther is no gurantee the informaition will arrive or arrive in order
+    SOCKET_RAW: this one provide direct access to the underlying network protocol, allows send and recieve packets at the network layer bypassing transport layer like TCP or UDP, with this type you have full control over structure like headers and payloads, it's usually used for network tasks like monotoring and sniffing
+    return value: file descroptor
+
+    int protocol:
+    help you finetune the behaviour of the type
+    0 is the defualt
+    for example 
+    SOCK_STREAM with protocol 6 for TCP and 17 for UDP
+
+    sockets must be in connected state before any data transferred, connection happens by connect() or connectx(), transferring data happens by read() write() send() recv(), then you must close the socket using close().
+
+    SOCK_STREAM if failed will consder as broken connection and return -1 ETIMEDOUT errono, protocols usually keeps socket warm by forcing transmission every minute (pace maker "this is my own term"), if no response for extended period like(5 mins) SIGPIPE is raised if process sent broken stream, this causes naiive proccess wich don't handle the signal to exit.
+
+    fcntl(2) allow non blocking I/O events via SIFIO, Setdocket(2) getdocketopt(2) used to set and get socket operation, I believe this design is object oriented programming as C++
+
+    return value is file descriptor on success or -1 on failure 
+
+
+
+bind():
+    #include <sys/types.h>
+    #include <sys/socket.h>
+
+    int bind(int sockfd, const struct sockaddr *addr,
+            socklen_t     addrlen);
+
+    binds specific address to an opened socket, which means that:
+    Imagine you went to Etisalat company to buy new mobile number, the first step you choose mobile number this is the socket creation step, then you need to link this mobile number to your ID or your name, this steo is the bind() function step
+    
+    int bind(int sockfd, const struct sockaddr *addr,
+            socklen_t     addrlen);
+
+    int sockfd: the opened socket file descraptor as above.
+
+    const struct sockaddr *addr: the address we are going to bind our socket to, the sockaddr declared as follows:
+     //struct sockaddr_in 
+    { 
+        __uint8_t         sin_len; 
+        sa_family_t       sin_family; 
+        in_port_t         sin_port; 
+        struct in_addr    sin_addr; 
+        char              sin_zero[8]; 
+    };
+    Before calling bind we should fill 3 key parts:
+    sin_family:
+        AF_INET : this is the address family we use to setup our socket (this represent IPV4)
+
+    sin_port:
+        Assigning port number (the transport the address)
+        if (I am server)
+        {
+            I will assign the port number, since clients wants to know which port number I want to be used to communicate with me
+        }
+        else if (I am client)
+        {
+            Usually I will let the operating system decide the port for me 
+        }
+
+    sin_addr:
+        IP of my machine, which means my machine will have one IP for each interface
+        If (I have WIFI and Ethernet, I might have two IPS)
+        {
+            Usually we let the system decide for my, the special used for this is 0.0.0.0
+            defined by INADDR_ANY 
+        }
+
+        address_len: 
+            What is the length of this address,
+            we specify this becuase address structure may differ based on the address family
+            it's simply:
+
+                sizeof(struct sockaddr_in);
+        Example for filling the bind() function:
+
+            struct sockaddr_in address;
+            const int PORT = 8080; // the port I will open as server allowing other to connect to me 
+
+            memset((char *)&address, 0, sizeof(address);
+            addres.sin_family = AF_INET;
+            address.sin_addr.s_addr = htonl(INADDR_ANY) //convert  ip  to binary bits
+            address.sin_port = htons(PORT) //convert int port to binary bits
+
+            if (bind(server_fd, (struct sockaddrs *)& address, sizeof(address)) < 0)
+            {
+                perror("bind fialed);
+                return (0);
+            }
+
+
+listen():
+     
+     #include <sys/socket.h>
+
+     int
+     listen(int socket, int backlog);
+
+    listen for the comming connection, it set socket in listening state, and specify number of pending connections.
+    think of it as putting the newly bought simcard in your mobile, now the your mobile number is activate ready to recieve phone calls, whenever you are in phone call and some one else call you, the second caller will be but on waiting, if third caller called you at the same time his call will be rejected, so the backlog here is 2.
+    after listen comes accept() and other connection handling steps till closing the connection "aka close()";
+    On most Unix-like systems, the typical maximum value is around 128 or 128-4096. (will go for 128 inshalla)
+
+     #include <sys/socket.h>
+
+    int
+    listen(int socket, int backlog);
+    
+    int socket : the opened socket file descriptor
+    int backlog: number of queued connection requests
+
+    N.B: you can keep track of connections by counter, also you can increase capacity of your server to handle multiple connections by using threads, which I see as an amazing option.
+
+example program:
+
+    #include <stdio.h>
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <pthread.h>
+
+    #define MAX_PENDING_CONNECTIONS 10
+
+    void *connectionHandler(void *arg);
+
+    int main() {
+        int sockfd;
+        struct sockaddr_in server_addr;
+
+        // Create a socket
+        sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if (sockfd == -1) {
+            perror("socket");
+            return 1;
+        }
+
+        // Bind the socket to a specific address and port
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_addr.s_addr = INADDR_ANY;
+        server_addr.sin_port = htons(8080);
+
+        if (bind(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
+            perror("bind");
+            return 1;
+        }
+
+        // Listen for incoming connections
+        if (listen(sockfd, MAX_PENDING_CONNECTIONS) == -1) {
+            perror("listen");
+            return 1;
+        }
+
+        printf("Socket is listening for incoming connections.\n");
+
+        // Accept and process connections using threads
+        while (1) {
+            int client_sockfd;
+            struct sockaddr_in client_addr;
+            socklen_t client_addrlen = sizeof(client_addr);
+
+            // Accept a new connection
+            client_sockfd = accept(sockfd, (struct sockaddr *)&client_addr, &client_addrlen);
+            if (client_sockfd == -1) {
+                perror("accept");
+                continue;
+            }
+
+            // Create a thread to handle the connection
+            pthread_t tid;
+            if (pthread_create(&tid, NULL, connectionHandler, (void *)&client_sockfd) != 0) {
+                perror("pthread_create");
+                close(client_sockfd);
+                continue;
+            }
+
+            // Detach the thread to allow it to run independently
+            pthread_detach(tid);
+        }
+
+        // Close the socket
+        close(sockfd);
+
+        return 0;
+    }
+
+    void *connectionHandler(void *arg)
+    {
+        int client_sockfd = *((int *)arg);
+
+        // Process the connection...
+
+        // Close the client socket
+        close(client_sockfd);
+
+        pthread_exit(NULL);
+    }
+accept():
+    #include <sys/socket.h>
+
+     int
+     accept(int socket, struct sockaddr *restrict address, socklen_t *restrict address_len);
+
+    it takes the first connection request queued in listen, create new socket for it with the same properties of the orginal socket, it's used with SOCK_STREAM
+
+    Creates a new socket with the same properties
+    if no pending queued connections accetp() will wait (block) till recieve one only if socket is set to blocking,
+    else if (socket is set to non-blocking && there are no pedning connections)
+        then
+            accept() return (error)
+
+    #include <sys/socket.h>
+     int
+     accept(int socket, struct sockaddr *restrict address, socklen_t *restrict address_len);
+
+    int socket : file descriptor resulted from bind
+    struct sockaddr *restrict address: address is the address decided in the communication layer, will be same address used in bind
+    socklen_t *restrict address_len: sizeof(address)
+Practical example use case for socket(), bind(), listen(), accept(), read() and write(a):
+// Server side C program to demonstrate Socket programming
+#include <stdio.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <netinet/in.h>
+#include <string.h>
+
+#define PORT 8080
+int main(int argc, char const *argv[])
+{
+    int server_fd, new_socket; long valread;
+    struct sockaddr_in address;
+    int addrlen = sizeof(address);
+    
+   char *hello = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 26\n\nHello from Ahmed's server!";
+
+    
+    // Creating socket file descriptor
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0))  < 0)
+    {
+        perror("In socket");
+        exit(EXIT_FAILURE);
+    }
+    
+
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons( PORT );
+    
+    memset(address.sin_zero, '\0', sizeof address.sin_zero);
+    
+    
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+    {
+        perror("In bind");
+        exit(EXIT_FAILURE);
+    }
+    if (listen(server_fd, 2) < 0)
+    {
+        perror("In listen");
+        exit(EXIT_FAILURE);
+    }
+    while(1)
+    {
+        printf("\n+++++++ Waiting for new connection ++++++++\n\n");
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+        {
+            perror("In accept");
+            exit(EXIT_FAILURE);
+        }
+        char buffer[30000] = {0};
+        valread = read( new_socket , buffer, 30000);
+        printf("%s\n",buffer );
+        write(new_socket , hello , strlen(hello));
+        printf("------------------Hello message sent-------------------\n");
+        sleep(5);
+        close(new_socket);
+    }
+    return 0;
+}
+
+
 select():
+
+connect():
+send():
+revc():
+htons(), htonls(), ntohs(), ntohl():
+Convert bytes bettween network byte order to host byte order
+use case ---> htons(PORT)  //used for port
+getaddrinfo():
+freeadrinfo():
+setsockopt():
+getsockname():
 poll():
 epoll():
 epoll_create():
@@ -33,32 +333,32 @@ epoll_wait():
 kqueue():
 kevent():
 any equivelant to pool select kqueue epoll:
-socket():
-accept():
-listen():
-send():
-revc():
-bind():
-connect():
-getaddrinfo():
-freeadrinfo():
-setsockopt():
-getsockname():
-getprotobyname():
 fcntl():
+getprotobyname():
+
+
+fcntl(): for macos, only as follows fcntl(fd, F_SETFL, O_NONBLOCK);
+Any defined macro like FD_SET, FD_CLR, FD_ISSET, FD_ZERO:
+C++98
+
+access():
+opendir():
+readdir():
+closedir():
+execve():
+dup():
+dup2():
+pipe():
+strerror():
+gai_strerror():
+errno():
+fork():
 close():
 read():
 write():
 waitpid():
 kill():
 signal():
-access():
-opendir():
-readdir():
-closedir():
-fcntl(): for macos, only as follows fcntl(fd, F_SETFL, O_NONBLOCK);
-Any defined macro like D_SET, FD_CLR, FD_ISSET, FD_ZERO:
-C++98
 
 RFC:
 telnet:
@@ -120,4 +420,7 @@ questions:
 what is poll()?
 what is telnet?
 can I do man in the middle with telnet/myserver?
-what is CGI:
+what is CGI?
+what is the meaning of session managment?
+what are coockies?
+how my server can handle cookies?

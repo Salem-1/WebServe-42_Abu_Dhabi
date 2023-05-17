@@ -17,7 +17,7 @@ int main(int argc, char const *argv[])
 
     
     // Creating socket file descriptor
-    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0))  < 0)
     {
         perror("In socket");
         exit(EXIT_FAILURE);
@@ -31,12 +31,12 @@ int main(int argc, char const *argv[])
     memset(address.sin_zero, '\0', sizeof address.sin_zero);
     
     
-    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address))<0)
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
     {
         perror("In bind");
         exit(EXIT_FAILURE);
     }
-    if (listen(server_fd, 10) < 0)
+    if (listen(server_fd, 2) < 0)
     {
         perror("In listen");
         exit(EXIT_FAILURE);
@@ -49,12 +49,12 @@ int main(int argc, char const *argv[])
             perror("In accept");
             exit(EXIT_FAILURE);
         }
-        
         char buffer[30000] = {0};
         valread = read( new_socket , buffer, 30000);
         printf("%s\n",buffer );
         write(new_socket , hello , strlen(hello));
         printf("------------------Hello message sent-------------------\n");
+        sleep(5);
         close(new_socket);
     }
     return 0;
