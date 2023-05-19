@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "stdio.h": "c",
+        "socket.h": "c"
     }
 }
