@@ -29,6 +29,7 @@ socket():
     the protocol of communication like
     PF_INET / AF_INET : for IPV4
     PF_INET6          : for IPV6
+    AF_UNSPEC         : for IPV4 or IPV6
 
     int type:
     Defines the semantic(system) of communication 
@@ -313,27 +314,225 @@ int main(int argc, char const *argv[])
 }
 
 
-select():
+select():\
+    It took me too much time to figure out what do select, so I choosed to leave my old perception of select down here to give you chance for step by step understanding, so I will start with the old explanation, then will follow with the new one:
 
-connect():
-send():
-revc():
-htons(), htonls(), ntohs(), ntohl():
+Old perception:
+    Look we have here a lot of concept to digest to understand select(), so please be patient with me.
+    Think of select as traffic police man, it manage the traffic, who should go? who should wait, let the pedistrian stand in line to cross the street, and so forth to keep the traffic smooth and avoid blockage of the street.
+    Select do the heavy lifting when you are working with many file descriptors, as some might be opened for reading, other for writing, as you might be recieving message from client or have new opened connection, or you are sending a response,
+    so select() help you manage those file descriptors.
+    select() has it's own helper macros that facilitate it's work,
+    so let's start the heavy lifting:
+    How do select save file descriptors?
+    it saves and manages them in something called file descriptor set, here the sytntax:
+    
+        //declare file descriptor set
+        fd_set      read_fd_set, write_fd_set, erro_fd_set;
+        
+        //initialize file descriptor set
+        FD_ZERO(&read_fd_set);
+        FD_ZERO(&write_fd_set);
+        FD_ZERO(&erro_fd_set);
+        
+        //adding file descriptor to the file descriptor set
+        FD_SET(fd, &new_set);
+        
+        //calling select function 'time out is how much time you would like select to take before timed out'
+        select(range_of_fds_to_check
+        , readfds, writefds, errorfds, timeout);
+        
+        //serching for fd in fd set
+        FD_ISSET(search_me_fd, &read_fd_set);
+
+        //removing fd from set
+        FD_CLR(remove_me_fd, &read_fd_set);
+
+    Well this was a lot to know in one shot, however as you know about fd sets you are grown enough to read the select() documentation:
+        #include <sys/select.h>
+
+     void 
+     FD_CLR(fd, fd_set *fdset);
+
+     void
+     FD_COPY(fd_set *fdset_orig, fd_set *fdset_copy);
+
+     int
+     FD_ISSET(fd, fd_set *fdset);
+
+     void
+     FD_SET(fd, fd_set *fdset);
+
+     void
+     FD_ZERO(fd_set *fdset);
+
+     int
+     select(int nfds, fd_set *restrict readfds, fd_set *restrict writefds, fd_set *restrict errorfds,
+         struct timeval *restrict timeout);
+    
+    Noe you know the staff above, you are grown up enough to read the man, type in the terminal man select, if you understand what they are talking about please explain to me because I don't yet, otherwise, let's try to breakdown what I we understand here:
+
+    if you need to use fds bigger than FD_SETSIZE compile with\
+    
+        c++ -D_DARWIN_UNLIMITED_SELECT. 
+    or
+
+        #define FD_SETSIZE before including 
+        #include <sys/types.h>
+
+New understanding:
+    Think of slecet() as follows:
+        Imagine you are a Chief in famous resturant that serve 1000 customer per/day, you are passionate about coocking but you having trooubles track which meal is ready to go to the oven, which meal is ready to get out of the oven, which meal is burnt and should be thrown.
+        So you hire someone let's call him select(), mr select his job is to solve your meal organizing problem and let you focus on preparing meals.
+        Mr select() will have 3 sets of meals, one set for meals beign prepared, one set for meals inside the oven, one set for burunt meals to through, so select() will keep track of the whole 3 sets, whenever meal preparation is done he will put it on tray in front of the oven to let you put it inside the oven,
+        he will keep track of the meals inside the oven, if any meal is ready he will teake it outside the oven and put it in tray of ready meals,
+        also select() will keep track of errored meals and through it in trash.
+        Now you can spend happy time serving your customers and focus on what matters.
+
+        So slecet will take fd_sets as above, will keep watching for the ready file descriptros, then will modify the set to keep the ready file descriptors only.
+        Select is will wait till file descriptor change, you can wait forever or wait for the timeout as you like by setting the timeout struct.
+
+        for the use and declaration see above.
+
+
+connect():\
+    Typically used by client to connect to server.
+    how?
+    Step 1:
+    create socket for you as client.
+    step 2:
+    fill address with server ip and port.
+    step 3:
+    call conect() using your socket and address as filled above
+    step 4:
+    Enjoy the connection with server you can send and recieve messages with the server.
+
+    PSIS
+     #include <sys/types.h>
+     #include <sys/socket.h>
+
+     int
+     connect(int socket, const struct sockaddr *address, socklen_t address_len);
+    
+    See example use case with send() below. 
+
+
+send():\
+    Used to send message to another socket, it only works when it's connected, the address already set in the address in connect();
+N.B:sendto(), sendmsg() can use to send at any time but not allowed to use, sendto() takes the address of the server.
+    Delcaration:
+
+
+    ssize_t
+    send(int socket, const void *buffer, size_t length, int flags);
+    
+ssize_t: is singned size_t
+buffer:message to send
+flags:
+     #define MSG_OOB        0x1  /* process out-of-band data */ will use highr priority packets
+    #define MSG_DONTROUTE  0x4  /* bypass routing, use direct interface */ Diagnostic,
+    will use NULL as I believe
+return 0 on success or -1 on failure 
+Example use case:
+
+    #include <stdio.h>
+    #include <sys/socket.h>
+    #include <unistd.h>
+    #include <stdlib.h>
+    #include <netinet/in.h>
+    #include <string.h>
+    #include <arpa/inet.h>
+    #include <readline/readline.h>
+    #include <readline/history.h>
+
+    #define PORT 8080
+
+    int main(int argc, char **argv)
+    {
+        int sock = 0;
+        long valread;
+        struct sockaddr_in serv_addr;
+        char *hello = NULL;
+        char buffer[1024] = {0};
+
+        if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        {
+            perror("Socket creation failed");
+            exit(EXIT_FAILURE);
+        }
+        memset(&serv_addr, '0', sizeof(serv_addr));
+        serv_addr.sin_family = AF_INET;
+        serv_addr.sin_port = htons(PORT);
+        //convert IPV4 and IPV6 to binary
+        if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0)
+        {
+            perror("Invalid address or address not supported");
+            exit(EXIT_FAILURE);
+        }
+
+        while (1)
+        {
+             if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+             {
+                 perror("Socket creation failed");
+                 exit(EXIT_FAILURE);
+             }
+             if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+             {
+                 perror("Connect failed");
+                 exit(EXIT_FAILURE);
+             }
+            send(sock, hello, strlen(hello), 0);
+            valread = read(sock, buffer, 1024);
+            printf("%s\n", buffer);
+            close (sock);
+        }
+        return (0);
+    }
+
+recv():\
+     #include <sys/socket.h>
+
+     ssize_t
+     recv(int socket, void *buffer, size_t length, int flags);
+     same as above recieve a message from a connected socket;
+flag:
+
+           MSG_OOB        process out-of-band data // recieve some data out of normal data stream, used by some protocols
+           MSG_PEEK       peek at incoming message//keep the old buffer
+           MSG_WAITALL    wait for full request or error// recieve the whole message, some portions of the message might be lost if program or message is intruppted
+
+htons, htonl, ntohs, ntohl,:\
 Convert bytes bettween network byte order to host byte order
-use case ---> htons(PORT)  //used for port
-getaddrinfo():
-freeadrinfo():
-setsockopt():
-getsockname():
-poll():
-epoll():
-epoll_create():
-epoll_ctl():
-epoll_wait():
-kqueue():
-kevent():
-any equivelant to pool select kqueue epoll:
-fcntl():
+
+     uint16_t
+     htons(uint16_t hostshort); // host to network short
+
+    uint32_t
+    htonl(uint32_t hostlong); // host to network long
+    htons(PORT);
+
+    uint16_t
+     ntohs(uint16_t netshort); // network to host short
+
+    uint32_t
+    ntohl(uint32_t netlong); // network to host long
+
+
+getaddrinfo():\
+
+freeadrinfo():\
+setsockopt():\
+getsockname():\
+poll():\
+epoll():\
+epoll_create():\
+epoll_ctl():\
+epoll_wait():\
+kqueue():\
+kevent():\
+any equivelant to pool select kqueue epoll:\
+fcntl():\
 getprotobyname():
 
 
