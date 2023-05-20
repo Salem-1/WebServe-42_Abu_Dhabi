@@ -7,9 +7,17 @@
 #include <unistd.h>
 #include <string.h>
 
+
+//use examle
+//> ./ft_dig http intra.42.fr
 void printAddrInfo(const struct addrinfo *ai) ;
 
-int main() {
+int main(int argc, char **argv) {
+    if (argc != 3)
+    {
+        printf("wrong number of arguments\n");
+        return (1);
+    }
     struct addrinfo hints, *result, *rp;
     int status;
 
@@ -19,7 +27,7 @@ int main() {
     hints.ai_socktype = SOCK_STREAM; // Use TCP
 
     // Resolve the address information
-    status = getaddrinfo("intra.42.fr", "http", &hints, &result);
+    status = getaddrinfo(argv[2] , argv[1], &hints, &result);
     if (status != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(status));
         exit(1);

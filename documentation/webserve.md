@@ -521,7 +521,24 @@ Convert bytes bettween network byte order to host byte order
 
 getaddrinfo():\
 
+     int
+     getaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res);
+
+    hostneme: domain name or ip as string
+    server name : port or service name 
+    hints: provide some useful hints for getaddrinfo to bring you the required address data
+    res:linked list of addrinfo struct that has the required information about your ip
+    
+gets information about specific domain name or IP, those information you can fill up the struct addr_in address in bind and connect, or you can use it in enumeration like dig command.
+
+
 freeadrinfo():\
+    free the res addrinfor void
+     freeaddrinfo(struct addrinfo *ai);
+
+    Example use case for getaddrinfo() and freeaddrinfo() on this repo :
+    https://github.com/Salem-1/WebServe_42_Abu_Dhabi/tree/main/sandbox/dig_addresses
+
 setsockopt():\
 getsockname():\
 poll():\
