@@ -3,4 +3,5 @@ inspect those concepts:
     #define MSG_DONTROUTE  0x4  /* bypass routing, use direct interface */ Diagnostic
 -recv() MSG_WAITALL flag which take all data form message 
 -Socket that has raw bits used for sniffing and packet tracing
--creating executables as cliets (agents)
+-creating executables as cliets (agents)the harvest to collect info about ip or domain
+recon ng for automated testing

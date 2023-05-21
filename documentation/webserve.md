@@ -540,8 +540,62 @@ freeadrinfo():\
     https://github.com/Salem-1/WebServe_42_Abu_Dhabi/tree/main/sandbox/dig_addresses
 
 setsockopt():\
+     int
+     setsockopt(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
+
+    Allow us to set specific options for our socket like:
+    
+    SO_REUSEADDR: Allows reusing the local address, which is useful for binding to a port that may still have connections in the TIME_WAIT state.
+    
+    SO_KEEPALIVE: Enables sending keep-alive messages on the socket to detect if the connection is still alive.
+    
+    SO_RCVBUF and SO_SNDBUF: Set the receive and send buffer sizes for the socket, respectively.
+    
+    TCP_NODELAY: Disables Nagle's algorithm, which can improve the performance of certain applications.
+
+         int
+     setsockopt(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
+
+         sockfd: The file descriptor of the socket on which the option should be set.
+        level: The protocol level at which the option resides. It specifies the protocol family of the socket.
+        optname: The specific option to set.
+        optval: A pointer to the value to be set for the option.
+        optlen: The size of the option value.
+    if you want to know more about it do your own research, for now it doesn't seem a good use as I didn't start the project yet
 getsockname():\
+    #include <sys/socket.h>
+
+    int
+    getsockname(int socket, struct sockaddr *restrict address, socklen_t *restrict  address_len);
+    
+retrive the current address information linked to specific socket.
+
+
 poll():\
+
+     #include <poll.h>
+
+     int
+     poll(struct pollfd fds[], nfds_t nfds, int timeout);
+    
+Do the same job as select, managing file descriptors in read and write.
+    Imagine poll as if you have a call center, and you want whoever call to be recieved so you need a device to manage the incoming and outcoming calls from the same call center number, poll do this job
+
+     #include <poll.h>
+
+     int
+     poll(struct pollfd fds[], nfds_t nfds, int timeout);
+    fds: the struc that holds fds and events
+    struct pollfd {
+         int    fd;       /* file descriptor */
+         short  events;   /* events to look for you set this one, for example for read PULLIN flag used */
+         short  revents;  /* events returned , you will check this one if event is triggered*/
+     };
+
+     nfds: number of tracked file descriptors
+
+     timeout: -1 to wait forever, 0 to be non-blocking no wait, > 0 if you need set specific waiting time in millisecond
+     
 epoll():\
 epoll_create():\
 epoll_ctl():\
@@ -550,6 +604,45 @@ kqueue():\
 kevent():\
 any equivelant to pool select kqueue epoll:\
 fcntl():\
+    file control, can be used to set to socket to non blocking as requested by the subject.
+      #include <fcntl.h>
+
+     int
+     fcntl(int fildes, int cmd, ...);
+
+Example use case:
+
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <fcntl.h>
+    
+    int main() {
+        int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+        if (sockfd < 0) {
+            perror("socket");
+            exit(1);
+        }
+    
+        // Set the socket to non-blocking mode
+        int flags = fcntl(sockfd, F_GETFL, 0);
+        if (flags < 0) {
+            perror("fcntl");
+            exit(1);
+        }
+        if (fcntl(sockfd, F_SETFL, flags | O_NONBLOCK) < 0) {
+            perror("fcntl");
+            exit(1);
+        }
+    
+        printf("Socket set to non-blocking mode\n");
+    
+        // Further code...
+    
+        return 0;
+    }
+
 getprotobyname():
 
 
