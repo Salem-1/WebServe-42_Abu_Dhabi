@@ -595,12 +595,115 @@ Do the same job as select, managing file descriptors in read and write.
      nfds: number of tracked file descriptors
 
      timeout: -1 to wait forever, 0 to be non-blocking no wait, > 0 if you need set specific waiting time in millisecond
-     
+
+     example use cases:
+     https://github.com/Salem-1/WebServe_42_Abu_Dhabi/tree/main/sandbox/try_poll/*
+
+     N.B:poll require much less effort from you as programmer to keep track of fds than select, so will go with it inshalla, also to get myself familiar with event programming
+
 epoll():\
 epoll_create():\
 epoll_ctl():\
 epoll_wait():\
+    like poll but with diffrent macros and syntax, it's highly scalable for web servers but unfortunately works on linux systems only
+
+    #include <sys/epoll.h>
+
+Another alternative to poll() and selecet(), it' more scalable and provide more control over handling events, however it's non portable, which means that it work only on Linux kernel
+
+#include <sys/epoll.h>
+
+int epoll_create(int size); //create epoll instance
+int epoll_ctl(int epfd, int op, int fd, struct epoll_event *event); //control epoll event
+int epoll_wait(int epfd, struct epoll_event *events, int maxevents, int timeout); //wait for epoll event
+
+use case (unfotunately only works on linux):
+     https://github.com/Salem-1/WebServe_42_Abu_Dhabi/tree/main/sandbox/try_epoll/*
+N.B: will not dig deep in epoll now, unless decided to use it in any reason.
 kqueue():\
+    Think of kqueue as if you are running busy resturant and you want to keep track of incoming orders and finished orders, so you bought new device that uses tokens and has screen, you tell the device which order to watch for and what event to watch for(incoming order or outgoing order), then the device will notify you on the screen whenever you recieve an order or an order was finished, so you can take the appropriate action.
+
+Declarations:
+
+    #include <sys/event.h>
+    #include <sys/types.h>
+    #include <sys/time.h>
+    #define MAX_EVENTS = 10 //example for number of events you want to track
+    int                 kq;
+    struct kevent       event;
+    struct kevent       events[MAX_EVENTS];
+
+    int kqueue(void);
+    //initialize kqueue, reuturn -1 on failure
+
+    EV_SET(&kev, ident, filter, flags, fflags, data, udata);
+    //macro to initialize event structure event
+    
+     int
+     kevent(int kq, const struct kevent *changelist, int nchanges, struct kevent *eventlist, int nevents, const struct timespec *timeout);
+
+     int
+     kevent64(int kq, const struct kevent64_s *changelist, int nchanges, struct kevent64_s *eventlist, int nevents, unsigned int flags, const struct timespec *timeout);
+
+     int
+     kevent_qos(int kq, const struct kevent_qos_s *changelist, int nchanges, struct kevent_qos_s *eventlist, int nevents, void *data_out, size_t *data_available, unsigned int flags);
+
+
+     EV_SET64(&kev, ident, filter, flags, fflags, data, udata, ext[0], ext[1]);
+
+     EV_SET_QOS(&kev, ident, filter, flags, qos, udata, fflags, xflags, data, ext[0], ext[1], ext[2], ext[3]);
+
+kqueue steps:
+    1-create kqueue object
+    Think of it as if you are setting up the orders tracking system in your resutrant
+    
+        int kq = kqueue();
+        //create new kqueue to keep track of kernel event that you want, if fials return -1; 
+    
+    2-attch file/socket descriptor
+    Think of it as making usb flash memory with the required setup for your  resturant new device stating kind of events you want to keep track of like incoming orders.
+    Then you put the this usb flash memory in your machine to be ready for your morning shift orders
+     
+    EV_SET(&event, server_socket, EVFILT_READ, EV_ADD, 0, 0, NULL);
+    //initilizing event struct using EV_SET macro
+    // &envent      : the address of event struct you want to keep track of 
+    //server_socket : the file descriptor you want to monitor for the event
+    //EVFILT        : event filter for the type of event to watch for, here is read
+    //EV_ADD        : the action we want to take with this file descriptor, here we need to add it to the event
+    //0             : the flag a
+
+    kevent(kq, &event, 1, NULL, 0, NULL);
+    //registering the event in event queue
+    kq     : file descriptor representing event queue
+    &event : address of the event structure we want to register
+    1      : number of the envents in the change list 
+    NULL   : pointer to the event structure where the triggered event will be stored(not used in this example)
+    0      : Number of events we want to retrieve not used here
+    NULL   : time out of the function (not used here) 
+    3-wiat for incoming event from kqueue
+
+    n = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
+    //waiting for incoming connections, will recieve it on the events sturct, it returns number of events n , then will through it to handle it.
+
+    fd  = events[i].ident;
+    //assing fd to event struct
+    filter = events[i].filter
+    //assign the event to watch for like read ofr rwrite , use the corressponding macro
+
+    4-destroy kqueue object
+    //deleting socket from event watch list
+    EV_SET(&event, client_socket, 
+            EVFILT_READ, EV_DELETE, 0, 0, NULL);
+    //using the macro of EV_SET() explicitly state that will delete specific fd using EV_DELETE that was monitored for EVFILT_READ that is watched read
+
+    //then will call kevent to add this event to the kq "kernel event"
+        if(kevent(kq, &event, 1, NULL, 0, NULL) == -1)
+        {
+            perror("kevent failed in disconencting client");
+            exit(1);
+        }
+        close(fd);
+
 kevent():\
 any equivelant to pool select kqueue epoll:\
 fcntl():\
