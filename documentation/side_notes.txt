@@ -5,3 +5,19 @@ inspect those concepts:
 -Socket that has raw bits used for sniffing and packet tracing
 -creating executables as cliets (agents)the harvest to collect info about ip or domain
 recon ng for automated testing
+
+-Create your own protocol for distributed object system, it's encrypted by itself without decription, as if it's 
+stand alone programming language or signal handler, hash it by Asr
+-Distributed objects: is it used in block chain, cloud, cloud block chain, white cloud proccessing market, or what 
+kind of secrets do you hide miss distributed objects?
+-There are risk to make your server as proxy, a hacker can make it send spam emails, got what I mean?
+-What happens if I change the user agent in the request header manually, whould it be detected?
+-request smuggling (Section 11.2) or response splitting
+-Cache poisoning.
+- Most servers are designed to maintain thousands of concurrent connections, while controlling request queues to enable fair use and detect denial-of-service attacks.
+-Signal edge cases " transport signals cannot be relied upon to signal edge cases, since HTTP/1.1 is independent of transport."
+-in TLS part "Treating an incomplete message as complete could expose implementations to attack."
+-Response Splitting
+-Request Smuggling
+-Message Integrity
+-Message Confidentiality

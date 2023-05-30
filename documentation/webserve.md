@@ -1,29 +1,30 @@
-# Webserve project journey documentation:
-Bism Ellah Elrahman Elraheem
-please start by reading getting-started-tutrial-webserve.md
+# Webserve project journey documentation
+*Bism Ellah Elrahman Elraheem*
 
-# Subject pdf notes:
-HTTP:  Hypertext Transfer Protocol, it's the foudnation of data communication on the world wide web
-OSI: open system intercommunication model, standardize the communication regardless the underlying technology.
-Layer 4: Ensure data transferred from one point to another reliably and without errors (ex: TCP, UDP, SPX)
-            -> Provide flow control
-            -> Error handling
-User agent: web browser or crawlers
-Primary function of webserver is:
-    Store, process, and deliver web pages to clients, also it can recieve content frorm client like while filling the forms.
+Please start by reading [getting-started-tutrial-webserve.md](getting-started-tutrial-webserve.md)
 
-Documetation of some of the allowed functions:
+## Subject pdf notes
+- **HTTP**: Hypertext Transfer Protocol, it's the foundation of data communication on the world wide web
+- **OSI**: Open System Intercommunication model, standardize the communication regardless of the underlying technology.
+- **Layer 4**: Ensure data transferred from one point to another reliably and without errors (ex: TCP, UDP, SPX)
+  - Provide flow control
+  - Error handling
+- **User agent**: Web browser or crawlers
 
-socket():
+The primary function of a web server is to store, process, and deliver web pages to clients. It can also receive content from clients, like while filling out forms.
+
+Documentation of some of the allowed functions:
+
+**socket():**
+
+    
     #include <sys/socket.h>
 
-         int
-         socket(int domain, int type, int protocol);
+    int socket(int domain, int type, int protocol);
 
-    Socket creates an endpoint for communication, think of it as if you want to communicate with your family in home country, so you need weather telephone line or mail, socket creates that telephone line or email depending on your sepecification, but this is not enough there are more steps you should do to make the acutal phone call like: assiging this phone number to your name, then dial the number of your family to call, or put sim card in your mobile to get a phone call, all those extra steps are done by other function as we are going to see below inshalla.
 
-    int
-         socket(int domain, int type, int protocol);
+socket() creates an endpoint for communication. Think of it as if you want to communicate with your family in your home country, so you need either a telephone line or mail. Socket creates that telephone line or email depending on your specification. But this is not enough; there are more steps you should do to make the actual phone call, like assigning this phone number to your name, then dialing the number of your family to call, or putting a SIM card in your mobile to get a phone call. All those extra steps are done by other functions as we are going to see below, inshaAllah.
+
 
     int domain:
     the protocol of communication like
@@ -31,12 +32,12 @@ socket():
     PF_INET6          : for IPV6
     AF_UNSPEC         : for IPV4 or IPV6
 
-    int type:
-    Defines the semantic(system) of communication 
-    SOCK_STREAM : (virtual circuit servce which like elictric circuits but with logical endpoints)like phone call, reliable and ordered stream of data, ensure messages are send and gurantee integrity
-    SOCK_DGRAM: like sending letters, allow you to send small pieces of information called datagram, faster and lighter than SOCK_STREAM, but ther is no gurantee the informaition will arrive or arrive in order
-    SOCKET_RAW: this one provide direct access to the underlying network protocol, allows send and recieve packets at the network layer bypassing transport layer like TCP or UDP, with this type you have full control over structure like headers and payloads, it's usually used for network tasks like monotoring and sniffing
-    return value: file descroptor
+int type:
+Defines the semantic(system) of communication 
+SOCK_STREAM : (virtual circuit servce which like elictric circuits but with logical endpoints)like phone call, reliable and ordered stream of data, ensure messages are send and gurantee integrity
+SOCK_DGRAM: like sending letters, allow you to send small pieces of information called datagram, faster and lighter than SOCK_STREAM, but ther is no gurantee the informaition will arrive or arrive in order
+SOCKET_RAW: this one provide direct access to the underlying network protocol, allows send and recieve packets at the network layer bypassing transport layer like TCP or UDP, with this type you have full control over structure like headers and payloads, it's usually used for network tasks like monotoring and sniffing
+return value: file descroptor
 
     int protocol:
     help you finetune the behaviour of the type
@@ -746,33 +747,395 @@ Example use case:
         return 0;
     }
 
-getprotobyname():
+getprotobyname():\
+
+    #include <netdb.h>
+    struct protoent *getprotobyname(const char *name);
+
+Used to get the protocol number, for example "tcp" number is 6.
+    why to use?\
+    To make the code more readable and maintainable.
+
+    #include <netdb.h>
+    struct protoent *getprotobyname(const char *name);
+
+name: protocol name like "tcp" , "udp"
+
+struct  protoent {
+        char    *p_name;        /* official name of protocol */
+        char    **p_aliases;    /* alias NULL terminated list, means those are other names of the protocol, if your name is ahmed, your alias list is {"ahmed", "hamada", "abo hmied", NULL}*/
+        int     p_proto;        /* protocol number which we need to use for our webserve*/
+};
+
+
+Example:
+
+    #include <netdb.h>
+    #include <stdio.h>
+
+    int main() {
+        struct protoent *proto = getprotobyname("tcp");
+        if (proto != NULL) {
+            printf("Protocol name: %s\n", proto->p_name);
+            printf("Protocol aliases:\n");
+            char **alias = proto->p_aliases;
+            while (*alias != NULL) {
+                printf("- %s\n", *alias);
+                alias++;
+            }
+            printf("Protocol number: %d\n", proto->p_proto);
+        } else {
+            perror("getprotobyname");
+        }
+        return (0);
+    }
+
+Real Example use case in web server:
+
+    https://github.com/Salem-1/WebServe_42_Abu_Dhabi/tree/main/sandbox/try_get_protobyname/kqueue_w_get_proto_server.cpp
 
 
 fcntl(): for macos, only as follows fcntl(fd, F_SETFL, O_NONBLOCK);
 Any defined macro like FD_SET, FD_CLR, FD_ISSET, FD_ZERO:
 C++98
+std::system: 
+     int
+     system(const char *command);
 
-access():
+     take command as string or char * and execute it as if you have written it in the terminal
+
+access():\
+#include <unistd.h>
+
+int access(const char *path, int amode);
+What it does?
+Check the existance of a file and check the allowed permission.
+how?
+give:
+const char *path = "/path/to/the/desired/file";
+int amode = W_OK 	check the writing permission
+			R_OK 	check the reading permission
+			X_OK	check the execution permission, gives success if the user has privilage
+			to execute the file even if the file doesn't has executino permission.  '
+			F_OK 	check for the file existance
+return value? 0 upon_success : else -1;
+and erronum change according to the kind of the error 
+
 opendir():
-readdir():
-closedir():
-execve():
-dup():
-dup2():
-pipe():
-strerror():
-gai_strerror():
-errno():
-fork():
-close():
-read():
-write():
-waitpid():
-kill():
-signal():
+    
+    //Open directory and return pointer to directory stream
+    #include <dirent.h>
 
-RFC:
+    DIR *
+    opendir(const char *filename);
+
+readdir():
+    Used for read-directory entries used to retriev information about files in directory, retur pointer to next directory entry.\
+
+closedir():
+
+
+Example for opendir readdir closedir:\
+
+    #include <stdio.h>
+    #include <dirent.h>
+    #include <unistd.h>
+    int main()
+    {
+        DIR *dir;
+        struct dirent *entry;
+        char cwd[1024];
+        if (getcwd(cwd, sizeof(cwd)) == NULL)
+        {
+            perror("getcwd");
+            return 1;
+        }
+        printf("cwd is %s \n", cwd);
+        dir = opendir(cwd);
+        if (dir == NULL)
+        {
+            perror("opendir");
+            return 1;
+        }
+    
+        while ((entry = readdir(dir)) != NULL)
+        {
+            printf("%s\n", entry->d_name);
+        }
+    
+        closedir(dir);
+        return 0;
+    }
+
+execve():\
+    used to execute programs, it replaces the current process with new process:
+
+    int execve(const char *pathname, char *const argv[], char *const envp[]);
+    //se minishell
+
+dup():\
+   
+    #include <unistd.h>
+
+    int
+    dup(int fildes);
+
+Duplicate existing value of file descriptor, can be used with sockets
+
+
+dup2():
+    duplicate file descriptor to another file descruptir: see minishell
+pipe():
+    open int fd[2]; fd[1] for writing, fd[0] for reading
+strerror():
+    take error number and return pointer to the corresponding message string
+    
+gai_strerror():
+     
+     #include <sys/types.h>
+     #include <sys/socket.h>
+     #include <netdb.h>
+
+     const char *
+     gai_strerror(int ecode);
+Returns message corresponding to the errorno
+errno():
+    global variable indicates various errors during running the program, used with strerror, or you can print the errno as int directly
+fork():
+    fork the parent process to child process, see minishell
+close():
+    close opened file descriptor
+read():
+    read from opened file descriptor to a buffer with defined number of bytes to read
+write():
+    write to file descriptor form buffer number of bytes 
+waitpid():
+    wait for specfic proccess "child" to exit before complete execution, and store the exit status if needed: see minishell
+kill():
+    send specific signal to specific process id: see minitalk
+signal():
+    set signal handler for specific signal
+
+
+# ------------------------------------------------------------------------
+
+# RFC:
+
+
+
+# RFC 9112
+HTTP client and server are communicating through sending messages
+message format
+        start-line
+Header  zero or more header fields
+
+\n empty line indicating the end of header fields
+
+Body message (optional)
+
+How HTTP message is paresed?
+Read each header field into hash table
+-> each header field in to map, 
+std::map<string, string> http_message;
+if the header indicates there is a body then the body is read in stream the message body length or till the connection is closed
+
+end of start line is CR: carrige return followed by LF line feed
+so it's CRLF, or sometimes LF is enough
+HTTP version: must be sepecified to get a correct parsing
+(the one who will take this part should do deep dive in the rfc and summurize it to us)
+Request line:
+METHOD single_space    request target single_space protocol version
+method SP request-target SP HTTP-version
+
+example:
+    GET /api/products/123 HTTP/1.1
+the breakdown below:
+
+Method: GET POST DELETE PUT
+
+request target are weather:
+
+    origin-form : that has "?" in it 
+        /where?q=now
+    absolute-form : which gives the absolute path
+         http://www.example.org/pub/WWW/TheProject.html
+
+    
+    authority-form: only used for CONNECT request and it has ":", used for tunnels in proxies, cleint send the host and the port number of the tunnel destination as request target
+         www.example.com:80
+
+    asterisk-form: only used for server OPTION method
+        OPTIONS * HTTP/1.1
+
+Don't accept obsolete line folding:
+    ;
+    continue rquest
+instead send bad request 400
+Content-Length:
+    determines the message body
+Message body: 
+    is identical to the content unless transfer coding is applied
+
+
+Transfer-Encoding: gzip, chunked
+    Transfer encoding is primary intended for dynamically generated content, transfer coding is very important when the content size is not known in advance, 
+    Transfer-Encoding is the property of the message unlike Content-Encoding
+    Server should never send transfer encoding in 1xx 204(no content) or 2xx response to CONNECT 
+
+Content-Length: applied for nin Transfer-Encoding
+
+Chunked Transfer Coding:
+    divide file to chunks to be sent in packets
+
+    HTTP/1.1 200 OK
+    Content-Type: text/plain
+    Transfer-Encoding: chunked
+    
+    25
+    This is the first chunk of data.
+    1A
+    Here is the second chunk.
+    0
+Chunked trailer section:
+    chunk can have metadata section after the chunk ends carry important information
+The bottom line th chunking topic needs deep dive as it's non trivial part, it seems that chunked worked as follows line instructions and line data
+
+N.B:HTTP messaging is independent of underlying transport or session-layer connection protocol.
+
+HTTP implementations are expected to engage in connection management, which includes:
+    -Maintaining the state of current connections
+    -Establishing a new connection
+    -Reusing an existing connection
+    -Processing messages received on a connection
+    -Detecting connection failures
+    -Closing each connection
+
+
+Connection: close
+    mean that the server will close the connection after responding to this message
+TLS:
+    starts with TLS handshake then act as normal HTTP
+# Response
+
+HTTP-Version Space status_code soace [ reason-sphere ]
+
+each field consists of case insenstive name followed by ":"
+
+
+
+
+
+
+# notes from 7232 for your info only the implementations needed is in 9112 above
+Statless application: means it doesn't store any data about session, HTTP doesn't keep any data of previous requests, each request is proccessed independently and the serever doesn't know about the previous request.
+This statelessness make http more scalable (load balancing),better caching, but increase the payload, also rely on tokens for authentication.
+
+URI: uniform resource identifier 
+
+Each HTTP message is either request or response, steps for implementation:\
+1-Server listen on connection for request or response\
+2-Parse each message recieved\
+3-interpret message sematics
+4-respond to request with one or more response message
+
+from client side:
+1-Construct request message with specific intention
+2-Examine recieved request to see if intentions were carried out
+------
+resource: target of http request
+One of the goals of HTTP is to seprate what you request from what are you gonna do with it\
+
+payload purpose defined by the request method and status code\
+
+Payloda: is the data that is sent back purpose depends on request method and response status code \
+
+HTTP is just a messanger that doesn't interfere how your server work or take decision or whatever algorithm you decide to implement, it's all yours./
+
+Proactive negtiation: the user agent tell the server it's prefrences in the request itself 
+unfortunately can make things slower, have privacy concerns, and might not fullfill useragent full needs due to lack of information like: is the user request page to show on screen or to print on paper
+
+Reactive negotiation: the useragent receive a response with several options provided in the response metadata, if not satisfied with the response can send another GET request based on the useragent or user choice\
+This reactive representation is just different presentation of the resource (URI: like www.example.com/imgaes/cat.jpeg), like page format or language choice, useful for laod balancing , unfortunately might increase latency if user need to do another GET request to obtain the needed representation
+
+Distributed objects, are objects that can be accessed remotly(objects here are in sense of object oriented programmin), those obejects might be available on different address spaces or processes on the same computer, or on different computers, the sender send message to an object to do some tasks then the result is sent back to the calling object, HTTP was orginally designed to be usable interface for distriputed object system
+\
+
+
+Methods are case senstive.
+
+GET: retrieve data from server 
+HEAD: like GET but without body
+POST: send data to the server
+PUT: update data already exist
+DELETE: remove specific data permenantly
+CONNECT: establish connection typically used in proxies
+TRACE: used for debugging allowing you to see how your data handled by intermediate servers
+CONNECT: establish tunnel service for proxies
+GET with body will be rejected
+
+N.B: all general purpose servers must support GET and HEAD, all other methods are optional
+# -----------------
+# Request
+Header breakdown:
+
+Expect: 100-continue
+The client tells the server what he expects, to optimise performance, so server cannot fullfil the request he can reply with 4xx 
+usually used with large messages
+
+Max-Forwards:
+Max-Forwards = 1*DIGIT 
+used with Trace to limit number of times forwarding happens by the proxy, in case trace appears to be failing or looping mid-chain
+This Max-Forward will be ignored with any other request methods as our case here
+
+
+if recieved something not 100-continue reply with 417 (Expectation Failed), 
+
+5.3.1.  Quality Values:
+can assgin weight bet 0.000 and 1.000 to something that I don't understand, here is the syntax
+weight = OWS ";" OWS "q=" qvalue
+     qvalue = ( "0" [ "." 0*3DIGIT ] )
+            / ( "1" [ "." 0*3("0") ] )
+
+Accept:
+    specifies the media type the client willing to accept
+
+     Accept: audio/*; q=0.2, audio/basic
+is interpreted as "I prefer audio/basic, but send me any audio type
+if it is the best available after an 80% markdown in quality".
+
+Accept-Encoding:
+
+Accept-Language:
+    which language do you prefer
+
+Authorization:
+
+Proxy-Autherization:
+
+From:
+
+     From: webmaster@example.org
+Address of human user, can be used by the machine, often sent by robotic user agent
+
+Referer:
+    Where the user came from, the page he visits that refered him here,it might reveal senstive information and used in cross site scripting.
+user-Agent:
+    Shouldn't reveal more information that needed, and should be honest.
+
+Staus Code:
+    1xx Infomational, request was recieved continue proccessing 
+    2xx Successful, request successfully recieved, understood and accepted
+    3xx Redirection, further action needed to complete the request
+    4xx Client Error, the request contains bad syntax cannot be fullfilled
+    5xx Server Error, server failed to fullfill an apparently vaild request
+
+# Errors:
+
+501 Method not implemented
+405 Method not allowed
+303 POST request already satisfied before, no need to implement this request
+415 unsupported media type as sending .jpeg to .txt data field
+# -------------------------------------------------------------------------
 telnet:
 NGINX:
 CGI:
@@ -799,7 +1162,7 @@ CGI:
     14-DELETE
 15-Server must be available at all cost even in stress tests
 16-Server must be able to listen to multiple ports
----------------------------
+
 in the configuration file:
 17-Choose host port and host for each server
 18-setup server_names or not
@@ -815,7 +1178,7 @@ in the configuration file:
     28-Execute CGI based on certain file extention
     29-Make it work with GET and POST
     30-Make the route accept uploading file and configure where should be saved
---------------------
+
 CGI
 31-use full path as PATH_INFO
 32-for chunked request serrver has to unchunck it and expect EOF 
@@ -823,6 +1186,7 @@ CGI
 34-CGI myst run in the correct directory for relative path file access
 35-Serve should work with one CGI (Python, php-CGI...)
 36-must provide some configuration and defualt basic files to test and demonstrate every feature during the 
+
 # Bonus inshalla
 37-Support cookies and session managment
 38-Handle multiple CGI
@@ -831,8 +1195,37 @@ evaluation
 questions:
 what is poll()?
 what is telnet?
-can I do man in the middle with telnet/myserver?
+can I do man-in-the-middle with telnet/myserver?
 what is CGI?
 what is the meaning of session managment?
 what are coockies?
 how my server can handle cookies?
+
+
+--------------------------------
+Hassan Sharhan and Ellen tips:
+----------
+Hey man, sure. So here are a few things to get you started on webserv:
+ Read this RFC in full: https://www.rfc-editor.org/rfc/rfc9112.html.  There are a few others that go in more detail, but I find this one is the most succinct in giving a overview of how an http server works.  Your server should aim to be compliant with this RFC.
+ Split webserv into its component objects and divide it among your team. This is how we and many others did it: https://docs.google.com/document/d/1SBlVWD4AKpSdg6GnfPASktrNkL211isQFdex2iRDtRg/edit
+ For configuration, remember you don't have to exactly follow nginx.  Just stick with what the subject guide asks you to include in config.
+ One thing to remember is that read/recv and write/send don't necessarily transfer all the data in one system call.  They have limits depending on which computer you run it in.  So when reading a request, you have to ensure that you got a complete request; if not, you'll need to another read when ready.  Same logic with writing/sending a response: check whether all of it was sent; if not, resend when ready.  This was something I wish I knew early on cause not accounting for this caused us to fail the intra tester for a long time.
+ Now when I say "when ready", I mean when select/poll says so.  These basically tell you when a particular fd can be written to and/or read from.  Select() is easier to use but it can only handle 1024 fds max, which is fine cause macs/pcs can only handle that many.  But I would suggest to go for poll, as that's actually used in production servers and so will be more useful.  I think Alia/Ameer/Gerard used poll for ft_irc, while my group and Moatasem/Anastasia used Select.
+ To pass the intra tester, you have to handle more types of request than the subject asks for, which we did.
+ When you guys start, figure out who depends on who for their objects/classes to work and prioritize on creating draft .hpp files.  That way, person A who depends on Person B for an object knows exactly the structure of the object person B sends.
+ There are different ways a Request's body can be encoded, which your server can decode.  But the intratester only tests an encoding type called "chunking".  We only accounted for this type of encoding, and ignored all others mentioned in the RFC, which is what everyone who's done webserv has also done.
+Alright, so this is all that comes to mind so far.  If you have any questions on the request, server, or server manager objects, feel free to ask me.  For response, you can go to Bassam.  For CGI and Config, you can go to Patel.
+
+rfc-editor.orgrfc-editor.org
+RFC 9112: HTTP/1.1
+The Hypertext Transfer Protocol (HTTP) is a stateless application-level
+protocol for distributed, collaborative, hypertext information systems.
+This document specifies the HTTP/1.1 message syntax, message parsing,
+connection management, and related security concerns.
+
+
+This document obsoletes portions of RFC 7230.
+
+
+Nice tutorial to start with :
+https://beej.us/guide/bgnet/html/
