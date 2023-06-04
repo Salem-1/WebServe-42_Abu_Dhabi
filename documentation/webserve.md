@@ -421,8 +421,10 @@ connect():\
 send():\
     Used to send message to another socket, it only works when it's connected, the address already set in the address in connect();
 N.B:sendto(), sendmsg() can use to send at any time but not allowed to use, sendto() takes the address of the server.
+N.B2:send() can send less than the message you give however it will return number of bytes sent, so you can handle to send the unsent bytes
     Delcaration:
-
+N.B3: the difference bettween send() and write is the flag in send that can be set to non block, also send is more portable
+N.B: if send() or recv() return is 0 it means that the connection is closed
 
     ssize_t
     send(int socket, const void *buffer, size_t length, int flags);
@@ -465,7 +467,7 @@ Example use case:
         serv_addr.sin_family = AF_INET;
         serv_addr.sin_port = htons(PORT);
         //convert IPV4 and IPV6 to binary
-        if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0)
+        if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0) // pton ---> presentation to network, to convert the ip other way around use function inet_ntop() which means network to presentation
         {
             perror("Invalid address or address not supported");
             exit(EXIT_FAILURE);
@@ -505,6 +507,8 @@ flag:
 
 htons, htonl, ntohs, ntohl,:\
 Convert bytes bettween network byte order to host byte order
+Why do we need this?
+    Because chips can differ some has littele endian like Intel chips, other can have big endian like motorolla, so the those functions saves you the hassle of the conversions
 
      uint16_t
      htons(uint16_t hostshort); // host to network short
@@ -521,11 +525,14 @@ Convert bytes bettween network byte order to host byte order
 
 
 getaddrinfo():\
-
-     int
-     getaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res);
-
-    hostneme: domain name or ip as string
+    
+    #include <sys/types.h>
+    #include <sys/socket.h>
+    #include <netdb.h>
+    int
+    getaddrinfo(const char *hostname, const char *servname, const struct addrinfo *hints, struct addrinfo **res);
+    
+hostneme: domain name or ip as string
     server name : port or service name 
     hints: provide some useful hints for getaddrinfo to bring you the required address data
     res:linked list of addrinfo struct that has the required information about your ip
@@ -543,6 +550,14 @@ freeadrinfo():\
 setsockopt():\
      int
      setsockopt(int socket, int level, int option_name, const void *option_value, socklen_t option_len);
+
+    //to avoid being bind engaged by the system
+    int yes=1;
+    //char yes='1'; // Solaris people use this
+    // lose the pesky "Address already in use" error message
+    if (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof yes) == -1) { perror("setsockopt");
+    exit(1);
+    }
 
     Allow us to set specific options for our socket like:
     
@@ -1136,8 +1151,72 @@ Staus Code:
 303 POST request already satisfied before, no need to implement this request
 415 unsupported media type as sending .jpeg to .txt data field
 # -------------------------------------------------------------------------
-telnet:
-NGINX:
+
+# telnet:
+    used for testing of the webserve, especially the stress test one.
+
+# NGINX:
+Notes on the configuration file:\
+Configuration file consist of:
+    -Sections
+    -Directives
+    -Blocks
+Breakdown:
+1-Main context:
+
+    user nginx;
+    worker_processes auto;
+    pid /var/run/nginx.pid;
+2-Events:
+
+    events {
+      worker_connections 1024;
+    }
+
+Maximum number of simultanous connections that the server can handle
+3-HTTP context
+
+    http {
+      # HTTP-related directives go here
+
+      server {
+        # Server block for example.com
+        #the port we are listening on
+        listen 80;
+        #website name or ip
+        server_name example.com;
+        #where the root of the website files on my machine (server)
+        root /var/www/example;
+
+        #what should happen when the user visit the home page
+        location / {
+          # Directives for handling requests to the root location
+          index index.html;
+        }
+
+        #I believe there is where it should search when visit www.example.com/api/
+        location /api {
+          # Directives for handling requests to the /api location
+          proxy_pass http://backend_servers;
+        }
+      }
+
+    #other servers that we can do load balancing with
+    #will not implement this too 
+      upstream backend_servers {
+        server backend1.example.com;
+        server backend2.example.com;
+      }
+    }
+
+3-Stream and mail context will not handle
+4-Include allow you to split your configuration  directive into multiple files
+    include /etc/nginx/conf.d/*.conf;
+    #it's like #inlude "other_header_file.h"
+
+
+ngninx -s reload
+
 CGI:
 
 # Requirments:
@@ -1229,3 +1308,36 @@ This document obsoletes portions of RFC 7230.
 
 Nice tutorial to start with :
 https://beej.us/guide/bgnet/html/
+
+# Beej tutorial guide:
+
+IP : think of it like your home address or hotel address (if you own one)
+PORT number: think of it as room number in that hotel, so one computer that has same ip can have an open port for http and another different port for email services 
+You can find more info about ports you use on your unix OS in /etc/services
+
+//nice quote about NAT
+3.4.1 Private (Or Disconnected) Networks
+Lots of places have a firewall that hides the network from the rest of the world for their own protection. And often times, the firewall translates “internal” IP addresses to “external” (that everyone else in the world knows) IP addresses using a process called Network Address Translation, or NAT.
+
+NAT used to manage the ips of pcs in local network and seprate it from public IP
+
+10.x.x.x  ips used in fully disconnected networks or networks behind the firewall
+92.168.x.x also commonly used in private network
+
+
+for clients use getaddrinfo() instead of fill addresses by hand
+Whenever you are hard coding filling the ip addresses use helper functions
+To handle ipv6 you will just change few macros and struct names AF_INETtoAF_INET6. PF_INETtoPF_INET6. struct sockaddr_in sa; struct sockaddr_in6 sa6; sa.sin_addr.s_addr = INADDR_ANY; // use my IPv4 address sa6.sin6_addr = in6addr_any; // use my IPv6 address
+
+
+    //another neat way of calling socket and bind using getadddrinfo
+    struct addrinfo hints, *res; int sockfd;
+    // first, load up address structs with getaddrinfo():
+    memset(&hints, 0, sizeof hints);
+    hints.ai_family = AF_UNSPEC; // use IPv4 or IPv6, whichever hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE; // fill in my IP for me
+    getaddrinfo(NULL, "3490", &hints, &res);
+    // make a socket:
+    sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    // bind it to the port we passed in to getaddrinfo():
+    bind(sockfd, res->ai_addr, res->ai_addrlen);
