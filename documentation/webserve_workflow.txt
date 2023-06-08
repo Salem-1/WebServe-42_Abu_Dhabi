@@ -6,6 +6,7 @@ Pre starting the project let's do tutorials on building simple webserver in C la
 Second:
 Here are the project requirments that can be assigned per person:
 1-Building the server
+After this step we should have more clarity what kind of data to be parsed and how to be stored and distriputed
 2-GET 
 3-GET CGI
 4-POST 
@@ -15,4 +16,32 @@ Here are the project requirments that can be assigned per person:
 8-parising requests
 9-parsing configurations
 10-file uploads
-11-Chunking files
+11-Chunking files for sending request back (can be consider as part of get response)
+
+
+----------------------------
+Development iteration:
+1- Develop the server with dummy response
+    -Stress test the server
+    -Decide on the what data structure will hold according to the server needs
+2-Do Get request:
+    -Try dummy request then serve the response
+    -Parse the request according to RFC
+    -Tinker hands with status codes
+3-Post request:
+    (same steps as GET)
+4-DELETE reuquest:
+    (same)
+5-CGI GET
+6-CGI POST
+7-CGI DELETE
+8-File uploads:
+    -chunking RFC
+(should have all required data to fill the map no inshalla)
+9-Config files:
+    -Enjoy parsing
+    -test 
+    -Merge with server
+10-Handle signals
+
+(only nesseccary step to start with is the server, all other steps can work parallel to each other)
