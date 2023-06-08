@@ -1,0 +1,18 @@
+#Bism Ellah Elrahman Elraheem
+
+This is breakdown of webserve project requirement, will do our best to make all of us work on all aspects of the project to get the best learning outcome out of it:
+First:
+Pre starting the project let's do tutorials on building simple webserver in C language (all of us).
+Second:
+Here are the project requirments that can be assigned per person:
+1-Building the server
+2-GET 
+3-GET CGI
+4-POST 
+5-CGI POST
+6-DELETE
+7-CGI DELETE
+8-parising requests
+9-parsing configurations
+10-file uploads
+11-Chunking files
