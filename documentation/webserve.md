@@ -428,7 +428,29 @@ N.B: if send() or recv() return is 0 it means that the connection is closed
 
     ssize_t
     send(int socket, const void *buffer, size_t length, int flags);
-    
+
+Send can cuase SIGPIPE if the recieving end closed the connection to handle it by MSG_NOSIGNAL
+logic to handle send incompletness:
+
+    #include <sys/types.h>
+    #include <sys/socket.h>
+
+    int send_all(int sock, char *buff, int *len)
+    {
+        int total = 0;
+        int bytes_left = *len;
+        int n;
+        while(total < bytes_left)
+        {
+            n = send(sock, buff + total, bytes_left, 0);
+            if (n == -1)
+                break ;
+            bytes_left -= n;
+            total += n;
+        }
+        *len = total; //keep track of number of sent bytes
+        return (n); //will return -1 on failure or 0 on success
+    }
 ssize_t: is singned size_t
 buffer:message to send
 flags:
@@ -1341,3 +1363,6 @@ To handle ipv6 you will just change few macros and struct names AF_INETtoAF_INET
     sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
     // bind it to the port we passed in to getaddrinfo():
     bind(sockfd, res->ai_addr, res->ai_addrlen);
+
+
+//for data packing and unpacking  RFC 4506

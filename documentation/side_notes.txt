@@ -21,3 +21,4 @@ kind of secrets do you hide miss distributed objects?
 -Request Smuggling
 -Message Integrity
 -Message Confidentiality
+-If you don't want your messages to be portable to other devices, you can manipulate chunking,serializing and sending of data, and of course do encryption even in other languages and cu
