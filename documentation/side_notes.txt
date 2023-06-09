@@ -22,3 +22,4 @@ kind of secrets do you hide miss distributed objects?
 -Message Integrity
 -Message Confidentiality
 -If you don't want your messages to be portable to other devices, you can manipulate chunking,serializing and sending of data, and of course do encryption even in other languages and cu
+-If you send the response with len more than the body it will be treated as data file not txt, and will be automatically downloaded from the browser
