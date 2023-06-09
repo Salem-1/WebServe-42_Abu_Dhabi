@@ -7,15 +7,15 @@ Second:
 Here are the project requirments that can be assigned per person:
 1-Building the server
 After this step we should have more clarity what kind of data to be parsed and how to be stored and distriputed
-2-GET 
-3-GET CGI
-4-POST 
+2-GET (Salem)
+3-GET CGI (Mahdy)
+4-POST (Yassin)
 5-CGI POST
-6-DELETE
-7-CGI DELETE
-8-parising requests
+6-DELETE (Salem)
+7-CGI DELETE (Yassin)
+8-parsing requests (Salem)
 9-parsing configurations
-10-file uploads
+10-file uploads (Mahdy)
 11-Chunking files for sending request back (can be consider as part of get response)
 
 
