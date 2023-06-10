@@ -1,12 +1,11 @@
 #include "Parser.hpp"
 
 
-Parser::Parser()
+Parser::Parser(): read_again(0), buffer(NULL), bytes_read(0)
 {
 
 }
-
-Parser::~Parser()
+Parser::Parser(char *buff, int bytes_read): read_again(0), buffer(buff), bytes_read(bytes_read)
 {
 
 }
@@ -23,4 +22,13 @@ Parser &Parser::operator= (const Parser &obj2)
 
     }
     return (*this);
+}
+Parser::~Parser()
+{
+
+}
+
+void    Parser::parse(char *new_buffer)
+{
+
 }
