@@ -1,8 +1,5 @@
-#include "../../includes/webserve.hpp"
+#include "includes/webserve.hpp"
 
-
-
-void    try_kqueue(int server_socket);
 int main()
 {
     Listner binded_sock("3490");
