@@ -11,6 +11,7 @@ Listner::Listner(std::string PORT): Socket(PORT)
         try_open_socket_again(try_addr->ai_next);
     }
     printAddrInfo(try_addr);
+    freeaddrinfo(res);
     if (listen(sockfd, BACKLOG) == -1)
     {
         perror("listen error");

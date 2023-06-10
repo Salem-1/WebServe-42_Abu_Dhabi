@@ -32,9 +32,7 @@ void    Socket::try_open_socket_again( struct  addrinfo *try_another_info)
 }
 
 Socket::~Socket()
-{
-    freeaddrinfo(res);
-}
+{}
 
 
 void    Socket::get_my_addinfo(void)
