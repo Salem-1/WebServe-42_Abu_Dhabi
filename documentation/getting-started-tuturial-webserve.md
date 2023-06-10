@@ -1,4 +1,7 @@
 
+Ref:
+https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
+
 OSI: open system intercommunication model, standardize the communication regardless the underlying technology.
 Layer 4: Ensure data transferred from one point to another reliably and without errors (ex: TCP, UDP, SPX)
             -> Provide flow control
@@ -396,5 +399,3 @@ else
         f)SEND THE RESPONSE HEADER TO THE CLIENT
 }
 
-Ref:
-https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa

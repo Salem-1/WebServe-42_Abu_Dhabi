@@ -4,7 +4,7 @@
 
 - First : Pre starting the project let's do tutorials on building simple webserver in C language (all of us).
 	- Intra [PDF](./documentation/webserve.pdf)
-  	- Getting started toutorial [web serve](./documentation/getting-started-tutorial-webserve.md)
+  	- Getting started toutorial [web serve](https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa)
   	- Extensive resources [document](./documentation/webserve.md)
   	- [Beej guide for network programing](./documentation/resources/Beej_guide/bgnet_a4_c_2.pdf)
 - Second: Here are the project requirments that can be assigned per person:
