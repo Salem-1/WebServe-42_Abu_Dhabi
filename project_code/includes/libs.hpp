@@ -25,12 +25,17 @@
 # include <sys/types.h>
 # include <sys/event.h>
 # include <sys/time.h>
+# include <ctime>
+
 # define BACKLOG 256
 # define MAX_EVENTS 256
+# define BUFFER_SIZE 1024
+# define TIME_PER_SEC 10000
+# define TIME_PER_MILLI_SEC 10
 
 void printAddrInfo( struct addrinfo *ai);
 
-enum alive
+enum connection_state
 {
     KILL_CONNECTION = 0,
     KEEP_ALIVE = 1

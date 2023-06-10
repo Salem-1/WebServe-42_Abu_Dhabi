@@ -2,6 +2,7 @@
 # define CLIENT_HPP
 
 # include "../../includes/libs.hpp"
+# include "../recive_request/Receive.hpp"
 
 class Client
 {
@@ -11,10 +12,12 @@ class Client
         Client(const Client &obj2);
         Client &operator= (const Client &obj2);
         ~Client();
-        void     handle_request();
-        size_t  time;
-        alive   state;
-        int     client_socket;
+        void                handle_request();
+        connection_state    state;
+        int                 client_socket;
+        clock_t             start_time;
+        int                 connection_duration;
+
     private:
 };
 
