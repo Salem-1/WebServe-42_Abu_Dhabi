@@ -75,24 +75,17 @@ void    Kque::handle_send_and_recieve_till_making_class_for_them_inshalla
     ssize_t             reuest_bytes_read;
     ssize_t             response_bytes_sent;
     std::string         response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
-
-    //it's a client socket event
-    //request reading and parsing class here inshalla
+    
     reuest_bytes_read = recv(tmp_fd, buffer, 870
         , 0);
-    //request class end
     if (reuest_bytes_read == 0)
         delete_fd_event(tmp_fd);
     else
     {
-        //class response
         printf("recieved data from client");
         printf("%.*s/n", (int)reuest_bytes_read, buffer);
-       //class send
        response_bytes_sent = send(tmp_fd, response.c_str(), 87, 0);
        if (response_bytes_sent < 0)
            perror("sent failed");
-       //end class send
-       //end class respone
     }
 }
