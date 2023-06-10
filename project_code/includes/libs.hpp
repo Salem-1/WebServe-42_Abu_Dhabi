@@ -27,6 +27,13 @@
 # include <sys/time.h>
 # define BACKLOG 256
 # define MAX_EVENTS 256
+
 void printAddrInfo( struct addrinfo *ai);
+
+enum alive
+{
+    KILL_CONNECTION = 0,
+    KEEP_ALIVE = 1
+};
 
 #endif
