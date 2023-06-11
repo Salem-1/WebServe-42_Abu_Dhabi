@@ -8,28 +8,7 @@ Kque::Kque(int    socket_fd): kq(kqueue()), server_socket(socket_fd)
 };
 
 Kque::~Kque()
-{};
-
-
-void   Kque::kque_error(std::string msg)
-{
-    perror(msg.c_str());
-    exit(1);
-}
-
-void    Kque::add_read_event(int fd)
-{
-    EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
-        kque_error("failed to add socket to event kque: ");
-}
-void    Kque::delete_fd_event(int fd)
-{
-    EV_SET(&event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
-        kque_error("failed to remove socket from event kque: ");
-    close(fd);
-}
+{}
 
 void    Kque::watch_fds()
 {
@@ -47,12 +26,32 @@ void    Kque::watch_fds()
                 if(client_socket < 0)
                     continue ;
                 add_read_event(client_socket);
+                clients[client_socket] = Client(client_socket);
+                // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
+            
             }
             else
-                handle_send_and_recieve_till_making_class_for_them_inshalla
-                    (tmp_fd, client_socket);
+                handle_request_by_client(tmp_fd);
         }
     }
+}
+
+
+void    Kque::handle_request_by_client(int tmp_fd)
+{
+    clients[tmp_fd].handle_request();
+    if (clients[tmp_fd].state == KILL_CONNECTION)
+    {
+        delete_fd_event(tmp_fd);
+        clients.erase(tmp_fd);
+    }
+}
+
+void    Kque::add_read_event(int fd)
+{
+    EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
+    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
+        kque_error("failed to add socket to event kque: ");
 }
 
 int    Kque::accepting(int  fd)
@@ -65,27 +64,16 @@ int    Kque::accepting(int  fd)
     return (accepted_connection);
 }
 
-
-
-void    Kque::handle_send_and_recieve_till_making_class_for_them_inshalla
-        (int tmp_fd, int client_socket)
+void    Kque::delete_fd_event(int fd)
 {
-    (void)client_socket;
-    char                buffer[800];
-    ssize_t             reuest_bytes_read;
-    ssize_t             response_bytes_sent;
-    std::string         response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
-    
-    reuest_bytes_read = recv(tmp_fd, buffer, 870
-        , 0);
-    if (reuest_bytes_read == 0)
-        delete_fd_event(tmp_fd);
-    else
-    {
-        printf("recieved data from client");
-        printf("%.*s/n", (int)reuest_bytes_read, buffer);
-       response_bytes_sent = send(tmp_fd, response.c_str(), 87, 0);
-       if (response_bytes_sent < 0)
-           perror("sent failed");
-    }
+    EV_SET(&event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
+    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
+        kque_error("failed to remove socket from event kque: ");
+    close(fd);
+}
+
+void   Kque::kque_error(std::string msg)
+{
+    perror(msg.c_str());
+    exit(1);
 }
