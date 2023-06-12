@@ -13,10 +13,12 @@ class Client
         Client &operator= (const Client &obj2);
         ~Client();
         void                handle_request();
+        int                 get_timeout();
         connection_state    state;
         int                 client_socket;
         clock_t             start_time;
         int                 connection_duration;
+        Receive             receiver;
 
     private:
 };

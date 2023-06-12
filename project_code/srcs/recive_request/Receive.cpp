@@ -28,16 +28,15 @@ Receive::~Receive()
 
 void    Receive::receive_all()
 {
-    //parsing ends
-    parser(buffer);
     read_packet(buffer);
+    parser.set_byteread_and_readsock(bytes_read, read_sock);
+    parser.parse(buffer);
     if (bytes_read == 0)
         state = KILL_CONNECTION;
     else
     {
-        //here should have the packet perfect parsed for preparing the response
-        printf("recieved data from client\n");
-        printf("%.*s/n", (int)bytes_read, buffer);
+        std::cout << "decide if packet is correct send response back as filled map" << std::endl;
+        std::cout << "or wait for another packet" << std::endl;
     }
 }
 
@@ -45,9 +44,11 @@ void    Receive::receive_all()
 void    Receive::read_packet(char *buffer)
 {
     bytes_read = recv(read_sock, buffer, BUFFER_SIZE, 0);
-    //all parsing in the program happens here inshalla
-    parser.parse(buffer);
-    if(parser.read_again)
-        read_packet(buffer);
-    bytes_read = parser.bytes_read;
+    if (bytes_read == -1)
+    {
+        perror("recv Error: ");
+        state = KILL_CONNECTION;
+        bytes_read= 0;
+        return ;
+    }
 }

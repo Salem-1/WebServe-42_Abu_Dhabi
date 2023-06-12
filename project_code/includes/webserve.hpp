@@ -7,5 +7,6 @@
 # include "../srcs/client/Client.hpp"
 # include "../srcs/recive_request/Receive.hpp"
 # include "../srcs/recive_request/Parser.hpp"
+# include "../srcs/GET/GET.hpp"
 
 #endif
