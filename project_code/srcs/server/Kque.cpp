@@ -28,17 +28,49 @@ void    Kque::watch_fds()
                 add_read_event(client_socket);
                 clients[client_socket] = Client(client_socket);
                 // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
-            
+                active_clients.insert(client_socket);
             }
             else
                 handle_request_by_client(tmp_fd);
         }
+        // kill_timeouted_clients();
     }
 }
 
+void    Kque::kill_timeouted_clients()
+{
+    int active = 0;
+    for (std::map<int, Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+    {
+        for (std::set<int>::iterator sit = active_clients.begin(); sit != active_clients.end(); ++sit)
+        {
+            if (it->first == *sit)
+            {
+                active = 1;
+                break ;
+            }
+        }
+        if  (active)
+        {
+            active = 0;
+            continue ;
+        }
+        else
+        {
+            if (it->second.get_timeout() > PERSISTANCE)
+            {
+                delete_fd_event(it->first);
+                clients.erase(it->first);
+            }
+        }
+    }
+    active_clients.clear();
+};
 
 void    Kque::handle_request_by_client(int tmp_fd)
 {
+    active_clients.insert(tmp_fd);
+   
     clients[tmp_fd].handle_request();
     if (clients[tmp_fd].state == KILL_CONNECTION)
     {

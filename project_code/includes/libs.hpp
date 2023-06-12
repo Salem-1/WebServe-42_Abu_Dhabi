@@ -4,6 +4,7 @@
 # include <iostream>
 # include <string>
 # include <map>
+# include <set>
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
@@ -29,7 +30,8 @@
 
 # define BACKLOG 256
 # define MAX_EVENTS 256
-# define BUFFER_SIZE 1024
+# define BUFFER_SIZE 1000240
+# define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 

@@ -21,7 +21,9 @@ class Kque
                                     (int tmp_fd);
     
     private:
+        void                    kill_timeouted_clients();
         std::map<int, Client>   clients;
+        std::set<int>           active_clients;
         struct sockaddr_in      client_address;
         struct kevent           event;
         struct kevent           events[MAX_EVENTS];

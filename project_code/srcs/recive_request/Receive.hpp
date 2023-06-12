@@ -2,7 +2,7 @@
 # define RECEIVE_HPP
 
 # include "../../includes/libs.hpp"
-
+# include "Parser.hpp"
 class Receive
 {
     public:
