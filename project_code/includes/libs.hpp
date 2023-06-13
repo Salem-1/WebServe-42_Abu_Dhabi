@@ -27,16 +27,18 @@
 # include <sys/event.h>
 # include <sys/time.h>
 # include <ctime>
-
+#include <fstream>
+#include "../srcs/parsing/parsing_lib.hpp"
 # define BACKLOG 256
 # define MAX_EVENTS 256
 # define BUFFER_SIZE 1000240
 # define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
+# define HEADER_MAX_LENGTH 8000
 
+std::vector<std::string> split(std::string str, std::string delimeter);
 void printAddrInfo( struct addrinfo *ai);
-
 enum connection_state
 {
     KILL_CONNECTION = 0,
