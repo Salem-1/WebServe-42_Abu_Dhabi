@@ -37,24 +37,70 @@ void    Parser::parse(char *new_buffer)
     }
     std::string str(new_buffer);
     packet += str;
-
-    std::cout<< "\ninside parser packet:\n" << packet <<std::endl;
-    
-    //TODO 
-    //inshalla
-    //check if the packet is complete, send to the appropriate method
-    //get response 
-    //else wait for another buffer 
-    // switch packet[0]
-    // {
-    //     case 'G':
-    //         GET_request.handle(std::string str(buffer), bytes_read);
-
-    // }
+    if (packet.find("\r\n\r\n") != std::string::npos && packet.length() > 2)
+    {
+        fill_header_request(packet);
+        classify_packet();
+    }
+    else if (packet.length() > HEADER_MAX_LENGTH)
+    {
+        //rejecting packet and close socket
+        read_again = 0;
+        bytes_read = 0;
+        return ;
+    }
 }
 
 void    Parser::set_byteread_and_readsock(int bytes, int sock)
 {
     this->bytes_read = bytes;
     this->read_sock = sock;
+}
+
+void    Parser::classify_packet()
+{
+    if (packet.substr(0, packet.find(" ")) == "GET")
+        GET_request.handle(request_headers);
+    else if (packet.substr(0, packet.find(" ")) == "POST")
+        std::cout << "POST method under construction" << std::endl;
+    else if (packet.substr(0, packet.find(" ")) == "DEETE")
+        std::cout << "DELETE method under construction" << std::endl;
+    else
+    {
+        std::cout << "filled error response packet" << std::endl;
+    }
+}
+
+void    Parser::fill_header_request(std::string packet)
+{
+    std::vector<std::string> tmp_vec;
+    std::string              header;
+    std::cout << "inside fill get_request " << packet << std::endl;
+    std::vector<std::string> packet_lines = split(packet, "\r\n");
+    std::cout << "\n print back the splitted packet" << std::endl;
+    for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
+    {
+        tmp_vec = split(*it, " ");
+        header = tmp_vec[0];
+        tmp_vec.erase(tmp_vec.begin());
+        request_headers[header] = tmp_vec;
+    }
+}
+
+void    Parser::visualize_request_packet()
+{
+    std::cout << "visualizing requesest packet API\n\n" << std::endl;
+    std::cout << "{" << std::endl;
+    for (packet_map::iterator hit = request_headers.begin();
+            hit != request_headers.end(); ++hit)
+    {
+        std::cout << "\"" << hit->first << "\": [" ;
+        for (std::vector<std::string>::iterator it = hit->second.begin();
+                it != hit->second.end(); ++it)
+        {
+            std::cout << "\"" << *it << "\", ";
+        }
+        std::cout << "]" << std::endl;
+    }
+    std::cout << "}\n packet visualization ends\n\n\n";
 }
