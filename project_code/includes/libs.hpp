@@ -37,6 +37,8 @@
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
 
+# define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
+
 std::vector<std::string> split(std::string str, std::string delimeter);
 void printAddrInfo( struct addrinfo *ai);
 enum connection_state
