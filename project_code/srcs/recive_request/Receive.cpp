@@ -2,10 +2,13 @@
 
 Receive::Receive(): state(KEEP_ALIVE)
 {
+    response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
+
 };
 
 Receive::Receive(int read_sock): read_sock(read_sock), state(KEEP_ALIVE)
 {
+    response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
 };
 
 Receive &Receive::operator= (const Receive &obj2)
@@ -28,9 +31,11 @@ Receive::~Receive()
 
 void    Receive::receive_all()
 {
+    memset(buffer, 0, BUFFER_SIZE);
     read_packet(buffer);
     parser.set_byteread_and_readsock(bytes_read, read_sock);
     parser.parse(buffer);
+    response = parser.reponse_packet;
     if (bytes_read == 0)
         state = KILL_CONNECTION;
     else

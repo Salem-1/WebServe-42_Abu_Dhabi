@@ -1,7 +1,7 @@
 # ifndef GET_HPP
 # define GET_HPP
 # include "../../includes/libs.hpp"
-
+# include "GET_response.hpp"
 
 class GET
 {
@@ -21,6 +21,7 @@ class GET
         packet_map               request;
         response_packet          response;
         std::set<std::string>    valid_headers;
+        std::string              filled_response;
     private:
         void                     fill_response();  
         void                     fill_valid_headers();
