@@ -34,17 +34,21 @@ Client::~Client()
 
 void Client::handle_request()
 {
-    ssize_t             response_bytes_sent;
-    std::string         dummyresponse = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
+    size_t             response_bytes_sent = 0;
+
     start_time = clock();
 //receiver
     receiver.read_sock = client_socket;
     receiver.receive_all();
+    response_packet = receiver.response;
     if (receiver.state == KILL_CONNECTION)
         this->state = KILL_CONNECTION;
     else
     {
-       response_bytes_sent = send(client_socket, dummyresponse.c_str(), 87, 0);
+        std::cout << "visualizign response \n" << response_packet << std::endl;
+        while (response_bytes_sent < response_packet.length())
+            response_bytes_sent += send(client_socket, response_packet.c_str(), response_packet.length(), 0);
+       std::cout << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl;
        if (response_bytes_sent < 0)
            perror("sent failed");
     }

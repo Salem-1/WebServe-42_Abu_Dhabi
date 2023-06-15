@@ -19,6 +19,7 @@ class Client
         clock_t             start_time;
         int                 connection_duration;
         Receive             receiver;
+        std::string         response_packet;
 
     private:
 };

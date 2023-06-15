@@ -42,6 +42,7 @@ void    Parser::parse(char *new_buffer)
         std::cout << "row packet is\n-----------\n" << packet << "\n --------" << std::endl;
         fill_header_request(packet);
         classify_packet();
+        packet = "";
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -78,6 +79,7 @@ void    Parser::classify_packet()
         //501 method not implemented
         std::cout << "filled error response packet" << std::endl;
     }
+    reponse_packet = GET_request.filled_response;
 }
 
 void    Parser::fill_header_request(std::string packet)

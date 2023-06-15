@@ -18,7 +18,7 @@ class Receive
         char                buffer[BUFFER_SIZE];
         connection_state    state;
         Parser              parser;
-        
+        std::string         response;
     private:
 };
 #endif

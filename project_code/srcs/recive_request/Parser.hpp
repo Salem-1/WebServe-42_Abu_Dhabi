@@ -24,7 +24,8 @@ class Parser
         std::string     packet;
         int             bytes_read;
         int             read_sock;
-        packet_map       request_headers;
+        packet_map      request_headers;
+        std::string     reponse_packet;
 
     private:
 

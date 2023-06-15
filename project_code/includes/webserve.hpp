@@ -8,6 +8,7 @@
 # include "../srcs/recive_request/Receive.hpp"
 # include "../srcs/recive_request/Parser.hpp"
 # include "../srcs/GET/GET.hpp"
+# include "../srcs/GET/GET_response.hpp"
 #include "../srcs/parsing/parsing_lib.hpp"
 
 #endif

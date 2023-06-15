@@ -8,7 +8,8 @@ c++  -Wall -Wextra -Werror \
     ../../srcs/recive_request/Receive.cpp \
     ../../srcs/recive_request/Parser.cpp \
     ../../srcs/GET/GET.cpp -o test.exe \
-     ../../srcs/GET/GET_utils.cpp -o test.exe \
+    ../../srcs/GET/GET_response.cpp  \
+     ../../srcs/GET/GET_utils.cpp  \
     ../../srcs/parsing/parsing_lib.cpp -o test.exe \
  && ./test.exe && \
 sleep 1 && \

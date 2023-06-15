@@ -2,6 +2,7 @@
 #define LIBS_HPP
 
 # include <iostream>
+# include <fstream>
 # include <string>
 # include <map>
 # include <set>
@@ -38,7 +39,7 @@
 # define HEADER_MAX_LENGTH 8000
 
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
-
+# define DEFAULT_LOCATION "index.html"
 std::vector<std::string> split(std::string str, std::string delimeter);
 void printAddrInfo( struct addrinfo *ai);
 enum connection_state

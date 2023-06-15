@@ -29,11 +29,13 @@ void    GET::handle(packet_map packet)
     visualize_request_packet();
     if (!valid_packet_headers())
     {
+    filled_response = GET_response(response).fill_get_response();
         std::cout << "invalid packet" <<  std::endl;
         return ;
     }
     fill_response();
     visualize_response();
+    filled_response = GET_response(response).fill_get_response();
 }
 int GET::valid_packet_headers()
 {
@@ -139,4 +141,5 @@ void  GET::fill_valid_headers()
     valid_headers.insert("sec-ch-ua-mobile:");
     valid_headers.insert("sec-ch-ua-platform:");
     valid_headers.insert("sec-ch-ua:");
+    valid_headers.insert("Purpose:");
 }
