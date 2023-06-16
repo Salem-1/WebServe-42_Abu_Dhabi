@@ -6,6 +6,8 @@
 class Receive
 {
     public:
+         typedef  std::map<std::string, std::vector<std::string> >    packet_map;
+    public:
         Receive();
         Receive(int read_sock);
         Receive(const Receive &obj2);
@@ -18,7 +20,7 @@ class Receive
         char                buffer[BUFFER_SIZE];
         connection_state    state;
         Parser              parser;
-        std::string         response;
+        std::map<std::string, std::vector<std::string> >          &get_request_packet();
     private:
 };
 #endif

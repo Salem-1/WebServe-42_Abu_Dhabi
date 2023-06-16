@@ -3,6 +3,7 @@
 
 # include "../../includes/libs.hpp"
 # include "../recive_request/Receive.hpp"
+# include "../response/Respond.hpp"
 
 class Client
 {
@@ -19,6 +20,7 @@ class Client
         clock_t             start_time;
         int                 connection_duration;
         Receive             receiver;
+        Respond             responder;
         std::string         response_packet;
 
     private:

@@ -6,29 +6,43 @@
 class Parser 
 {
     public:
-        typedef  std::map<std::string, std::vector<std::string> > packet_map;
-    
+         typedef std::map<std::string, std::vector<std::string> >    packet_map;
+        typedef std::map<std::string, std::vector<std::string> >    response_pack;
     public:
         Parser();
-        // Parser(char *buff);
         ~Parser();
         Parser(const Parser &obj2);
         Parser &operator= (const Parser &obj2);
-        void            fill_header_request(std::string packet);
-        void            parse(char *new_buffer);
-        void            classify_packet();
-        void            set_byteread_and_readsock(int bytes, int sock);
-        void            visualize_request_packet();
-        GET             GET_request;
-        int             read_again;
-        std::string     packet;
-        int             bytes_read;
-        int             read_sock;
-        packet_map      request_headers;
-        std::string     reponse_packet;
-
+        
+        void                    fill_header_request(std::string packet);
+        void                    parse(char *new_buffer);
+        void                    classify_packet();
+        void                    set_byteread_and_readsock(int bytes, int sock);
+        void                    visualize_request_packet();
+        void                    check_headers();
+        void                    fill_get_request(std::string packet);
+    
     private:
-
+        void                    fill_response();  
+        void                    fill_valid_headers();
+        int                     valid_packet_headers();
+        void                    fill_request_line();
+        void                    fill_path();
+        void                    visualize_response();
+        int                     fill_status_code(std::string status_code, std::string message);
+    
+    public:
+        int                     read_again;
+        std::string             packet;
+        int                     bytes_read;
+        int                     read_sock;
+        std::string             reponse_packet;
+        int                     packet_counter;
+        int                     i;
+        packet_map              request;
+        response_pack           response;
+        std::set<std::string>   valid_headers;
+        std::string             filled_response;
 };
 
 #endif

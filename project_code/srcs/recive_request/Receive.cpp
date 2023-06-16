@@ -2,13 +2,11 @@
 
 Receive::Receive(): state(KEEP_ALIVE)
 {
-    response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
 
 };
 
 Receive::Receive(int read_sock): read_sock(read_sock), state(KEEP_ALIVE)
 {
-    response = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 22\n\nresponse from our server!";
 };
 
 Receive &Receive::operator= (const Receive &obj2)
@@ -35,14 +33,11 @@ void    Receive::receive_all()
     read_packet(buffer);
     parser.set_byteread_and_readsock(bytes_read, read_sock);
     parser.parse(buffer);
-    response = parser.reponse_packet;
     if (bytes_read == 0)
         state = KILL_CONNECTION;
-    else
-    {
-        std::cout << "decide if packet is correct send response back as filled map" << std::endl;
-        std::cout << "or wait for another packet" << std::endl;
-    }
+    else if (parser.read_again)
+        receive_all();
+    return ;
 }
 
 
@@ -56,4 +51,9 @@ void    Receive::read_packet(char *buffer)
         bytes_read= 0;
         return ;
     }
+}
+
+std::map<std::string, std::vector<std::string> >       &Receive::get_request_packet()
+{
+    return (parser.request);
 }

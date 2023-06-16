@@ -1,145 +1,71 @@
-#include "GET.hpp"
+# include "GET.hpp"
 
-GET::GET(): packet_counter(0), i(0)
+
+GET::GET(packet_map &request, response_packet &response): request(request), response(response)
 {
-    fill_valid_headers();
 }
-
 GET::~GET()
-{}
-
-GET &GET::operator= (const GET &obj2)
 {
-    if(this != &obj2)
-    {
 
-    }
-    return (*this);
 }
 
-GET::GET(const GET &obj2)
+void    GET::prepare_get_response()
 {
-    *this = obj2;
+    fill_request_line(request);
+    fill_path(request);
 }
 
-void    GET::handle(packet_map packet)
+// the two functions below belong to get
+void GET::fill_request_line(packet_map &request)
 {
-    request = packet;
-    std::cout << "visualizing insid Get request" << std::endl;
-    visualize_request_packet();
-    if (!valid_packet_headers())
-    {
-    filled_response = GET_response(response).fill_get_response();
-        std::cout << "invalid packet" <<  std::endl;
+    if ((request.find("POST") != request.end() || request.find("DELETE") != request.end())
+        && fill_status_code("400", "Invalid multiple requests inside GET"))
         return ;
-    }
-    fill_response();
-    visualize_response();
-    filled_response = GET_response(response).fill_get_response();
+    if ((request["GET"][0].length() + request["GET"][1].length()) > HEADER_MAX_LENGTH
+            && fill_status_code("414", "URI Too Long"))
+        return ;
+    if (!(request["GET"][1] == "HTTP/1.1")
+        && (fill_status_code("505", "version not supported")))
+        return ;
+    if ((request["GET"].size() > 3) 
+        && (fill_status_code("400", "get vec has more than 3 items bad request")))
+        return ;
+    else
+        response["HTTP version"].push_back(request["GET"][1]);
+    response["method"].push_back("GET");
 }
-int GET::valid_packet_headers()
+
+void    GET::fill_path(packet_map &request)
 {
-    bool    valid = false;
-    for (packet_map::iterator it= request.begin(); it != request.end(); ++it)
+    //decide on absouloute or other option path 
+    //400 if wrong
+    if (request["GET"][0].find("?") == std::string::npos)
     {
-        for (std::set<std::string>::iterator vit = valid_headers.begin(); vit != valid_headers.end(); ++vit)
+        response["Path"].push_back("absolute");
+        response["Path"].push_back(request["GET"][0]);
+    }
+    else
+    {
+        if ((request["GET"][0][0] !=  '/' || request["GET"][0].find("&&") != std::string::npos)
+            && (fill_status_code("400", "bad origin path format")))
+                return ;
+        std::string base_path = request["GET"][0].substr(0, request["GET"][0].find("?"));
+        response["Path"].push_back("origin");
+        response["Path"].push_back(base_path);
+        std::vector<std::string> tmp_origin = split(request["GET"][0], "?");
+        tmp_origin.erase(tmp_origin.begin());
+        tmp_origin = split(*(tmp_origin.begin()), "&");
+        for (std::vector<std::string>::iterator it = tmp_origin.begin(); it != tmp_origin.end(); ++it)
         {
-            if (*vit == it->first)
-            {
-                valid = true;
-                break ;
-            }
-        }
-        if (valid)
-        {
-            valid = false;
-            continue ;
-        }
-        else
-        {
-            std::cout << "Header " << it->first << " not a valid header" << std::endl;
-            return (0);
+            response["Path"].push_back(*it);
         }
     }
+}
+
+int GET::fill_status_code(std::string status_code, std::string message)
+{
+    response["Status-code"].clear();
+    response["Status-code"].push_back(status_code);
+    response["Status-code"].push_back(message);
     return (1);
-}
-void    GET::fill_response()
-{
-    response["Status-code"].push_back("200");
-    fill_request_line();
-};
-
-
-
-void    GET::visualize_request_packet()
-{
-    std::cout << "visualizing requesest packet API\n\n" << std::endl;
-    std::cout << "{" << std::endl;
-    for (packet_map::iterator hit = request.begin();
-            hit != request.end(); ++hit)
-    {
-        std::cout << "\"" << hit->first << "\": [" ;
-        for (std::vector<std::string>::iterator it = hit->second.begin();
-                it != hit->second.end(); ++it)
-        {
-            std::cout << "\"" << *it << "\", ";
-        }
-        std::cout << "]" << std::endl;
-    }
-    std::cout << "}\n packet visualization ends\n\n\n";
-}
-
-void  GET::fill_valid_headers()
-{
-    valid_headers.insert("GET");
-    valid_headers.insert("Standard headers:");
-    valid_headers.insert("A-IM:");
-    valid_headers.insert("Accept:");
-    valid_headers.insert("Accept-Charset:");
-    valid_headers.insert("Accept-Encoding:");
-    valid_headers.insert("Accept-Language:");
-    valid_headers.insert("Accept-Datetime:");
-    valid_headers.insert("Access-Control-Request-Method:");
-    valid_headers.insert("Access-Control-Request-Headers:");
-    valid_headers.insert("Authorization:");
-    valid_headers.insert("Cache-Control:");
-    valid_headers.insert("Connection:");
-    valid_headers.insert("Content-Length:");
-    valid_headers.insert("Content-Type:");
-    valid_headers.insert("Cookie:");
-    valid_headers.insert("Date:");
-    valid_headers.insert("Expect:");
-    valid_headers.insert("Forwarded:");
-    valid_headers.insert("From:");
-    valid_headers.insert("Host:");
-    valid_headers.insert("If-Match:");
-    valid_headers.insert("If-Modified-Since:");
-    valid_headers.insert("If-None-Match:");
-    valid_headers.insert("If-Range:");
-    valid_headers.insert("If-Unmodified-Since:");
-    valid_headers.insert("Max-Forwards:");
-    valid_headers.insert("Origin:");
-    valid_headers.insert("Pragma:");
-    valid_headers.insert("Proxy-Authorization:");
-    valid_headers.insert("Range:");
-    valid_headers.insert("Referer:");
-    valid_headers.insert("TE:");
-    valid_headers.insert("User-Agent:");
-    valid_headers.insert("Upgrade:");
-    valid_headers.insert("Via:");
-    valid_headers.insert("Warning:");
-    valid_headers.insert("Non-standard headers:");
-    valid_headers.insert("Dnt:");
-    valid_headers.insert("X-Requested-With:");
-    valid_headers.insert("X-CSRF-Token:");
-    valid_headers.insert("Sec-Fetch-Dest:");
-    valid_headers.insert("Sec-Fetch-Dest:");
-    valid_headers.insert("Sec-Fetch-Mode:");
-    valid_headers.insert("Sec-Fetch-Site:");
-    valid_headers.insert("Sec-Fetch-User:");
-    valid_headers.insert("Upgrade-Insecure-Requests:");
-    valid_headers.insert("sec-ch-ua-mobile:");
-    valid_headers.insert("sec-ch-ua-platform:");
-    valid_headers.insert("sec-ch-ua:");
-    valid_headers.insert("Purpose:");
 }
