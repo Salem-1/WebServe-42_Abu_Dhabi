@@ -10,5 +10,6 @@
 # include "../srcs/GET/GET.hpp"
 # include "../srcs/GET/GET_response.hpp"
 #include "../srcs/parsing/parsing_lib.hpp"
+#include "../srcs/response/Respond.hpp"
 
 #endif
