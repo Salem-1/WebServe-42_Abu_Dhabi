@@ -15,9 +15,9 @@ public:
     Respond();
     Respond(int client_socket);
     ~Respond();
-    void    respond(packet_map &request);
+    void    respond(packet_map &request,  std::map<std::string, std::string> &server_info);
     int     client_socket;
-    void    fill_response(packet_map &request);
+    void    fill_response(packet_map &request,  std::map<std::string, std::string> &server_info);
     void    visualize_response();
     int     fill_status_code(std::string status_code, std::string message);
     void    send_all();

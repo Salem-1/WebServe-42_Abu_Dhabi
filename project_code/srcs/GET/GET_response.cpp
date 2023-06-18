@@ -6,25 +6,34 @@ GET_response::GET_response(response_type res): reponse_check(res)
 GET_response::~GET_response()
 {}
 
-std::string     GET_response::fill_get_response()
+std::string     GET_response::fill_get_response(std::map<std::string, std::string> &server_info)
 {
-    // if (*(reponse_check["Status-code"].begin()) != "200")
-    //     return (errored_response());
-    // else
-        fill_ok_response(); 
+    if (*(reponse_check["Status-code"].begin()) != "200")
+        return (errored_response());
+    else if (reponse_check["Path"].size() < 2 && fill_status_code("400", "bad file path format"))
+        return (errored_response());
+    else
+        fill_ok_response(server_info); 
     return (response_packet);
 }
-void        GET_response::fill_ok_response()
+void        GET_response::fill_ok_response(std::map<std::string, std::string> &server_info)
 {
+    /*
+    chunking or storing bytes on vector instead of string, or array of strings should happen
+        here |
+             v  
+    */
+
     response_packet = "";
-    std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
+
+    // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
+    std::string file_path = construct_path(server_info);
+    std::cout << "constructed path = " << file_path << std::endl;
     std::ifstream infile(file_path.c_str());
     if (infile.fail())
     {
         std::cout << file_path << std::endl;
-        reponse_check["Status-code"].clear();
-        reponse_check["Status-code"].push_back("403");
-        reponse_check["Status-code"].push_back("File not found ya basha");
+        fill_status_code("403", "file not found ya basha!");
         errored_response();
         return ;
     }
@@ -43,13 +52,33 @@ void        GET_response::fill_ok_response()
     response_packet += full_file_to_string;
 }
 
+std::string    GET_response::construct_path(std::map<std::string, std::string> &server_info)
+{
+
+    std::string path = reponse_check["Path"][1];
+    if (path == "/")
+        return (server_info["/"]);
+    else if (path.substr(1, path.length()).find("/") == std::string::npos)
+        return (server_info["root"] + path);
+    else
+    {
+        std::string dir_name = path.substr(0, path.length());
+        if (server_info.find(dir_name) != server_info.end())
+        {
+            std::string file_name = path.substr(path.substr(1, path.length()).find("/"), path.length());
+            path = server_info[dir_name] + file_name;
+        }
+    }
+    return (path);
+}
+
 std::string GET_response::errored_response()
 {
     response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
         + " " + *(++reponse_check["Status-code"].begin()) + "\n";
     response_packet += "Server: webserve/1.0\n";
     response_packet += "Date: Wed, 15 Jun 2023 12:00:00 GMT\n";
-    response_packet += "Content-Type: text/html; charset=utf-8\n";
+    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\n";
     response_packet += "Content-Length: 1050\n\n";
     response_packet += "<!DOCTYPE html>\n";
     response_packet += "<html>\n";
@@ -78,6 +107,14 @@ std::string GET_response::errored_response()
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\n";
     response_packet += "</p>\n";
 
-    std::cout << "test error response = " << response_packet << std::endl;
     return (response_packet);
+}
+
+
+int GET_response::fill_status_code(std::string status_code, std::string message)
+{
+    reponse_check["Status-code"].clear();
+    reponse_check["Status-code"].push_back(status_code);
+    reponse_check["Status-code"].push_back(message);
+    return (1);
 }

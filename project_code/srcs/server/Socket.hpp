@@ -4,8 +4,10 @@
 
 class Socket
 {
+     public:
+        typedef std::map<std::string, std::string>  conf; 
     public:
-        Socket(std::string PORT);
+        Socket(conf server);
         Socket( struct  addrinfo *try_another_info);
         virtual ~Socket();
         struct  addrinfo    hints;
@@ -19,6 +21,7 @@ class Socket
         void                error_in_socket(std::string err);
         int                 sockfd;
         int                 try_again;
+        conf                server;
     private:
         Socket();
 

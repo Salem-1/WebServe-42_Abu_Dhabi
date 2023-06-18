@@ -9,7 +9,9 @@
 # include "../srcs/recive_request/Parser.hpp"
 # include "../srcs/GET/GET.hpp"
 # include "../srcs/GET/GET_response.hpp"
-#include "../srcs/parsing/parsing_lib.hpp"
-#include "../srcs/response/Respond.hpp"
+# include "../srcs/parsing/parsing_lib.hpp"
+# include "../srcs/response/Respond.hpp"
+# include "../srcs/response/Respond.hpp"
+# include "../srcs/configuration/Config.hpp"
 
 #endif
