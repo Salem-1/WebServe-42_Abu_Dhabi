@@ -1,14 +1,16 @@
 #include "../../includes/webserve.hpp"
 
 
-void    try_kqueue(int server_socket);
 int main()
 {
-    Listner binded_sock("3490");
+    Config  servers;
+
+    visualize_servers(servers.servers);
+    Listner binded_sock(servers.servers[0]);
 
     printf("server waiting for connection....\n");
     Kque socket_manager(binded_sock.sockfd);
-    socket_manager.watch_fds();
+    socket_manager.watch_fds(servers.servers[0]);
 
     return (0);
 }

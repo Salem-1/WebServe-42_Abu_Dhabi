@@ -9,8 +9,9 @@ GET::~GET()
 
 }
 
-void    GET::prepare_get_response()
+void    GET::prepare_get_response(std::map<std::string, std::string> &server_info)
 {
+    (void)server_info;
     fill_request_line(request);
     fill_path(request);
 }
@@ -19,7 +20,7 @@ void    GET::prepare_get_response()
 void GET::fill_request_line(packet_map &request)
 {
     if ((request.find("POST") != request.end() || request.find("DELETE") != request.end())
-        && fill_status_code("400", "Invalid multiple requests inside GET"))
+        && fill_status_code("400", "Invalid multiple methods inside GET"))
         return ;
     if ((request["GET"][0].length() + request["GET"][1].length()) > HEADER_MAX_LENGTH
             && fill_status_code("414", "URI Too Long"))
@@ -27,8 +28,8 @@ void GET::fill_request_line(packet_map &request)
     if (!(request["GET"][1] == "HTTP/1.1")
         && (fill_status_code("505", "version not supported")))
         return ;
-    if ((request["GET"].size() > 3) 
-        && (fill_status_code("400", "get vec has more than 3 items bad request")))
+    if ((request["GET"].size() != 2) 
+        && (fill_status_code("400", "get vec has wrong number items bad request")))
         return ;
     else
         response["HTTP version"].push_back(request["GET"][1]);
@@ -39,6 +40,10 @@ void    GET::fill_path(packet_map &request)
 {
     //decide on absouloute or other option path 
     //400 if wrong
+    if ((request["GET"][0].find("/") == std::string::npos ||
+            request["GET"][0][0] != '/')
+        && (fill_status_code("400", "bad origin path format")))
+        return ;
     if (request["GET"][0].find("?") == std::string::npos)
     {
         response["Path"].push_back("absolute");

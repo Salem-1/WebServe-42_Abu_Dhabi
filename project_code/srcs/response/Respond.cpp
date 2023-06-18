@@ -11,20 +11,20 @@ Respond::~Respond()
 {
 }
 
-void    Respond::respond(packet_map &request)
+void    Respond::respond(packet_map &request,  std::map<std::string, std::string> &server_info)
 {
-    fill_response(request);
+    fill_response(request,  server_info);
     send_all();
 }
 
-void    Respond::fill_response(packet_map &request)
+void    Respond::fill_response(packet_map &request,  std::map<std::string, std::string> &server_info)
 {
     response["Status-code"].push_back("200");
     if (request.find("GET") != request.end())
     {
         GET GET_fill(request, response);
-        GET_fill.prepare_get_response();
-        response_packet = GET_response(GET_fill.response).fill_get_response();
+        GET_fill.prepare_get_response(server_info);
+        response_packet = GET_response(GET_fill.response).fill_get_response(server_info);
     }
     else if (request.find("POST") != request.end())
         std::cout << "POST request under construction" << std::endl;

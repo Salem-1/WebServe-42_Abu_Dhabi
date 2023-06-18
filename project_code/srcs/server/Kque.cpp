@@ -10,8 +10,9 @@ Kque::Kque(int    socket_fd): kq(kqueue()), server_socket(socket_fd)
 Kque::~Kque()
 {}
 
-void    Kque::watch_fds()
+void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
 {
+ 
    while (1)
     {
         active_fds = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
@@ -26,7 +27,7 @@ void    Kque::watch_fds()
                 if(client_socket < 0)
                     continue ;
                 add_read_event(client_socket);
-                clients[client_socket] = Client(client_socket);
+                clients[client_socket] = Client(client_socket,server_info);
                 // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
                 active_clients.insert(client_socket);
             }

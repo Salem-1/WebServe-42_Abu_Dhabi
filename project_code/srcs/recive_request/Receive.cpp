@@ -29,7 +29,7 @@ Receive::~Receive()
 
 void    Receive::receive_all()
 {
-    memset(buffer, 0, BUFFER_SIZE);
+    // memset(buffer, 0, BUFFER_SIZE);
     read_packet(buffer);
     parser.set_byteread_and_readsock(bytes_read, read_sock);
     parser.parse(buffer);

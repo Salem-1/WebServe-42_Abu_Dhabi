@@ -50,7 +50,7 @@ void    Parser::parse(char *new_buffer)
         return ;
     }
     else
-        read_again = 1;
+        read_again = 0;
 }
 
 void    Parser::set_byteread_and_readsock(int bytes, int sock)

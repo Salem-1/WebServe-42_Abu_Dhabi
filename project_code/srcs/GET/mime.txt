@@ -1,0 +1,29 @@
+text/plain: txt
+text/html: html, htm
+text/css: css
+text/javascript: js
+application/json: json
+application/xml: xml
+application/pdf: pdf
+application/zip: zip
+application/gzip: gz
+application/msword: doc
+application/vnd.ms-excel: xls
+application/vnd.ms-powerpoint: ppt
+application/vnd.openxmlformats-officedocument.wordprocessingml.document: docx
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: xlsx
+application/vnd.openxmlformats-officedocument.presentationml.presentation: pptx
+image/jpeg: jpeg, jpg
+image/png: png
+image/gif: gif
+image/svg+xml: svg
+audio/mpeg: mp3
+audio/wav: wav
+audio/ogg: ogg
+video/mp4: mp4
+video/mpeg: mpeg
+video/quicktime: mov
+video/x-msvideo: avi
+application/octet-stream: bin
+application/x-www-form-urlencoded: (No specific file extension)
+multipart/form-data: (No specific file extension)

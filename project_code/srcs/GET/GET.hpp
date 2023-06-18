@@ -14,7 +14,7 @@ class GET
         void    fill_request_line(packet_map &request);
         void    fill_path(packet_map &request);
         int     fill_status_code(std::string status_code, std::string message);
-        void    prepare_get_response();
+        void    prepare_get_response(std::map<std::string, std::string> &server_info);
         // GET &operator= (const GET &obj2);
         // GET(const GET &obj2);
         packet_map      &request;

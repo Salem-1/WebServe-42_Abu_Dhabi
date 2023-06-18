@@ -5,7 +5,7 @@ Socket::Socket(): try_again(1)
     std::cout << "Hello from the socket" << std::endl;
 }
 
-Socket::Socket(std::string PORT): servername(PORT), sockfd(0), try_again(1)
+Socket::Socket(conf server): servername(server["port"]), sockfd(0), try_again(1), server(server)
 {
 
     get_my_addinfo();
@@ -41,7 +41,7 @@ void    Socket::get_my_addinfo(void)
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags= AI_PASSIVE;
-    if (getaddrinfo(NULL, servername.c_str(), &hints, &res) < 0)
+    if (getaddrinfo(server["server_name"].c_str(), server["Port"].c_str(), &hints, &res) < 0)
         error_in_socket("Addrinfo inside socket Error: ");
 }
 
@@ -58,11 +58,13 @@ void    Socket::open_socket(struct  addrinfo    *try_addr)
 void    Socket::non_block_sock(void)
 {
     int yes = 1;
+
     if (fcntl(sockfd, F_SETFL, O_NONBLOCK) < 0)
         error_in_socket("fcntl nonblock error: ");
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
         error_in_socket("error setting socket option: ");
-
+    std::cout << "Socket set to non block" << std::endl;
+    sleep(1);
 }
 void    Socket::error_in_socket(std::string err)
 {
@@ -70,3 +72,4 @@ void    Socket::error_in_socket(std::string err)
     freeaddrinfo(res);
     exit(1);   
 }
+

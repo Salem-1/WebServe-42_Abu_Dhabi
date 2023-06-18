@@ -1,6 +1,6 @@
 #include "includes/webserve.hpp"
 
-int main()
+int main( )
 {
     Listner binded_sock("3490");
 
@@ -10,3 +10,4 @@ int main()
 
     // return (0);
 }
+

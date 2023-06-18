@@ -12,11 +12,6 @@ c++  -Wall -Wextra -Werror \
     ../../srcs/GET/GET.cpp \
     ../../srcs/GET/GET_response.cpp  \
     ../../srcs/response/Respond.cpp\
-    ../../srcs/parsing/parsing_lib.cpp -o test.exe \
- && ./test.exe && \
-sleep 1 && \
-echo && \
-echo Checking leaks && \i
-echo && \
-echo && \
-valgrind ./test.exe
+    ../../srcs/configuration/Config.cpp \
+    ../../srcs/parsing/parsing_lib.cpp -o webserv && cp webserv intra/. && ./intra/webserv  
+

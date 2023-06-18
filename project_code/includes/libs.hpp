@@ -30,22 +30,29 @@
 # include <ctime>
 #include <fstream>
 #include "../srcs/parsing/parsing_lib.hpp"
+
 # define BACKLOG 256
 # define MAX_EVENTS 256
-# define BUFFER_SIZE 1000240
+# define BUFFER_SIZE 100240
 # define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
-
+// # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
-std::vector<std::string> split(std::string str, std::string delimeter);
-void printAddrInfo( struct addrinfo *ai);
+
+typedef std::vector<std::map<std::string, std::string> > conf; 
 enum connection_state
 {
     KILL_CONNECTION = 0,
     KEEP_ALIVE = 1
 };
 
+std::vector<std::string> split(std::string str, std::string delimeter);
+void printAddrInfo( struct addrinfo *ai);
+void    visualize_servers(
+    std::vector<std::map<std::string, std::string> > servers);
+
+void    visualize_string_map(std::map<std::string, std::string>  &map);
 #endif

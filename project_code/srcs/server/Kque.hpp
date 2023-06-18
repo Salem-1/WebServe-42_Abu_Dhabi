@@ -10,7 +10,7 @@ class Kque
     public:
         Kque(int socket_fd);
         ~Kque();
-        void                    watch_fds();
+        void                    watch_fds(std::map<std::string, std::string> &server_info);
     
     private:
         void                    kque_error(std::string msg);
