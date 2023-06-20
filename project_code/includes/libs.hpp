@@ -10,6 +10,8 @@
 # include <sys/socket.h>
 # include <netdb.h>
 # include <fcntl.h>
+#include <chrono>
+#include <ctime>
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
@@ -27,9 +29,8 @@
 # include <sys/types.h>
 # include <sys/event.h>
 # include <sys/time.h>
-# include <ctime>
-#include <fstream>
-#include "../srcs/parsing/parsing_lib.hpp"
+# include <fstream>
+# include "../srcs/parsing/parsing_lib.hpp"
 
 # define BACKLOG 256
 # define MAX_EVENTS 256
@@ -41,6 +42,15 @@
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
+
+enum LogLevel {
+    server,
+    request,
+    response,
+    client,
+    FATAL
+};
+class Logger;
 
 typedef std::vector<std::map<std::string, std::string> > conf; 
 enum connection_state
@@ -55,4 +65,13 @@ void    visualize_servers(
     std::vector<std::map<std::string, std::string> > servers);
 
 void    visualize_string_map(std::map<std::string, std::string>  &map);
+
+//---------------------------------------------
+
+
+
+
+
+
+
 #endif

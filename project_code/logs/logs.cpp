@@ -119,3 +119,52 @@ void    visualize_string_map(std::map<std::string, std::string>  &map)
     }
         std::cout << "\n\nvisualization ends\n\n\n" << std::endl;
 }
+
+class Logger {
+private:
+    std::ofstream logFile;
+
+    std::string getCurrentTimestamp() {
+        std::time_t currentTime = std::time(NULL);
+        return std::ctime(&currentTime);
+    }
+
+public:
+    Logger(const std::string& filePath) {
+        logFile.open(filePath.c_str(), std::ios::app);
+    }
+
+    ~Logger() {
+        logFile.close();
+    }
+
+    void log(LogLevel level, const std::string& message) {
+        std::string logLevelStr;
+        switch (level) {
+            case server:
+                logLevelStr = "SERVER";
+                break;
+            case request:
+                logLevelStr = "REQUEST";
+                break;
+            case response:
+                logLevelStr = "RESPONSE";
+                break;
+            case client:
+                logLevelStr = "CLIENT";
+                break;
+            case FATAL:
+                logLevelStr = "FATAL";
+                break;
+            default:
+                logLevelStr = "other";
+                break;
+        }
+
+        std::string timestamp = getCurrentTimestamp();
+        timestamp.erase(timestamp.length() - 1);  // Remove newline character from timestamp
+
+        logFile << "[" << timestamp << "] [" << logLevelStr << "] " << message << std::endl;
+        logFile.flush();  // Flush the buffer to ensure immediate write to the file
+    }
+};

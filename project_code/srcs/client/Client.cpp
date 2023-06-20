@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int  client_socket, std::map<std::string, std::string> &server): client_socket(client_socket),
+Client::Client(int  client_socket, std::map<std::string, std::string> &server): state(KEEP_ALIVE), client_socket(client_socket),
     start_time(clock()), receiver(client_socket), responder(client_socket), server_info(server)
 {
 
@@ -41,11 +41,16 @@ void Client::handle_request()
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
     receiver.receive_all();
+    std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
     if (receiver.state == KILL_CONNECTION)
+    {
+        std::cout << "Killing connection inside client" << std::endl;
         this->state = KILL_CONNECTION;
-    else
+    }
+    else if (!receiver.parser.read_again)
     {
         //stopped here should build respond clas
-       responder.respond(receiver.get_request_packet(), server_info);
+        std::cout << "\ninside client sending packet\n" << receiver.parser.packet;
+        responder.respond(receiver.get_request_packet(), server_info);
     }
 }
