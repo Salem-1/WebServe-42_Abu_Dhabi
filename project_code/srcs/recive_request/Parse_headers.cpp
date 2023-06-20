@@ -7,9 +7,8 @@ void    Parser::check_headers()
     visualize_request_packet();
     if (!valid_packet_headers())
     {
-        //make error packet class inshalla
         status.push_back("400");
-        status.push_back("invalid headers");
+        status.push_back("Bad Request");
         request["Status-code"] = status;
         std::cout << "invalid packet" <<  std::endl;
         return ;

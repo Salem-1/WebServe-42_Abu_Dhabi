@@ -13,12 +13,18 @@ Respond::~Respond()
 
 void    Respond::respond(packet_map &request,  std::map<std::string, std::string> &server_info)
 {
+    
     fill_response(request,  server_info);
     send_all();
 }
 
 void    Respond::fill_response(packet_map &request,  std::map<std::string, std::string> &server_info)
 {
+    if (response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
+    {
+        fill_status_code("400", "request method not supported");
+        return ;
+    }
     response["Status-code"].push_back("200");
     if (request.find("GET") != request.end())
     {
@@ -27,7 +33,9 @@ void    Respond::fill_response(packet_map &request,  std::map<std::string, std::
         response_packet = GET_response(GET_fill.response).fill_get_response(server_info);
     }
     else if (request.find("POST") != request.end())
+    {
         std::cout << "POST request under construction" << std::endl;
+    }
     else if (request.find("DELETE") != request.end())
         std::cout << "DELETE request under construction" << std::endl;
     else

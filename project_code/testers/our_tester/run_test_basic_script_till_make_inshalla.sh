@@ -13,5 +13,6 @@ c++  -Wall -Wextra -Werror \
     ../../srcs/GET/GET_response.cpp  \
     ../../srcs/response/Respond.cpp\
     ../../srcs/configuration/Config.cpp \
+    ../../includes/logger.cpp \
     ../../srcs/parsing/parsing_lib.cpp -o webserv && cp webserv intra/. && ./intra/webserv  
 

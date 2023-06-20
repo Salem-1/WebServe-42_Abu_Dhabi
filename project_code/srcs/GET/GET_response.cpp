@@ -1,7 +1,9 @@
 #include "GET_response.hpp"
 
 GET_response::GET_response(response_type res): reponse_check(res)
-{};
+{
+    void    status_codes();
+};
 
 GET_response::~GET_response()
 {}
@@ -46,8 +48,9 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
     response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
         + " " + *(++reponse_check["Status-code"].begin()) + "\n";
     response_packet += "Server: webserve/1.0\n";
-    response_packet += "Date: Wed, 15 Jun 2023 12:00:00 GMT\n";
-    response_packet += "Content-Type: text/html; charset=utf-8\n";
+    response_packet += "Date: ";
+    response_packet += get_timebuffer();
+    response_packet += "Content-Type: text/html\n";
     response_packet += "Content-Length: " + std::to_string(full_file_to_string.length()) + "\n\n";
     response_packet += full_file_to_string;
 }
@@ -72,20 +75,32 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
     return (path);
 }
 
+
+std::string GET_response::get_timebuffer() {
+    std::time_t current_time = std::time(nullptr);
+    std::tm* time_info = std::gmtime(&current_time);
+
+    char time_buffer[80];
+    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\n", time_info);
+
+    return std::string(time_buffer);
+}
+
 std::string GET_response::errored_response()
 {
     response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
         + " " + *(++reponse_check["Status-code"].begin()) + "\n";
     response_packet += "Server: webserve/1.0\n";
-    response_packet += "Date: Wed, 15 Jun 2023 12:00:00 GMT\n";
+    response_packet += "Date: ";
+    response_packet += get_timebuffer();
     response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\n";
     response_packet += "Content-Length: 1050\n\n";
     response_packet += "<!DOCTYPE html>\n";
     response_packet += "<html>\n";
     response_packet += "<head>\n";
     response_packet += "    <title>";
-    response_packet += *(reponse_check["Status-code"].begin()) ;
-    response_packet += " " + *(++reponse_check["Status-code"].begin()) + "</title>\n";
+    response_packet += reponse_check["Status-code"][0] ;
+    response_packet += " " + StatusCodes[reponse_check["Status-code"][0]]+ "</title>\n";
     response_packet += "</head>\n";
     response_packet += "<body>\n";
     response_packet += "    <h1>error under construction 404 Not Found</h1>\n";
@@ -117,4 +132,28 @@ int GET_response::fill_status_code(std::string status_code, std::string message)
     reponse_check["Status-code"].push_back(status_code);
     reponse_check["Status-code"].push_back(message);
     return (1);
+}
+
+void    GET_response::status_codes()
+{
+    StatusCodes["100"] =  "Continue";
+    StatusCodes["101"] =  "Switching Protocols";
+    StatusCodes["200"] =  "OK";
+    StatusCodes["201"] =  "Created";
+    StatusCodes["202"] =  "Accepted";
+    StatusCodes["204"] =  "No Content";
+    StatusCodes["300"] =  "Multiple Choices";
+    StatusCodes["301"] =  "Moved Permanently";
+    StatusCodes["302"] =  "Found";
+    StatusCodes["304"] =  "Not Modified";
+    StatusCodes["400"] =  "Bad Request";
+    StatusCodes["401"] =  "Unauthorized";
+    StatusCodes["403"] =  "Forbidden";
+    StatusCodes["404"] =  "Not Found";
+    StatusCodes["405"] =  "Method Not Allowed";
+    StatusCodes["500"] =  "Internal Server Error";
+    StatusCodes["501"] =  "Not Implemented";
+    StatusCodes["502"] =  "Bad Gateway";
+    StatusCodes["503"] =  "Service Unavailable";
+    StatusCodes["504"] =  "Gateway Timeout";
 }

@@ -15,8 +15,11 @@ class GET_response
         std::string     errored_response();
         std::string     construct_path(std::map<std::string, std::string> &server_info);
         void            fill_ok_response(std::map<std::string, std::string> &server_info);
+        std::string     get_timebuffer();
+        void            status_codes();
+        int             fill_status_code(std::string status_code, std::string message);
         std::string     response_packet;
         response_type   reponse_check;
-        int             fill_status_code(std::string status_code, std::string message);
+        std::unordered_map<std::string, std::string> StatusCodes;
 };
 # endif

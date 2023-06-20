@@ -34,12 +34,15 @@ void    Parser::parse(char *new_buffer)
     }
     std::string str(new_buffer);
     packet += str;
+    std::cout << "\n\ninside parser buffer = \n<" << new_buffer << ">" << std::endl;
+    std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
     if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
     {
-        std::cout << "row packet is\n-----------\n" << packet << "\n --------" << std::endl;
+        std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
         fill_header_request(packet);
         classify_packet();
         packet = "";
+        read_again = 0;
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -50,7 +53,10 @@ void    Parser::parse(char *new_buffer)
         return ;
     }
     else
-        read_again = 0;
+    {
+        std::cout << "\nin-complete packet let's read again\n";
+        read_again = 1;
+    }
 }
 
 void    Parser::set_byteread_and_readsock(int bytes, int sock)
@@ -74,6 +80,7 @@ void    Parser::fill_header_request(std::string packet)
         if (tmp_vec.size() < 1)
         {
             tmp_vec.push_back("400");
+            tmp_vec.push_back("Bad request");
             request["Status-code"] = tmp_vec;
             return ;
         }
@@ -87,6 +94,7 @@ void    Parser::fill_header_request(std::string packet)
             if (header == "HOST")
             {
                 tmp_vec.push_back("400");
+                tmp_vec.push_back("Bad request");
                 request["Status-code"] = tmp_vec;
                 return ;
             }
@@ -111,7 +119,10 @@ void    Parser::classify_packet()
     else
     {
         //501 method not implemented
-        std::cout << "filled error response packet" << std::endl;
+         std::vector<std::string>tmp_vec;
+        tmp_vec.push_back("501");
+        tmp_vec.push_back("Not implemented");
+        request["Status-code"] = tmp_vec;
     }
     reponse_packet = filled_response;
 }

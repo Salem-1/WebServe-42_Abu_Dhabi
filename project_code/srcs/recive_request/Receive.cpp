@@ -29,14 +29,22 @@ Receive::~Receive()
 
 void    Receive::receive_all()
 {
-    // memset(buffer, 0, BUFFER_SIZE);
+    memset(buffer, 0, BUFFER_SIZE);
     read_packet(buffer);
     parser.set_byteread_and_readsock(bytes_read, read_sock);
     parser.parse(buffer);
+    std::cout << read_sock <<" back to recieve all buffer still\n<"<< buffer << ">" << std::endl;
+    
     if (bytes_read == 0)
+    {
+        std::cout << "byter read = " << bytes_read << "will kill connection\n";
         state = KILL_CONNECTION;
-    else if (parser.read_again)
-        receive_all();
+        return ;
+    }
+    if (parser.read_again)
+        state = KEEP_ALIVE;
+    // else if (parser.read_again)
+    //     receive_all();
     return ;
 }
 
@@ -44,6 +52,8 @@ void    Receive::receive_all()
 void    Receive::read_packet(char *buffer)
 {
     bytes_read = recv(read_sock, buffer, BUFFER_SIZE, 0);
+    std::cout << "\nbytes read " << bytes_read;
+    std::cout << " received on buffer\n" << buffer;
     if (bytes_read == -1)
     {
         perror("recv Error: ");
