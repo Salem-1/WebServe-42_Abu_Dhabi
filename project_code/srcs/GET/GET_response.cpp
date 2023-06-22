@@ -31,6 +31,7 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
     // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
     std::string file_path = construct_path(server_info);
     std::cout << "constructed path = " << file_path << std::endl;
+    // exit(0);
     std::ifstream infile(file_path.c_str());
     if (infile.fail())
     {
@@ -60,19 +61,29 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
 
     std::string path = reponse_check["Path"][1];
     if (path == "/")
-        return (server_info["/"]);
-    else if (path.substr(1, path.length()).find("/") == std::string::npos)
-        return (server_info["root"] + path);
-    else
+        return (server_info[path]);
+    if (std::string::difference_type n = std::count(path.begin(), path.end(), '/') < 2)
     {
-        std::string dir_name = path.substr(0, path.length());
-        if (server_info.find(dir_name) != server_info.end())
-        {
-            std::string file_name = path.substr(path.substr(1, path.length()).find("/"), path.length());
-            path = server_info[dir_name] + file_name;
-        }
+        if (server_info.find(path) != server_info.end())
+            return (server_info[path + " index"]);
+        else
+            return (server_info["root"] + path);
     }
-    return (path);
+    std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
+    std::cout << "dir == " << dir << " path = " << path << std::endl;
+    // /images/ case
+    if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
+    {
+        std::cout << "yes it's only dir" << std::endl;
+        if (server_info.find(dir) != server_info.end())
+            return (server_info[dir + " index"]);
+    }
+    // images/cat.jpeg
+    std::string rest_of_path = path.substr(dir.length() + 1, path.length());
+    std::cout << "rest of path = " << rest_of_path << std::endl;
+    if (server_info.find(dir) != server_info.end())
+        return (server_info[dir] + rest_of_path);
+    return (server_info["root"] + path);
 }
 
 

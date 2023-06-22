@@ -20,7 +20,8 @@ void    Respond::respond(packet_map &request,  std::map<std::string, std::string
 
 void    Respond::fill_response(packet_map &request,  std::map<std::string, std::string> &server_info)
 {
-    if (response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
+    if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
+        || check_poisoned_url(request))
     {
         fill_status_code("400", "request method not supported");
         return ;
@@ -42,6 +43,26 @@ void    Respond::fill_response(packet_map &request,  std::map<std::string, std::
         fill_status_code("400", "request method not supported");
     
 };
+
+int Respond::check_poisoned_url(packet_map &request)
+{
+    if (request.find("GET") != request.end())
+    {
+        if (request["GET"][0].find(" ") != std::string::npos)
+            return (1);
+    }
+    if (request.find("POST") != request.end())
+    {
+        if (request["POST"][0].find(" ") != std::string::npos)
+             return (1);
+    }
+    if (request.find("DELETE") != request.end())
+    {
+        if (request["DELETE"][0].find(" ") != std::string::npos)
+          return (1);
+    }
+    return (0);
+}
 void    Respond::visualize_response()
 {
     std::cout << "\nVisualizing reponse API\n" << std::endl;
