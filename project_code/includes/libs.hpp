@@ -31,7 +31,7 @@
 # include <sys/time.h>
 # include <fstream>
 # include "../srcs/parsing/parsing_lib.hpp"
-
+# include <algorithm>
 # define BACKLOG 256
 # define MAX_EVENTS 256
 # define BUFFER_SIZE 100240

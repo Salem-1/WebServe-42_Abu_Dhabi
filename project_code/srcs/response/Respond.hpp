@@ -24,6 +24,7 @@ public:
     response_pack   response;
     std::string     response_packet;
 private:
+    int     check_poisoned_url(packet_map &request);
     /* data */
 
 };

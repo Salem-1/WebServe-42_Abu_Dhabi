@@ -23,9 +23,12 @@ Config::Config()
     servers[0]["root"] = "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/images"] = servers[0]["root"] + "/images/";
+    servers[0]["/images"] = servers[0]["root"] + "/path_to_images/";
+    servers[0]["/images index"] = servers[0]["/images"] + "base_image.jpg";
     servers[0]["/styles"] = servers[0]["root"] + "/styles/";
+    servers[0]["/styles index"] = servers[0]["root"] + "/styles/" + "styles.css";
     servers[0]["/js"] = servers[0]["root"] + "/js/";
+    servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
     
     // servers.push_back(std::map<std::string, std::string>());
     // servers[2]["server_name"] = "127.0.0.1";
