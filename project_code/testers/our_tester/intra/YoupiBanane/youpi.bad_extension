@@ -95,10 +95,13 @@
         <img src="https://m.media-amazon.com/images/I/714qbOjaPdL._AC_UF1000,1000_QL80_.jpg" alt="Logo" class="logo">
         <h1>Welcome to the 2nd most dangerous Webserver on Earth because the 1st is yet to be built</h1>
         <p class="warning">WARNING: Enter at your own risk!</p>
+        <p class="warning">Server 1</p>
         <p class="message">This server is haunted.</p>
+        <p class="message">We don't provide any reliable or effecient services.</p>
         <div class="button-group">
             <button class="dangerous-btn">Ransomware</button>
             <button class="dangerous-btn">DDOS attacks</button>
+            <button class="dangerous-btn">Hack blockchain wallet</button>
             <button class="dangerous-btn">Nightmares</button>
             <button class="dangerous-btn">Resubmitting ft_containers</button>
         </div>
