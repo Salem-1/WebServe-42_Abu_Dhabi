@@ -50,8 +50,8 @@ Development iteration:
 
 
 Ahmed Salem task breakdown:
+modify sub dirs indexes in config (done)
 serve multiple servers
-modify sub dirs indexes in config
 continue GET parsing till finish 9112 inshalla
 Do GET chunking
 Do MIME types

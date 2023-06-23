@@ -119,12 +119,12 @@ std::string GET_response::errored_response()
     response_packet += "</html>\n";
     response_packet += "<p>\n";
     response_packet += " -------- &&& &&  &amp; &amp; <br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; ()|- @, &amp;&amp; <br>\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\n";
-    response_packet += "    &nbsp; &amp;() &amp;--&amp;|()|-&amp;-- '% &amp; ()<br>\n";
+    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\n";
     response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\n";
     response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\n";
-    response_packet += "    &nbsp;()&_---()&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---()~<br>\n";
+    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
