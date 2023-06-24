@@ -21,6 +21,7 @@ public:
     void    visualize_response();
     int     fill_status_code(std::string status_code, std::string message);
     void    send_all();
+    void    flush_response();
     response_pack   response;
     std::string     response_packet;
 private:

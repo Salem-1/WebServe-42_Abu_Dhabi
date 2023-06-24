@@ -1,7 +1,7 @@
 #include "Parser.hpp"
 
 
-Parser::Parser(): read_again(0), bytes_read(0), read_sock(0)
+Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0)
 {
     fill_valid_headers();
 }
@@ -25,8 +25,20 @@ Parser::~Parser()
 
 }
 
+void    Parser::flush_parsing()
+{
+        read_again = 0;
+        packet = "";
+        reponse_packet = ""; 
+        packet_counter++;
+        request.clear();
+        response.clear();
+        filled_response = "";
+}
+
 void    Parser::parse(char *new_buffer)
 {
+    flush_parsing();
     if (!bytes_read)  
     {
         read_again = 0;
@@ -40,7 +52,7 @@ void    Parser::parse(char *new_buffer)
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
         fill_header_request(packet);
-        classify_packet();
+        check_headers();
         packet = "";
         read_again = 0;
     }
@@ -102,29 +114,6 @@ void    Parser::fill_header_request(std::string packet)
     }
 }
 
-void    Parser::classify_packet()
-{
-    if (request["Status-code"][0] != "200")
-    {
-        std::cout << "bad header in parsing" << std::endl;
-        return ;
-    }
-    request.erase("Status-code");
-    if (packet.substr(0, packet.find(" ")) == "GET")
-        check_headers();
-    else if (packet.substr(0, packet.find(" ")) == "POST")
-        std::cout << "POST method under construction" << std::endl;
-    else if (packet.substr(0, packet.find(" ")) == "DEETE")
-        std::cout << "DELETE method under construction" << std::endl;
-    else
-    {
-        //501 method not implemented
-         std::vector<std::string>tmp_vec;
-        tmp_vec.push_back("501");
-        tmp_vec.push_back("Not implemented");
-        request["Status-code"] = tmp_vec;
-    }
-    reponse_packet = filled_response;
-}
+
 
 

@@ -16,6 +16,15 @@ void    Respond::respond(packet_map &request,  std::map<std::string, std::string
     
     fill_response(request,  server_info);
     send_all();
+    flush_response();
+
+}
+
+void    Respond::flush_response()
+{
+    response.clear();
+    response_packet = "";
+
 }
 
 void    Respond::fill_response(packet_map &request,  std::map<std::string, std::string> &server_info)

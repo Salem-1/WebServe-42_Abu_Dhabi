@@ -10,7 +10,7 @@ After this step we should have more clarity what kind of data to be parsed and h
 2-GET (Salem)
 3-GET CGI (Mahdy)
 4-POST (Yassin)
-5-CGI POST
+5-CGI POST 
 6-DELETE (Salem)
 7-CGI DELETE (Yassin)
 8-parsing requests (Salem)
@@ -49,13 +49,14 @@ Development iteration:
 (only nesseccary step to start with is the server, all other steps can work parallel to each other)
 
 
-Ahmed Salem task breakdown:
+Ahmed Salem task breakdown inshalla:
 modify sub dirs indexes in config (done)
-serve multiple servers
+serve multiple servers (serve)
+DELETE request
 continue GET parsing till finish 9112 inshalla
-Do GET chunking
-Do MIME types
-Move to DELETE
+    Do GET chunking
+
 Enjoy playing with testers
+    Do MIME types
 Consider doing config file if done all testers
 learn js nodejs react and APIS 

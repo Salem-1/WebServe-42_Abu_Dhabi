@@ -1,6 +1,6 @@
 #include "Parser.hpp"
 
-void    Parser::check_headers()
+int    Parser::check_headers()
 {
     std::vector<std::string> status;
     std::cout << "visualizing insid Get request" << std::endl;
@@ -11,8 +11,9 @@ void    Parser::check_headers()
         status.push_back("Bad Request");
         request["Status-code"] = status;
         std::cout << "invalid packet" <<  std::endl;
-        return ;
+        return (0);
     }
+    return (1);
 }
 int Parser::valid_packet_headers()
 {

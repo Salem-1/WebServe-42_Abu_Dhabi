@@ -34,13 +34,13 @@ int main()
     for (unsigned long i = 0; i < servers.servers.size(); i++)
     {
         ServerRunner serverRunner(servers.servers[i]);
-        servers_threads.push_back(std::thread(serverRunner));    }
+
+        servers_threads.push_back(std::thread(serverRunner));  
+    }
     for (unsigned long i = 0; i < servers_threads.size(); i++)
     {
         servers_threads[i].join();
     }
     visualize_servers(servers.servers);
- 
-
     return (0);
 }
