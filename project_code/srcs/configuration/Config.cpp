@@ -57,6 +57,19 @@ Config::Config()
     servers[2]["/js"] = servers[2]["root"] + "/js/";
     servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
     
+    servers.push_back(std::map<std::string, std::string>());
+    servers[3]["server_name"] = "localhost";
+    servers[3]["Port"] = "6666";
+    servers[3]["root"] = "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website";
+    servers[3]["index"] = "index.html";
+    servers[3]["/"] = servers[3]["root"] + "/" + servers[3] ["index"];
+    servers[3]["/images"] = servers[3]["root"] + "/path_to_images/";
+    servers[3]["/images index"] = servers[3]["/images"] + "base_image.jpg";
+    servers[3]["/styles"] = servers[3]["root"] + "/styles/";
+    servers[3]["/styles index"] = servers[3]["root"] + "/styles/" + "styles.css";
+    servers[3]["/js"] = servers[3]["root"] + "/js/";
+    servers[3]["/js index"] = servers[3]["root"] + "/js/" + "script.js";
+    
     // servers.push_back(std::map<std::string, std::string>());
     // servers[2]["server_name"] = "127.0.0.1";
     // servers[2]["Port"] = "3491";

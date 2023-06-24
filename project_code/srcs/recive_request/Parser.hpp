@@ -16,10 +16,9 @@ class Parser
         
         void                    fill_header_request(std::string packet);
         void                    parse(char *new_buffer);
-        void                    classify_packet();
         void                    set_byteread_and_readsock(int bytes, int sock);
         void                    visualize_request_packet();
-        void                    check_headers();
+        int                    check_headers();
         void                    fill_get_request(std::string packet);
     
     private:
@@ -30,7 +29,7 @@ class Parser
         void                    fill_path();
         void                    visualize_response();
         int                     fill_status_code(std::string status_code, std::string message);
-    
+        void                    flush_parsing();
     public:
         int                     read_again;
         std::string             packet;

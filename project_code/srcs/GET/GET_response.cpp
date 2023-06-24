@@ -31,7 +31,7 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
     // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
     std::string file_path = construct_path(server_info);
     std::cout << "constructed path = " << file_path << std::endl;
-    // exit(0);
+
     std::ifstream infile(file_path.c_str());
     if (infile.fail())
     {
@@ -60,6 +60,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
 {
 
     std::string path = reponse_check["Path"][1];
+    std::cout << "construcing path = " << path << std::endl ;
     if (path == "/")
         return (server_info[path]);
     if (std::string::difference_type n = std::count(path.begin(), path.end(), '/') < 2)
