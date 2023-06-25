@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:21 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/25 17:20:21 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,11 @@ Config::Config()
     servers[0]["/styles index"] = servers[0]["root"] + "/styles/" + "styles.css";
     servers[0]["/js"] = servers[0]["root"] + "/js/";
     servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
+    servers[0]["DELETE path"] = "POST";
    
    
     servers.push_back(std::map<std::string, std::string>());
+    servers[1]["DELETE path"] = "POST";
     servers[1]["server_name"] = "127.0.0.1";
     servers[1]["Port"] = "4444";
     servers[1]["root"] = "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/intra/YoupiBanane";
@@ -57,6 +59,7 @@ Config::Config()
     servers[1]["/js index"] = servers[1]["root"] + "/js/" + "script.js";
    
     servers.push_back(std::map<std::string, std::string>());
+    servers[2]["DELETE path"] = "POST";
     servers[2]["server_name"] = "127.0.0.1";
     servers[2]["Port"] = "5555";
     servers[2]["root"] = "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website";
@@ -70,6 +73,7 @@ Config::Config()
     servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
     
     servers.push_back(std::map<std::string, std::string>());
+    servers[3]["DELETE path"] = "POST";
     servers[3]["server_name"] = "localhost";
     servers[3]["Port"] = "6666";
     servers[3]["root"] = "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website";

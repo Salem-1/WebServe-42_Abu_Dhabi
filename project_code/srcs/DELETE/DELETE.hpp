@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:16 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 16:59:30 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/25 17:21:00 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class DELETE
         std::string         delete_response_filler(packet_map &request, response_packet &response, std::map<std::string, std::string> &server_info);
         std::string         fill_ok_response(response_packet &response, std::map<std::string, std::string>  &server_info);
         void                fill_request_line(packet_map &request, response_packet &response);
-        bool                sanitized_path(std::string path);
+        bool                sanitized_path(std::string path, std::map<std::string, std::string>  &server_info);
         void                status_codes();  
         std::string         construct_path(response_packet &response,
                                 std::map<std::string, std::string> &server_info);
