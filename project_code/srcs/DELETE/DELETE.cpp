@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 17:01:48 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/25 17:19:23 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ std::string DELETE::fill_ok_response(response_packet &response, std::map<std::st
     //all the heavy lifting is here inshalla
     std::string path = construct_path(response, server_info);
     std::cout << "path to delete = " << path << std::endl;
-    if (!sanitized_path(path))
+    if (!sanitized_path(path, server_info))
         return (errored_response("403", StatusCodes["403"]));
     if (access(path.c_str(), F_OK) != 0)
     {
@@ -86,7 +86,7 @@ std::string DELETE::successful_delete_packet()
     success_delete += "Server: Webserv 1.0\n";
     return (success_delete);
 }
-bool DELETE::sanitized_path(std::string path)
+bool DELETE::sanitized_path(std::string path, std::map<std::string, std::string> &server_info)
 {
     std::vector<std::string> malicous_inputs;
     malicous_inputs.push_back("..");
@@ -102,6 +102,10 @@ bool DELETE::sanitized_path(std::string path)
             return (false);
         }
     }
+    if (path.find(server_info["DELETE path"]) == std::string::npos)
+        {
+            return (false);
+        }
     return (true);
 }
 
