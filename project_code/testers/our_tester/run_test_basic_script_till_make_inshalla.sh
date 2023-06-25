@@ -11,6 +11,8 @@ c++  -Wall -Wextra -Werror \
     ../../srcs/recive_request/Parser_utils.cpp  \
     ../../srcs/GET/GET.cpp \
     ../../srcs/GET/GET_response.cpp  \
+    ../../srcs/DELETE/DELETE.cpp \
+    ../../srcs/DELETE/DELETE_res.cpp \
     ../../srcs/response/Respond.cpp\
     ../../srcs/configuration/Config.cpp \
     ../../includes/logger.cpp \

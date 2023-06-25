@@ -1,9 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Respond.hpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/24 16:46:46 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef RESPOND_HPP
 # define RESPOND_HPP
 
 # include "../../includes/libs.hpp"
 # include "../GET/GET_response.hpp"
 # include "../GET/GET.hpp"
+# include "../DELETE/DELETE.hpp"
 
 class Respond
 {
