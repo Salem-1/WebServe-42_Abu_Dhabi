@@ -1,83 +1,114 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   GET_response.cpp                                   :+:      :+:    :+:   */
+/*   DELETE.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 15:29:50 by ahsalem          ###   ########.fr       */
+/*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/25 17:01:48 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "GET_response.hpp"
+#include "DELETE.hpp"
 
-GET_response::GET_response(response_type res): reponse_check(res)
+DELETE::DELETE()
 {
-    void    status_codes();
-};
-
-GET_response::~GET_response()
-{}
-
-std::string     GET_response::fill_get_response(std::map<std::string, std::string> &server_info)
+    std::cout << "DELETE under construction" << std::endl;
+    status_codes();
+}
+DELETE::~DELETE()
 {
-    if (*(reponse_check["Status-code"].begin()) != "200")
-        return (errored_response());
-    else if (reponse_check["Path"].size() < 2 && fill_status_code(reponse_check , "400", "bad file path format"))
-        return (errored_response());
+
+}
+
+std::string    DELETE::delete_response_filler(packet_map &request, response_packet &response, std::map<std::string, std::string> &server_info)
+
+{
+
+    fill_request_line(request, response);
+    fill_path(request, response, "DELETE");
+    return (fill_delete_response(response, server_info));
+}
+
+void    DELETE::fill_request_line(packet_map &request, response_packet &response)
+{
+    if ((request.find("POST") != request.end() || request.find("GET") != request.end())
+        && fill_status_code(response, "400", "Invalid multiple methods inside GET"))
+        return ;
+    if ((request["DELETE"][0].length() + request["DELETE"][1].length()) > HEADER_MAX_LENGTH
+            && fill_status_code(response, "414", "URI Too Long"))
+        return ;
+    if (!(request["DELETE"][1] == "HTTP/1.1")
+        && (fill_status_code(response, "505", "version not supported")))
+        return ;
+    if ((request["DELETE"].size() != 2) 
+        && (fill_status_code(response, "400", "DELETE vec has wrong number items bad request")))
+        return ;
     else
-        fill_ok_response(server_info); 
-    return (response_packet);
-}
-void        GET_response::fill_ok_response(std::map<std::string, std::string> &server_info)
-{
-    /*
-    chunking or storing bytes on vector instead of string, or array of strings should happen
-        here |
-             v  
-    */
+        response["HTTP version"].push_back(request["DELETE"][1]);
+    response["method"].push_back("DELETE");
 
-    response_packet = "";
-
-    // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
-    std::string file_path = construct_path(server_info);
-    if (!sanitized_path(file_path))
-    {
-        fill_status_code(reponse_check , "403", "file not found ya basha!");
-        errored_response();
-        return ;
-    }
-    std::cout << "constructed path = " << file_path << std::endl;
-
-    std::ifstream infile(file_path.c_str());
-    if (infile.fail())
-    {
-        std::cout << file_path << std::endl;
-        fill_status_code(reponse_check , "403", "file not found ya basha!");
-        errored_response();
-        return ;
-    }
-    std::stringstream content_stream;
-    content_stream  << infile.rdbuf();
-    std::string full_file_to_string = content_stream.str();
-    //checking file size in bytes
-    // infile.seekg(0, std::ios::end);
-    // int file_size = infile.tellg();
-    response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
-        + " " + *(++reponse_check["Status-code"].begin()) + "\n";
-    response_packet += "Server: webserve/1.0\n";
-    response_packet += "Date: ";
-    response_packet += get_timebuffer();
-    response_packet += "Content-Type: text/html\n";
-    response_packet += "Content-Length: " + std::to_string(full_file_to_string.length()) + "\n\n";
-    response_packet += full_file_to_string;
 }
 
-std::string    GET_response::construct_path(std::map<std::string, std::string> &server_info)
+std::string     DELETE::fill_delete_response(response_packet &response,std::map<std::string, std::string>  &server_info)
+{
+    if (response["Status-code"][0] != "200")
+        return (errored_response(response["Status-code"][0], StatusCodes[response["Status-code"][0]]));
+    else if (response["Path"].size() < 2 && fill_status_code(response , "400", "bad file path format"))
+        return (errored_response(response["Status-code"][0], StatusCodes[response["Status-code"][0]]));
+    else
+        return (fill_ok_response(response, server_info)); 
+}
+
+
+std::string DELETE::fill_ok_response(response_packet &response, std::map<std::string, std::string> &server_info)
+{
+    //all the heavy lifting is here inshalla
+    std::string path = construct_path(response, server_info);
+    std::cout << "path to delete = " << path << std::endl;
+    if (!sanitized_path(path))
+        return (errored_response("403", StatusCodes["403"]));
+    if (access(path.c_str(), F_OK) != 0)
+    {
+        std::cout << "file not exist" << std::endl;
+        return (errored_response("404", StatusCodes["404"]));
+    }
+    if (std::remove(path.c_str()) != 0)
+        return (errored_response("404", StatusCodes["404"]));
+    return (successful_delete_packet());
+}
+
+std::string DELETE::successful_delete_packet()
+{
+    std::string success_delete = "HTTP/1.1 204 No Content\n";
+    success_delete += "Date: " + get_timebuffer() +"\n";
+    success_delete += "Server: Webserv 1.0\n";
+    return (success_delete);
+}
+bool DELETE::sanitized_path(std::string path)
+{
+    std::vector<std::string> malicous_inputs;
+    malicous_inputs.push_back("..");
+    malicous_inputs.push_back("*");
+    malicous_inputs.push_back("!");
+    malicous_inputs.push_back("~");
+    malicous_inputs.push_back("//");
+    for (std::vector<std::string>::iterator it = malicous_inputs.begin();  it != malicous_inputs.end(); ++it)
+    {
+        if (path.find(*it) != std::string::npos)
+        {
+            std::cout << "malicous part in path = <" << *it << ">" << std::endl;
+            return (false);
+        }
+    }
+    return (true);
+}
+
+std::string    DELETE::construct_path(response_packet &response , std::map<std::string, std::string> &server_info)
 {
 
-    std::string path = reponse_check["Path"][1];
+    std::string path = response["Path"][1];
     std::cout << "construcing path = " << path << std::endl ;
     if (path == "/")
         return (server_info[path]);
@@ -104,22 +135,10 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);
 }
-
-
-std::string GET_response::get_timebuffer() {
-    std::time_t current_time = std::time(nullptr);
-    std::tm* time_info = std::gmtime(&current_time);
-
-    char time_buffer[80];
-    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\n", time_info);
-
-    return std::string(time_buffer);
-}
-
-std::string GET_response::errored_response()
+std::string DELETE::errored_response(std::string error_code, std::string error_message)
 {
-    response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
-        + " " + *(++reponse_check["Status-code"].begin()) + "\n";
+   std::string response_packet = "HTTP/1.1 " + error_code 
+        + " " + error_message + "\n";
     response_packet += "Server: webserve/1.0\n";
     response_packet += "Date: ";
     response_packet += get_timebuffer();
@@ -129,11 +148,11 @@ std::string GET_response::errored_response()
     response_packet += "<html>\n";
     response_packet += "<head>\n";
     response_packet += "    <title>";
-    response_packet += reponse_check["Status-code"][0] ;
-    response_packet += " " + StatusCodes[reponse_check["Status-code"][0]]+ "</title>\n";
+    response_packet += error_code ;
+    response_packet += " " + error_message + "</title>\n";
     response_packet += "</head>\n";
     response_packet += "<body>\n";
-    response_packet += "    <h1>error under construction "+ reponse_check["Status-code"][0] + StatusCodes[reponse_check["Status-code"][0]] + "</h1>\n";
+    response_packet += "    <h1>error under construction " + error_code + " " + error_message + "</h1>\n";
     response_packet += "</body>\n";
     response_packet += "</html>\n";
     response_packet += "<p>\n";
@@ -156,7 +175,7 @@ std::string GET_response::errored_response()
 }
 
 
-void    GET_response::status_codes()
+void    DELETE::status_codes()
 {
     StatusCodes["100"] =  "Continue";
     StatusCodes["101"] =  "Switching Protocols";
@@ -180,21 +199,12 @@ void    GET_response::status_codes()
     StatusCodes["504"] =  "Gateway Timeout";
 }
 
-bool GET_response::sanitized_path(std::string path)
-{
-    std::vector<std::string> malicous_inputs;
-    malicous_inputs.push_back("..");
-    malicous_inputs.push_back("*");
-    malicous_inputs.push_back("!");
-    malicous_inputs.push_back("~");
-    malicous_inputs.push_back("//");
-    for (std::vector<std::string>::iterator it = malicous_inputs.begin();  it != malicous_inputs.end(); ++it)
-    {
-        if (path.find(*it) != std::string::npos)
-        {
-            std::cout << "malicous part in path = <" << *it << ">" << std::endl;
-            return (false);
-        }
-    }
-    return (true);
+std::string DELETE::get_timebuffer() {
+    std::time_t current_time = std::time(nullptr);
+    std::tm* time_info = std::gmtime(&current_time);
+
+    char time_buffer[80];
+    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\n", time_info);
+
+    return std::string(time_buffer);
 }

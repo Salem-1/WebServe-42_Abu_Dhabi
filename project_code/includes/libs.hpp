@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libs.hpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/25 17:00:33 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef LIBS_HPP
 #define LIBS_HPP
 
@@ -11,8 +23,8 @@
 # include <sys/socket.h>
 # include <netdb.h>
 # include <fcntl.h>
-#include <chrono>
-#include <ctime>
+# include <chrono>
+# include <ctime>
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
@@ -31,6 +43,7 @@
 # include <sys/event.h>
 # include <sys/time.h>
 # include <fstream>
+# include <cstdio>
 # include "../srcs/parsing/parsing_lib.hpp"
 # include <algorithm>
 # define BACKLOG 256

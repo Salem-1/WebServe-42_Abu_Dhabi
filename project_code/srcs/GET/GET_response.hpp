@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   GET_response.hpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/25 15:27:40 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # ifndef GET_RESPONSE_HPP
 # define GET_RESPONSE_HPP
 # include "../../includes/libs.hpp"
@@ -15,9 +27,9 @@ class GET_response
         std::string     errored_response();
         std::string     construct_path(std::map<std::string, std::string> &server_info);
         void            fill_ok_response(std::map<std::string, std::string> &server_info);
+        bool            sanitized_path(std::string path);
         std::string     get_timebuffer();
         void            status_codes();
-        int             fill_status_code(std::string status_code, std::string message);
         std::string     response_packet;
         response_type   reponse_check;
         std::unordered_map<std::string, std::string> StatusCodes;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Respond.cpp                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/25 12:38:31 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Respond.hpp"
 
 Respond::Respond()
@@ -47,7 +59,10 @@ void    Respond::fill_response(packet_map &request,  std::map<std::string, std::
         std::cout << "POST request under construction" << std::endl;
     }
     else if (request.find("DELETE") != request.end())
-        std::cout << "DELETE request under construction" << std::endl;
+    {
+        DELETE DELETE_response;
+        response_packet = DELETE_response.delete_response_filler(request, response, server_info);
+    }
     else
         fill_status_code("400", "request method not supported");
     
