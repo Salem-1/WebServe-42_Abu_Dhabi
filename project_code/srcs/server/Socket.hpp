@@ -1,11 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Socket.hpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:37:25 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/24 15:37:26 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SOCKET_HPP
 # define SOCKET_HPP
 # include "../../includes/libs.hpp"
 
 class Socket
 {
+     public:
+        typedef std::map<std::string, std::string>  conf; 
     public:
-        Socket(std::string PORT);
+        Socket(conf server);
         Socket( struct  addrinfo *try_another_info);
         virtual ~Socket();
         struct  addrinfo    hints;
@@ -19,6 +33,7 @@ class Socket
         void                error_in_socket(std::string err);
         int                 sockfd;
         int                 try_again;
+        conf                server;
     private:
         Socket();
 
