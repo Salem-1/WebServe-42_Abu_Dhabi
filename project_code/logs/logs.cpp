@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   logs.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:37:18 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/24 15:37:19 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/libs.hpp"
 
 void printAddrInfo( struct addrinfo *ai)
@@ -84,3 +96,87 @@ void printAddrInfo( struct addrinfo *ai)
     
         printf("Next: %p\n", ai->ai_next);
 }
+
+
+void    visualize_servers(
+    std::vector<std::map<std::string, std::string> > servers)
+{
+    std::cout << "visualizing "  << servers.size() <<" servers\n";
+    std::cout << "---------------------------------------\n\n"; 
+    for (unsigned long i = 0; i < servers.size(); i++)
+    {
+        std::cout << "server " << i + 1 << " {\n";
+        for (std::map<std::string, std::string>::reverse_iterator it = servers[i].rbegin();
+            it != servers[i].rend(); ++it)
+        {
+            std::cout << "  \""<< it->first << "\": " << "\"" << it->second << "\",\n";
+        }
+
+        std::cout << " }\n";
+    }
+    std::cout << "\n---------------------------------------\n\n";
+    std::cout << "servers visualization ends" << std::endl;
+}
+
+void    visualize_string_map(std::map<std::string, std::string>  &map)
+{
+    if (map.size() == 0)
+        std::cout << "The map you are trying to visualize is empty" << std::endl;
+    else
+        std::cout << "visualizing map of strings\n\n\n" << std::endl;
+    for (std::map<std::string, std::string>::reverse_iterator rit = map.rbegin();
+        rit != map.rend(); ++rit)
+    {
+        std::cout << "\"" << rit->first << "\":  \"" << rit->second << "\"" << std::endl;
+    }
+        std::cout << "\n\nvisualization ends\n\n\n" << std::endl;
+}
+
+class Logger {
+private:
+    std::ofstream logFile;
+
+    std::string getCurrentTimestamp() {
+        std::time_t currentTime = std::time(NULL);
+        return std::ctime(&currentTime);
+    }
+
+public:
+    Logger(const std::string& filePath) {
+        logFile.open(filePath.c_str(), std::ios::app);
+    }
+
+    ~Logger() {
+        logFile.close();
+    }
+
+    void log(LogLevel level, const std::string& message) {
+        std::string logLevelStr;
+        switch (level) {
+            case server:
+                logLevelStr = "SERVER";
+                break;
+            case request:
+                logLevelStr = "REQUEST";
+                break;
+            case response:
+                logLevelStr = "RESPONSE";
+                break;
+            case client:
+                logLevelStr = "CLIENT";
+                break;
+            case FATAL:
+                logLevelStr = "FATAL";
+                break;
+            default:
+                logLevelStr = "other";
+                break;
+        }
+
+        std::string timestamp = getCurrentTimestamp();
+        timestamp.erase(timestamp.length() - 1);  // Remove newline character from timestamp
+
+        logFile << "[" << timestamp << "] [" << logLevelStr << "] " << message << std::endl;
+        logFile.flush();  // Flush the buffer to ensure immediate write to the file
+    }
+};

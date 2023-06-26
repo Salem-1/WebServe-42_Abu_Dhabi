@@ -1015,11 +1015,13 @@ Message body:
 
 
 Transfer-Encoding: gzip, chunked
+
     Transfer encoding is primary intended for dynamically generated content, transfer coding is very important when the content size is not known in advance, 
     Transfer-Encoding is the property of the message unlike Content-Encoding
     Server should never send transfer encoding in 1xx 204(no content) or 2xx response to CONNECT 
 
-Content-Length: applied for nin Transfer-Encoding
+N.B: should never send Content-Length in any message that has transfer encoding
+Content-Length: applied for non Transfer-Encoding
 
 Chunked Transfer Coding:
     divide file to chunks to be sent in packets
