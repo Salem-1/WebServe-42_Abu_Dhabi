@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:45 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/27 04:05:35 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ Kque::~Kque()
 
 void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
 {
- 
    while (1)
     {
         active_fds = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
@@ -38,6 +37,7 @@ void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
                 if (events[i].filter == EVFILT_READ)
                 {
                     client_socket = accepting(server_socket);
+                    std::string hero_port = socket_info(client_socket);
                     if(client_socket < 0)
                         continue ;
                     add_read_event(client_socket);
@@ -86,7 +86,7 @@ void    Kque::kill_timeouted_clients()
 void    Kque::handle_request_by_client(int tmp_fd)
 {
     active_clients.insert(tmp_fd);
-   
+//I believe thread should be here 
     clients[tmp_fd].handle_request();
     std::cout << "inside kque after handling request state = ";
     std::cout << clients[tmp_fd].state << std::endl;
@@ -128,4 +128,26 @@ void   Kque::kque_error(std::string msg)
 {
     perror(msg.c_str());
     exit(1);
+}
+
+
+std::string  Kque::socket_info(int sockfd)
+{
+        struct sockaddr_in addr;
+    socklen_t addr_len = sizeof(addr);
+
+        if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1) {
+        perror("getsockname");
+        exit(1);
+    }
+    char ip_str[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
+    
+    std::cout << "Socket Local Address: " << ip_str << std::endl;
+    std::cout << "Socket Local Port: " <<  ntohs(addr.sin_port)<< std::endl;  
+    std::stringstream ss;
+    ss << ntohs(addr.sin_port);
+
+    std::string port = ss.str();
+    return (port);
 }
