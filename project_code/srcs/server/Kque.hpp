@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/27 03:39:50 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Kque
         int                     accepting(int fd);
         void                    handle_request_by_client
                                     (int tmp_fd);
-    
+        std::string                    socket_info(int sockfd);
     private:
         void                    kill_timeouted_clients();
         std::map<int, Client>   clients;

@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:37 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:38 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/27 05:40:09 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 
 
-Listner::Listner(conf  server): Socket(server)
+Listner::Listner(std::string port): Socket(port)
 {
     while (bind(sockfd, try_addr->ai_addr, try_addr->ai_addrlen) == -1)
     {
