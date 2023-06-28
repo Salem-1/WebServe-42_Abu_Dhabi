@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/28 13:05:26 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/28 13:07:06 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,20 +101,8 @@ Config::Config()
     // servers[2]["/js"] = servers[0]["root"] + "/js/";
     // //intra tester config
 
-    //webserve tester config
- for (unsigned long i = 0; i < servers.size(); i++)
-    {
-        std::cout << "i = " << i << std::endl;
-        if (servers[i].find("Port") != servers[i].end())
-        {
-            std::cout << "inserting " << servers[i]["Port"] << std::endl;
-            ports.insert(servers[i]["Port"]);
-            std::cout << "inserted " << *(ports.begin()) << std::endl;
-        }
-        else
-            throw(std::invalid_argument("Error in reading configuration file, missing port number in a server"));
-    }
-    // fill_ports();
+    
+    fill_ports();
 }
 
 Config::~Config()
@@ -130,8 +118,8 @@ void    Config::fill_ports()
     {
         if (servers[i].find("Port") != servers[i].end())
         {
-            std::cout << "inserting " << servers[i]["PORT"] << std::endl;
-            ports.insert(servers[i]["PORT"]);
+            std::cout << "inserting " << servers[i]["Port"] << std::endl;
+            ports.insert(servers[i]["Port"]);
             std::cout << "inserted " << *(ports.begin()) << std::endl;
         }
         else
