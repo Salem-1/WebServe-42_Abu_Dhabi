@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Kque.hpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/06/24 15:37:41 by ahsalem          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef KQUE_HPP
 # define KQUE_HPP
 
@@ -10,7 +22,7 @@ class Kque
     public:
         Kque(int socket_fd);
         ~Kque();
-        void                    watch_fds();
+        void                    watch_fds(std::map<std::string, std::string> &server_info);
     
     private:
         void                    kque_error(std::string msg);
@@ -21,7 +33,9 @@ class Kque
                                     (int tmp_fd);
     
     private:
+        void                    kill_timeouted_clients();
         std::map<int, Client>   clients;
+        std::set<int>           active_clients;
         struct sockaddr_in      client_address;
         struct kevent           event;
         struct kevent           events[MAX_EVENTS];
