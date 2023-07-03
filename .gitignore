@@ -3,4 +3,7 @@ documentation/resources/source_codes
 .vscod*
 .ccls*
 .DS_Store
-.drawio*
+.drawio*./documentation/resources
+documentation/resources
+project_code/testers/webserv_tester
+project_code/testers/other_tester
