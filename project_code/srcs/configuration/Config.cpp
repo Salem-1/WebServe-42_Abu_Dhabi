@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/28 13:07:06 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 20:26:51 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ Config::Config()
 {
     char buff[4000];
     std::string pwd(getwd(buff));
-    std::cout << "pwd = " << pwd << std::endl;
-    sleep(1);
+
     // std::cout << "filling sample conf file " << std::endl;
     // servers.push_back(std::map<std::string, std::string>());
     // servers[0]["server_name"] = "127.0.0.1";
@@ -78,8 +77,8 @@ Config::Config()
     
     servers.push_back(std::map<std::string, std::string>());
     servers[3]["DELETE path"] = "POST";
-    servers[3]["server_name"] = "localhost";
-    servers[3]["Port"] = "6666";
+    servers[3]["server_name"] = "defaultserver";
+    servers[3]["Port"] = "4444";
     servers[3]["root"] = pwd + "/website";
     servers[3]["index"] = "index.html";
     servers[3]["/"] = servers[3]["root"] + "/" + servers[3] ["index"];

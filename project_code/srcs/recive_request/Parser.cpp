@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:41:23 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 13:46:53 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ void    Parser::fill_header_request(std::string packet)
             request[header] = tmp_vec;
         else
         {
-            if (header == "HOST")
+            if (header == "Host:")
             {
                 tmp_vec.push_back("400");
                 tmp_vec.push_back("Bad request");

@@ -6,14 +6,14 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:25 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 10:15:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 
-Client::Client(int  client_socket, std::map<std::string, std::string> &server): state(KEEP_ALIVE), client_socket(client_socket),
-    start_time(clock()), receiver(client_socket), responder(client_socket), server_info(server)
+Client::Client(int  client_socket, conf servers): state(KEEP_ALIVE), client_socket(client_socket),
+    start_time(clock()), receiver(client_socket), responder(client_socket), servers(servers)
 {
 
     connection_duration = static_cast<int>(start_time) / TIME_PER_SEC;
@@ -26,7 +26,7 @@ Client &Client::operator= (const Client &obj2)
         this->client_socket = obj2.client_socket;
         this->start_time = obj2.start_time;
         this->state = obj2.state;
-        this->server_info = obj2.server_info;
+        this->servers = obj2.servers;
     }
     return (*this);
 };
@@ -63,6 +63,28 @@ void Client::handle_request()
     {
         //stopped here should build respond clas
         std::cout << "\ninside client sending packet\n" << receiver.parser.packet;
-        responder.respond(receiver.get_request_packet(), server_info);
+        responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
     }
+}
+
+std::string Client::get_port(int client_socket)
+{
+    struct sockaddr_in addr;
+    socklen_t addr_len = sizeof(addr);
+
+    // Get the local address that the socket is bound to
+    if (getsockname(client_socket, (struct sockaddr*)&addr, &addr_len) == -1) {
+        perror("getsockname");
+        return ("no port attached");
+    }
+
+    // Convert the IP address to a human-readable string
+    char ip_str[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
+
+    std::string port(std::to_string(ntohs(addr.sin_port)));
+    // Print the local address information
+    printf("Socket Local Address: %s\n", ip_str);
+    printf("Socket Local Port: %d\n", ntohs(addr.sin_port));
+    return (port);
 }
