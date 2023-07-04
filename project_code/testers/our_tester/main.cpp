@@ -11,10 +11,11 @@ int main()
         std::cout << "port " << *it << std::endl;
         Listner binded_sock(*it);
         servers.sockets.push_back(binded_sock.sockfd);
+        sleep(1);
     }
     std::cout << "server waiting for connection....\n" << std::endl;
-    Kque socket_manager(servers.sockets[0]);
-    socket_manager.watch_fds(servers.servers[0]);
+    Kque socket_manager(servers.sockets);
+    socket_manager.watch_fds(servers.servers);
     //open sockets in array of sockets
     //give the array of sockets to the kque, 
     //make all in loops in side kque, which is the add initial socket ot the kq as events as I expect

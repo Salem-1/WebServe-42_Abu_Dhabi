@@ -6,23 +6,27 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/27 04:05:35 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 09:53:17 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kque.hpp"
 
-Kque::Kque(int    socket_fd): kq(kqueue()), server_socket(socket_fd)
+Kque::Kque(std::vector<int> socket_fds): kq(kqueue()), server_sockets(socket_fds)
 {
     if (kq < 0)
         kque_error("failed to start kq system call: ");
-    add_read_event(server_socket);
+    for (std::vector<int>::iterator it = server_sockets.begin();
+            it != server_sockets.end(); ++it)
+    {
+        add_read_event(*it);
+    }
 };
 
 Kque::~Kque()
 {}
 
-void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
+void    Kque::watch_fds(conf &servers)
 {
    while (1)
     {
@@ -32,16 +36,23 @@ void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
         for (int i = 0; i < active_fds; i++)
         {
             tmp_fd = events[i].ident;
-            if (tmp_fd == server_socket)
+            //check here the which socket is open, and get the
+            //port server info of the port then inside the client 
+            //check port and host name, 
+            // so the client must be able to read the config map
+            if (tmp_fd_in_server_socket(tmp_fd))
             {
                 if (events[i].filter == EVFILT_READ)
                 {
-                    client_socket = accepting(server_socket);
+                    client_socket = accepting(tmp_fd);
                     std::string hero_port = socket_info(client_socket);
                     if(client_socket < 0)
                         continue ;
                     add_read_event(client_socket);
-                    clients[client_socket] = Client(client_socket,server_info);
+                    //should give the clinet all configs
+
+                    //inshalla
+                    clients[client_socket] = Client(client_socket, servers);
                     // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
                     active_clients.insert(client_socket);
                 }
@@ -53,6 +64,16 @@ void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
     }
 }
 
+bool Kque::tmp_fd_in_server_socket(int tmp_fd)
+{
+        for (std::vector<int>::iterator it = server_sockets.begin();
+                it != server_sockets.end(); ++it)
+        {
+            if (tmp_fd == *it)
+                return (true);
+        }
+        return (false);
+}
 void    Kque::kill_timeouted_clients()
 {
     int active = 0;

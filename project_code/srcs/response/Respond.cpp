@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 12:38:31 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 20:08:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,14 @@ Respond::~Respond()
 {
 }
 
-void    Respond::respond(packet_map &request,  std::map<std::string, std::string> &server_info)
+void    Respond::respond(packet_map &request,  conf &servers, std::string port)
 {
     
-    fill_response(request,  server_info);
+    //here should extract the port and hostname to give to the corresponding method
+    std::map<std::string, std::string> server_info = get_server_info(request, servers, port);
+    
+    visualize_string_map(server_info);
+    fill_response(request, server_info);
     send_all();
     flush_response();
 
@@ -39,7 +43,7 @@ void    Respond::flush_response()
 
 }
 
-void    Respond::fill_response(packet_map &request,  std::map<std::string, std::string> &server_info)
+void    Respond::fill_response(packet_map &request, std::map<std::string, std::string> &server_info)
 {
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
         || check_poisoned_url(request))
@@ -64,8 +68,7 @@ void    Respond::fill_response(packet_map &request,  std::map<std::string, std::
         response_packet = DELETE_response.delete_response_filler(request, response, server_info);
     }
     else
-        fill_status_code("400", "request method not supported");
-    
+        fill_status_code("400", "request method not supported");   
 };
 
 int Respond::check_poisoned_url(packet_map &request)
@@ -126,3 +129,41 @@ int Respond::fill_status_code(std::string status_code, std::string message)
     response["Status-code"].push_back(message);
     return (1);
 }
+
+std::map<std::string, std::string>  Respond::get_server_info(packet_map &request,conf &servers, std::string port)
+{
+    std::vector<int>            nominated_servers;
+    std::vector<std::string>    server_names;
+    std::cout << "port  = " << port << std::endl;
+    unsigned long n = servers.size();
+    std::cout << "we have " << n << "servers\n";
+    for (unsigned long i = 0; i < servers.size(); i++)
+    {
+        std::cout << "config port = " << servers[i]["Port"] << std::endl ;
+        if (servers[i]["Port"] == port)
+            nominated_servers.push_back(i);
+    }
+    for (unsigned long i = 0; i < nominated_servers.size(); i++)
+    {
+        server_names =  split(servers[nominated_servers[i]]["server_name"], " ");
+        for (unsigned long j = 0; j < server_names.size(); j++)
+        {
+            std::cout << "our hostname is " << request["Host:"][0] << std::endl;
+            std::cout << "server hostname " << server_names[j] << std::endl;
+            std::cout << "trimmed host = " << request["Host:"][0].substr(0, server_names[j].length()) << std::endl;
+            if (server_names[j] == request["Host:"][0].substr(0, server_names[j].length()))
+            {
+                std::cout << "our server is " << nominated_servers[j] << std::endl;
+                return (servers[nominated_servers[i]]);
+            }
+        }
+    }
+    return (servers[0]);
+}
+    // std::vector<std::string> tmp_vec;
+    // if (request.find("HOST") == request.end() || request["Host"].size() != 1)  
+    // {
+    //     tmp_vec.push_back("400");
+    //     tmp_vec.push_back("Bad request");
+    //     request["Status-code"] = tmp_vec;
+    // }
