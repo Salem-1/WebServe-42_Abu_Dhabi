@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 20:08:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/05 18:59:21 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,14 +140,29 @@ std::map<std::string, std::string>  Respond::get_server_info(packet_map &request
     for (unsigned long i = 0; i < servers.size(); i++)
     {
         std::cout << "config port = " << servers[i]["Port"] << std::endl ;
+        std::cout << "1" << std::endl;
         if (servers[i]["Port"] == port)
+        {
+            std::cout << "2" << std::endl;
             nominated_servers.push_back(i);
+        }
     }
+    
     for (unsigned long i = 0; i < nominated_servers.size(); i++)
     {
         server_names =  split(servers[nominated_servers[i]]["server_name"], " ");
         for (unsigned long j = 0; j < server_names.size(); j++)
-        {
+        {   
+            std::vector<std::string> tmp_vec;
+            if (request.find("Host:") == request.end() || request["Host:"].size() != 1)  
+            {
+                tmp_vec.push_back("400");
+                tmp_vec.push_back("No host");
+                response["Status-code"] = tmp_vec;
+                
+                return (servers[0]);
+            }
+            
             std::cout << "our hostname is " << request["Host:"][0] << std::endl;
             std::cout << "server hostname " << server_names[j] << std::endl;
             std::cout << "trimmed host = " << request["Host:"][0].substr(0, server_names[j].length()) << std::endl;
@@ -160,10 +175,3 @@ std::map<std::string, std::string>  Respond::get_server_info(packet_map &request
     }
     return (servers[0]);
 }
-    // std::vector<std::string> tmp_vec;
-    // if (request.find("HOST") == request.end() || request["Host"].size() != 1)  
-    // {
-    //     tmp_vec.push_back("400");
-    //     tmp_vec.push_back("Bad request");
-    //     request["Status-code"] = tmp_vec;
-    // }
