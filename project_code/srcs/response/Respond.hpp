@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 16:46:46 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 10:32:18 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,13 +28,17 @@ public:
     Respond();
     Respond(int client_socket);
     ~Respond();
-    void    respond(packet_map &request,  std::map<std::string, std::string> &server_info);
-    int     client_socket;
-    void    fill_response(packet_map &request,  std::map<std::string, std::string> &server_info);
-    void    visualize_response();
-    int     fill_status_code(std::string status_code, std::string message);
-    void    send_all();
-    void    flush_response();
+    void                                flush_response();
+    void                                send_all();
+    void                                respond(packet_map &request,
+                                            conf &servers, std::string port);
+    void                                fill_response(packet_map &request,
+                                            std::map<std::string, std::string> &server_info);
+    void                                visualize_response();
+    int                                 fill_status_code(std::string status_code,
+                                            std::string message);
+    std::map<std::string, std::string>  get_server_info(packet_map &request,conf &servers, std::string port);
+    int                                 client_socket;
     response_pack   response;
     std::string     response_packet;
 private:

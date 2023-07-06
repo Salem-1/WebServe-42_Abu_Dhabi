@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 09:52:58 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 class Kque
 {
     public:
-        Kque(int socket_fd);
+        Kque(std::vector<int> socket_fds);
         ~Kque();
-        void                    watch_fds(std::map<std::string, std::string> &server_info);
+        void                    watch_fds(conf &servers);
     
     private:
         void                    kque_error(std::string msg);
@@ -31,7 +31,8 @@ class Kque
         int                     accepting(int fd);
         void                    handle_request_by_client
                                     (int tmp_fd);
-    
+        std::string                    socket_info(int sockfd);
+        bool                     tmp_fd_in_server_socket(int tmp_fd);
     private:
         void                    kill_timeouted_clients();
         std::map<int, Client>   clients;
@@ -44,7 +45,7 @@ class Kque
         int                     active_fds;
         int                     tmp_fd;
         int                     client_socket;
-        int                     server_socket;
+        std::vector<int>        server_sockets;
 
 };
 #endif

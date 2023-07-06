@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 15:29:50 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 21:27:31 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
 
     // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
     std::string file_path = construct_path(server_info);
+    std::cout << "requested file path = " << file_path << std::endl;
     if (!sanitized_path(file_path))
     {
-        fill_status_code(reponse_check , "403", "file not found ya basha!");
+        fill_status_code(reponse_check , "403", "malicous header!");
         errored_response();
         return ;
     }
