@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
+#    Updated: 2023/07/06 17:57:23 by ayassin          ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 NAME = web_serve
 
 HEADER = includes/libs.hpp includs/webserve.hpp
@@ -6,9 +18,13 @@ CC = c++
 
 CFLAGS =  -Wall -Wextra -Werror
 
-SUBDIRS = logs srcs srcs/server srcs/client srcs/recive_request
+SUBDIRS = logs srcs srcs/server srcs/client srcs/recive_request srcs/GET \
+	srcs/DELETE /srcs/response /srcs/configuration /includes srcs/parsing
 
-_SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp Receive.cpp logs.cpp main.cpp
+_SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
+		logs.cpp main.cpp Receive.cpp Parser.cpp Parse_headers.cpp \
+		Parser_utils.cpp GET.cpp GET_response.cpp DELETE.cpp DELETE_res.cpp \
+		Respond.cpp Config.cpp logger.cpp parsing_lib.cpp logs.cpp
 
 
 $(foreach dir,$(SUBDIRS), \
