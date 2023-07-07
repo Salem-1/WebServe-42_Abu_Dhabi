@@ -6,7 +6,7 @@
 #    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/07/07 16:29:09 by ayassin          ###   ########.fr        #
+#    Updated: 2023/07/07 19:35:31 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,10 +24,9 @@ SUBDIRS = srcs logs includes srcs/server srcs/client srcs/recive_request srcs/GE
 _SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
 		logs.cpp Receive.cpp Parse_headers.cpp \
 		Parser_utils.cpp GET.cpp GET_response.cpp DELETE.cpp DELETE_res.cpp \
-		Respond.cpp Config.cpp logger.cpp parsing_lib.cpp
+		Respond.cpp Config.cpp logger.cpp parsing_lib.cpp main.cpp
 
-MAIN = main.cpp
-
+# 
 SRC = 
 $(foreach dir,$(SUBDIRS), \
 	$(foreach file,$(_SRC), \
@@ -37,7 +36,6 @@ $(foreach dir,$(SUBDIRS), \
 		) \
 	) \
 )
-SRC += $(MAIN)
 OBJDIR = obj
 _OBJS = $(SRC:.cpp=.o)
 OBJS = $(addprefix $(OBJDIR)/,$(_OBJS))

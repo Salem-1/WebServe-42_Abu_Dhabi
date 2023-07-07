@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 21:27:31 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/07 19:15:52 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
     std::cout << "construcing path = " << path << std::endl ;
     if (path == "/")
         return (server_info[path]);
-    if (std::string::difference_type n = std::count(path.begin(), path.end(), '/') < 2)
+    if (std::count(path.begin(), path.end(), '/') < 2)
     {
         if (server_info.find(path) != server_info.end())
             return (server_info[path + " index"]);
