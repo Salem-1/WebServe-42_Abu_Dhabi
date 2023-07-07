@@ -6,25 +6,28 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:45 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 09:53:17 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Kque.hpp"
 
-Kque::Kque(int    socket_fd): kq(kqueue()), server_socket(socket_fd)
+Kque::Kque(std::vector<int> socket_fds): kq(kqueue()), server_sockets(socket_fds)
 {
     if (kq < 0)
         kque_error("failed to start kq system call: ");
-    add_read_event(server_socket);
+    for (std::vector<int>::iterator it = server_sockets.begin();
+            it != server_sockets.end(); ++it)
+    {
+        add_read_event(*it);
+    }
 };
 
 Kque::~Kque()
 {}
 
-void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
+void    Kque::watch_fds(conf &servers)
 {
- 
    while (1)
     {
         active_fds = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
@@ -33,15 +36,23 @@ void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
         for (int i = 0; i < active_fds; i++)
         {
             tmp_fd = events[i].ident;
-            if (tmp_fd == server_socket)
+            //check here the which socket is open, and get the
+            //port server info of the port then inside the client 
+            //check port and host name, 
+            // so the client must be able to read the config map
+            if (tmp_fd_in_server_socket(tmp_fd))
             {
                 if (events[i].filter == EVFILT_READ)
                 {
-                    client_socket = accepting(server_socket);
+                    client_socket = accepting(tmp_fd);
+                    std::string hero_port = socket_info(client_socket);
                     if(client_socket < 0)
                         continue ;
                     add_read_event(client_socket);
-                    clients[client_socket] = Client(client_socket,server_info);
+                    //should give the clinet all configs
+
+                    //inshalla
+                    clients[client_socket] = Client(client_socket, servers);
                     // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
                     active_clients.insert(client_socket);
                 }
@@ -53,6 +64,16 @@ void    Kque::watch_fds(std::map<std::string, std::string> &server_info)
     }
 }
 
+bool Kque::tmp_fd_in_server_socket(int tmp_fd)
+{
+        for (std::vector<int>::iterator it = server_sockets.begin();
+                it != server_sockets.end(); ++it)
+        {
+            if (tmp_fd == *it)
+                return (true);
+        }
+        return (false);
+}
 void    Kque::kill_timeouted_clients()
 {
     int active = 0;
@@ -86,7 +107,7 @@ void    Kque::kill_timeouted_clients()
 void    Kque::handle_request_by_client(int tmp_fd)
 {
     active_clients.insert(tmp_fd);
-   
+//I believe thread should be here 
     clients[tmp_fd].handle_request();
     std::cout << "inside kque after handling request state = ";
     std::cout << clients[tmp_fd].state << std::endl;
@@ -128,4 +149,26 @@ void   Kque::kque_error(std::string msg)
 {
     perror(msg.c_str());
     exit(1);
+}
+
+
+std::string  Kque::socket_info(int sockfd)
+{
+        struct sockaddr_in addr;
+    socklen_t addr_len = sizeof(addr);
+
+        if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1) {
+        perror("getsockname");
+        exit(1);
+    }
+    char ip_str[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
+    
+    std::cout << "Socket Local Address: " << ip_str << std::endl;
+    std::cout << "Socket Local Port: " <<  ntohs(addr.sin_port)<< std::endl;  
+    std::stringstream ss;
+    ss << ntohs(addr.sin_port);
+
+    std::string port = ss.str();
+    return (port);
 }

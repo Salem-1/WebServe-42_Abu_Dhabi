@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:19 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:20 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/27 05:57:33 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ class Config
     public:
         Config();
         ~Config();
-        conf  servers;
-
+        void    fill_ports();
+        conf                        servers;
+        std::set<std::string>       ports;
+        std::vector<int>            sockets;
 };
 #endif

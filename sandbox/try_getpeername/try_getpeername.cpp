@@ -17,12 +17,7 @@ size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     return total_size;
 }
 
-int main(int argc, char **argv) {
-    if (argc != 2)
-    {
-        printf("Please provide url\n");
-        return (1);
-    }
+int main() {
     CURL *curl;
     CURLcode res;
     char buffer[4096] = {0}; // Buffer to store received data
@@ -35,7 +30,7 @@ int main(int argc, char **argv) {
     }
 
     // Set the URL to retrieve
-    curl_easy_setopt(curl, CURLOPT_URL, argv[1]);
+    curl_easy_setopt(curl, CURLOPT_URL, "https://example.com");
 
     // Set the write callback function
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
@@ -60,8 +55,5 @@ int main(int argc, char **argv) {
     return 0;
 }
 
-//compiling
-//gcc -o a.out try_getpeername.cpp -lcurl
 
-//usage
-//./a.out google.com.
+//gcc -o a.out try_getpeername.cpp -lcurl
