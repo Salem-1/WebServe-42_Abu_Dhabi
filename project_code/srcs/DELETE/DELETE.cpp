@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/07 19:16:13 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/08 00:38:59 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,7 @@ void    DELETE::status_codes()
 }
 
 std::string DELETE::get_timebuffer() {
-    std::time_t current_time = std::time(nullptr);
+    std::time_t current_time = std::time(NULL);
     std::tm* time_info = std::gmtime(&current_time);
 
     char time_buffer[80];
