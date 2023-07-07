@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:29 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/06/27 05:41:53 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ Socket::Socket(): try_again(1)
     std::cout << "Hello from the socket" << std::endl;
 }
 
-Socket::Socket(conf server): servername(server["port"]), sockfd(0), try_again(1), server(server)
+Socket::Socket(std::string port): port(port), sockfd(0), try_again(1)
 {
 
     get_my_addinfo();
@@ -53,7 +53,7 @@ void    Socket::get_my_addinfo(void)
     hints.ai_family = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags= AI_PASSIVE;
-    if (getaddrinfo(server["server_name"].c_str(), server["Port"].c_str(), &hints, &res) < 0)
+    if (getaddrinfo(NULL, port.c_str(), &hints, &res) < 0)
         error_in_socket("Addrinfo inside socket Error: ");
 }
 

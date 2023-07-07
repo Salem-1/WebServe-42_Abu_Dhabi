@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:18 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:37:19 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 13:32:48 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,7 @@ void    visualize_servers(
 
 void    visualize_string_map(std::map<std::string, std::string>  &map)
 {
+    std::cout << "visualizing string map\n";
     if (map.size() == 0)
         std::cout << "The map you are trying to visualize is empty" << std::endl;
     else

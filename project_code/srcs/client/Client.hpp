@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:22 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:23 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 10:05:24 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ class Client
 {
     public:
         Client(){};
-        Client(int  client_socket, std::map<std::string, std::string> &server);
+        Client(int  client_socket, conf servers);
         Client(const Client &obj2);
         Client &operator= (const Client &obj2);
         ~Client();
         void                                handle_request();
         int                                 get_timeout();
+        std::string                         get_port(int client_socket);
         connection_state                    state;
         int                                 client_socket;
         clock_t                             start_time;
@@ -34,7 +35,8 @@ class Client
         Receive                             receiver;
         Respond                             responder;
         std::string                         response_packet;
-        std::map<std::string, std::string>  server_info;
+        conf                                servers;
+        
     private:
 };
 

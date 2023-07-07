@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:41:23 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/04 21:25:19 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,13 @@ void    Parser::parse(char *new_buffer)
         std::cout << "\nin-complete packet let's read again\n";
         read_again = 1;
     }
+    if (request.find("Status-code") == request.end())
+    {
+        std::vector<std::string>    tmp_vec;
+        tmp_vec.push_back("200");
+        tmp_vec.push_back("Ok");
+        request["Status-code:"] = tmp_vec;
+    }
 }
 
 void    Parser::set_byteread_and_readsock(int bytes, int sock)
@@ -95,8 +102,7 @@ void    Parser::fill_header_request(std::string packet)
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
 
-    tmp_vec.push_back("200");
-    request["Status-code"] = tmp_vec;
+  
 
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
@@ -115,7 +121,7 @@ void    Parser::fill_header_request(std::string packet)
             request[header] = tmp_vec;
         else
         {
-            if (header == "HOST")
+            if (header == "Host:")
             {
                 tmp_vec.push_back("400");
                 tmp_vec.push_back("Bad request");
