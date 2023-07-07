@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 21:25:19 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/07 16:21:48 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ Parser::~Parser()
 void    Parser::flush_parsing()
 {
         read_again = 0;
-        packet = "";
         reponse_packet = ""; 
         packet_counter++;
         request.clear();
@@ -80,13 +79,6 @@ void    Parser::parse(char *new_buffer)
     {
         std::cout << "\nin-complete packet let's read again\n";
         read_again = 1;
-    }
-    if (request.find("Status-code") == request.end())
-    {
-        std::vector<std::string>    tmp_vec;
-        tmp_vec.push_back("200");
-        tmp_vec.push_back("Ok");
-        request["Status-code:"] = tmp_vec;
     }
 }
 
