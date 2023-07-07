@@ -6,7 +6,7 @@
 #    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/07/07 19:35:31 by ayassin          ###   ########.fr        #
+#    Updated: 2023/07/08 00:30:13 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ HEADER = includes/libs.hpp includs/webserve.hpp
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror
+CFLAGS =  -Wall -Wextra -Werror -std=c++98
 
 SUBDIRS = srcs logs includes srcs/server srcs/client srcs/recive_request srcs/GET \
 	srcs/DELETE srcs/response srcs/configuration srcs/parsing
@@ -54,7 +54,7 @@ $(OBJDIR)/%.o : %.cpp
 	$(CC) $(CFLAGS) -c $^ -o $@
 
 $(NAME): $(OBJS) $(HEADERS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -levent -lkqueue 
 
 clean:
 	rm -f $(OBJS)
