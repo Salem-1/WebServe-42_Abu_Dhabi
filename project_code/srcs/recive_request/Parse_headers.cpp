@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:07 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/07 16:19:44 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int    Parser::check_headers()
     std::vector<std::string> status;
     std::cout << "visualizing insid Get request" << std::endl;
     visualize_request_packet();
+   
     if (!valid_packet_headers())
     {
         status.push_back("400");
@@ -24,6 +25,12 @@ int    Parser::check_headers()
         request["Status-code"] = status;
         std::cout << "invalid packet" <<  std::endl;
         return (0);
+    }
+    else
+    {
+        status.push_back("200");
+        status.push_back("Ok");
+        request["Status-code:"] = status;
     }
     return (1);
 }
