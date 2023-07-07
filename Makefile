@@ -4,7 +4,7 @@ CONTAINER_NAME = my-app-container
 .PHONY: build run stop clean
 
 build:
-	docker build -t $(IMAGE_NAME) $(PWD)
+	docker build -t $(IMAGE_NAME) "$(PWD)"
 
 up:
 	docker-compose up -d
