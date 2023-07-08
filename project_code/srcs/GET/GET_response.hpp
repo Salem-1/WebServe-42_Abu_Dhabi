@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 15:27:40 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/08 00:31:03 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,6 @@ class GET_response
         void            status_codes();
         std::string     response_packet;
         response_type   reponse_check;
-        std::unordered_map<std::string, std::string> StatusCodes;
+        std::map<std::string, std::string> StatusCodes;
 };
 # endif
