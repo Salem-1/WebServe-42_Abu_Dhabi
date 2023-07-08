@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DELETE.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 17:19:23 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/08 00:38:59 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ std::string    DELETE::construct_path(response_packet &response , std::map<std::
     std::cout << "construcing path = " << path << std::endl ;
     if (path == "/")
         return (server_info[path]);
-    if (std::string::difference_type n = std::count(path.begin(), path.end(), '/') < 2)
+    if (std::count(path.begin(), path.end(), '/') < 2)
     {
         if (server_info.find(path) != server_info.end())
             return (server_info[path + " index"]);
@@ -204,7 +204,7 @@ void    DELETE::status_codes()
 }
 
 std::string DELETE::get_timebuffer() {
-    std::time_t current_time = std::time(nullptr);
+    std::time_t current_time = std::time(NULL);
     std::tm* time_info = std::gmtime(&current_time);
 
     char time_buffer[80];
