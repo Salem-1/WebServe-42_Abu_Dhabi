@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 08:53:47 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/08 00:31:39 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 # include <iostream>
 # include <fstream>
 # include <string>
-# include<thread>
+// # include<thread>
 # include <map>
 # include <set>
 # include <sys/types.h>
 # include <sys/socket.h>
 # include <netdb.h>
 # include <fcntl.h>
-# include <chrono>
+// # include <chrono>
 # include <ctime>
 # include <unistd.h>
 # include <stdlib.h>
@@ -40,14 +40,21 @@
 # include <signal.h>
 # include <fcntl.h>
 # include <sys/types.h>
+#ifdef __APPLE__
 # include <sys/event.h>
+#endif
+#ifdef __linux__
+# include <event2/event.h>
+# include <kqueue/sys/event.h>
+#include <event.h>
+#endif
 # include <sys/time.h>
 # include <fstream>
 # include <cstdio>
 # include "../srcs/parsing/parsing_lib.hpp"
 # include <algorithm>
 #include <math.h>
-#include <unordered_map>
+#include <map>
 
 # define BACKLOG 256
 # define MAX_EVENTS 256

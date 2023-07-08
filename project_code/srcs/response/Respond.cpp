@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/05 18:59:21 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/07 19:18:12 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,8 @@ void    Respond::send_all()
     while (response_bytes_sent < response_packet.length())
             response_bytes_sent += send(client_socket, response_packet.c_str(), response_packet.length(), 0);
     std::cout << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl;
-    if (response_bytes_sent < 0)
-       perror("sent failed");
+    // if (response_bytes_sent < 0)
+    //    perror("sent failed");
 
 }
 
