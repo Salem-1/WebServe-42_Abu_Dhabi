@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/07 19:34:36 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/08 15:38:32 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 
-void    dummy_fill_till_config_parsing(conf &server);
+void    intra_and_dummy_fill_till_config_parsing(conf &server);
 void    python_tester_config(conf &server);
 Config::Config()
 {
     char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
+    std::string pwd(getwd(buff));
     python_tester_config(servers);
     // dummy_fill_till_config_parsing(servers);
     fill_ports();
@@ -86,7 +86,7 @@ void    python_tester_config(conf &servers)
 
 
 
-void    dummy_fill_till_config_parsing(conf &servers)
+void    intra_and_dummy_fill_till_config_parsing(conf &servers)
 {
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
