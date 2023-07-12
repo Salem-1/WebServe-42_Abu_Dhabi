@@ -6,11 +6,10 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 18:32:30 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/12 20:04:44 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "GET_response.hpp"
 
 GET_response::GET_response(response_type &res): reponse_check(res)
 {
@@ -107,7 +106,6 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);
 }
-
 
 
 bool GET_response::sanitized_path(std::string path)
