@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   DELETE.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:16 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/08 00:31:12 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/12 19:00:45 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DELETE_HPP
 # define DELETE_HPP
 # include "../../includes/libs.hpp"
-
+# include "../response/ErrResponse.hpp"
 
 class DELETE
 {
@@ -39,6 +39,7 @@ class DELETE
         
         packet_map                                      request;
         response_packet                                 response;
+        ErrResponse                                     err;
 
 };  
 #endif
