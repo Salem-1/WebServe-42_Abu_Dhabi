@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/07 19:34:36 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/12 18:36:59 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ Config::Config()
 {
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
-    python_tester_config(servers);
-    // dummy_fill_till_config_parsing(servers);
+    // python_tester_config(servers);
+    dummy_fill_till_config_parsing(servers);
     fill_ports();
 }
 
@@ -118,6 +118,7 @@ void    dummy_fill_till_config_parsing(conf &servers)
     servers[1]["/styles index"] = servers[1]["root"] + "/styles/" + "styles.css";
     servers[1]["/js"] = servers[1]["root"] + "/js/";
     servers[1]["/js index"] = servers[1]["root"] + "/js/" + "script.js";
+    
    
     servers.push_back(std::map<std::string, std::string>());
     servers[2]["DELETE path"] = "POST";
@@ -132,6 +133,7 @@ void    dummy_fill_till_config_parsing(conf &servers)
     servers[2]["/styles index"] = servers[2]["root"] + "/styles/" + "styles.css";
     servers[2]["/js"] = servers[2]["root"] + "/js/";
     servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
+    servers[2]["403"] = servers[2]["root"] +  "/" + "not_found.html";
     
     servers.push_back(std::map<std::string, std::string>());
     servers[3]["DELETE path"] = "POST";
