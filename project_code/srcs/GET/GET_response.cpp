@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/08 00:38:22 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/12 08:57:37 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ std::string GET_response::get_timebuffer() {
     std::tm* time_info = std::gmtime(&current_time);
 
     char time_buffer[80];
-    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\n", time_info);
+    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\r\n", time_info);
 
     return std::string(time_buffer);
 }
@@ -122,38 +122,38 @@ std::string GET_response::get_timebuffer() {
 std::string GET_response::errored_response()
 {
     response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
-        + " " + *(++reponse_check["Status-code"].begin()) + "\n";
-    response_packet += "Server: webserve/1.0\n";
+        + " " + *(++reponse_check["Status-code"].begin()) + "\r\n";
+    response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += get_timebuffer();
-    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\n";
-    response_packet += "Content-Length: 1050\n\n";
-    response_packet += "<!DOCTYPE html>\n";
-    response_packet += "<html>\n";
-    response_packet += "<head>\n";
+    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
+    response_packet += "Content-Length: 1050\r\n\r\n";
+    response_packet += "<!DOCTYPE html>\r\n";
+    response_packet += "<html>\r\n";
+    response_packet += "<head>\r\n";
     response_packet += "    <title>";
     response_packet += reponse_check["Status-code"][0] ;
-    response_packet += " " + StatusCodes[reponse_check["Status-code"][0]]+ "</title>\n";
-    response_packet += "</head>\n";
-    response_packet += "<body>\n";
-    response_packet += "    <h1>error under construction "+ reponse_check["Status-code"][0] + StatusCodes[reponse_check["Status-code"][0]] + "</h1>\n";
-    response_packet += "</body>\n";
-    response_packet += "</html>\n";
-    response_packet += "<p>\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\n";
-    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\n";
-    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\n";
-    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\n";
-    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\n";
-    response_packet += "</p>\n";
+    response_packet += " " + StatusCodes[reponse_check["Status-code"][0]]+ "</title>\r\n";
+    response_packet += "</head>\r\n";
+    response_packet += "<body>\r\n";
+    response_packet += "    <h1>error under construction "+ reponse_check["Status-code"][0] + StatusCodes[reponse_check["Status-code"][0]] + "</h1>\r\n";
+    response_packet += "</body>\r\n";
+    response_packet += "</html>\r\n";
+    response_packet += "<p>\r\n";
+    response_packet += " -------- &&& &&  &amp; &amp; <br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
+    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
+    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\r\n";
+    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\r\n";
+    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\r\n";
+    response_packet += "</p>\r\n";
 
     return (response_packet);
 }
