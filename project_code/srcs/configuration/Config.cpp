@@ -6,14 +6,13 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 20:01:55 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/12 20:06:51 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "Config.hpp"
 
-void    intra_and_dummy_fill_till_config_parsing(conf &servers);
 void    intra_and_dummy_fill_till_config_parsing(conf &server);
 void    python_tester_config(conf &server);
 Config::Config()
@@ -21,7 +20,7 @@ Config::Config()
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     // python_tester_config(servers);
-    dummy_fill_till_config_parsing(servers);
+    intra_and_dummy_fill_till_config_parsing(servers);
 
     fill_ports();
 }
