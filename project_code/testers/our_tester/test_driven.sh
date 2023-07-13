@@ -1,7 +1,7 @@
 #!/bin/bash
 
 c++  -Wall -Wextra -Werror \
-    ../../logs/logs.cpp  main.cpp ../../srcs/server/Socket.cpp \
+    ../../logs/logs.cpp  test_driven.cpp ../../srcs/server/Socket.cpp \
     ../../srcs/server/Listner.cpp \
     ../../srcs/server/Kque.cpp \
     ../../srcs/client/Client.cpp \
@@ -14,8 +14,8 @@ c++  -Wall -Wextra -Werror \
     ../../srcs/DELETE/DELETE.cpp \
     ../../srcs/DELETE/DELETE_res.cpp \
     ../../srcs/response/Respond.cpp\
-    ../../srcs/response/ErrResponse.cpp\
+       ../../srcs/response/ErrResponse.cpp\
     ../../srcs/configuration/Config.cpp \
     ../../includes/logger.cpp \
-    ../../srcs/parsing/parsing_lib.cpp -o webserv && cp webserv intra/. && ./intra/webserv  
+    ../../srcs/parsing/parsing_lib.cpp -o driven  && ./driven  
 

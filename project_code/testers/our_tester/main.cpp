@@ -11,7 +11,6 @@ int main()
         std::cout << "port " << *it << std::endl;
         Listner binded_sock(*it);
         servers.sockets.push_back(binded_sock.sockfd);
-        sleep(1);
     }
     std::cout << "server waiting for connection....\n" << std::endl;
     Kque socket_manager(servers.sockets);
