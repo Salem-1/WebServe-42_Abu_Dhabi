@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 18:42:12 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/13 08:41:53 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,51 +46,51 @@ std::string ErrResponse::code(
 std::string ErrResponse::construct_custom_err_packet(std::string err, std::string & full_file_to_string)
 {
       response_packet = "HTTP/1.1 " + err 
-        + " " + StatusCodes[err] + "\n";
-    response_packet += "Server: webserve/1.0\n";
+        + " " + StatusCodes[err] + "\r\n";
+    response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += get_timebuffer();
-    response_packet += "Content-Type: text/html\n";
+    response_packet += "Content-Type: text/html\r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
-    response_packet += "Content-Length: " + ss.str() + "\n\n";
+    response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string;
     return (response_packet);
 }
 std::string ErrResponse::errored_response(std::string err)
 {
     response_packet = "HTTP/1.1 " + err
-        + " " + StatusCodes[err] + "\n";
-    response_packet += "Server: webserve/1.0\n";
+        + " " + StatusCodes[err] + "\r\n";
+    response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += get_timebuffer();
-    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\n";
-    response_packet += "Content-Length: 1050\n\n";
-    response_packet += "<!DOCTYPE html>\n";
-    response_packet += "<html>\n";
-    response_packet += "<head>\n";
+    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
+    response_packet += "Content-Length: 1050\r\n\r\n";
+    response_packet += "<!DOCTYPE html>\r\n";
+    response_packet += "<html>\r\n";
+    response_packet += "<head>\r\n";
     response_packet += "    <title>";
     response_packet += err ;
-    response_packet += " " + StatusCodes[err]+ " </title>\n";
-    response_packet += "</head>\n";
-    response_packet += "<body>\n";
-    response_packet += "    <h1>error under construction " + err + " " + StatusCodes[err] + "</h1>\n";
-    response_packet += "</body>\n";
-    response_packet += "</html>\n";
-    response_packet += "<p>\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\n";
-    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\n";
-    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\n";
-    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\n";
-    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\n";
+    response_packet += " " + StatusCodes[err]+ " </title>\r\n";
+    response_packet += "</head>\r\n";
+    response_packet += "<body>\r\n";
+    response_packet += "    <h1>error under construction " + err + " " + StatusCodes[err] + "</h1>\r\n";
+    response_packet += "</body>\r\n";
+    response_packet += "</html>\r\n";
+    response_packet += "<p>\r\n";
+    response_packet += " -------- &&& &&  &amp; &amp; <br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
+    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
+    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\r\n";
+    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\r\n";
+    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\r\n";
     response_packet += "</p>\n";
 
     return (response_packet);
@@ -125,7 +125,7 @@ std::string ErrResponse::get_timebuffer() {
     std::tm* time_info = std::gmtime(&current_time);
 
     char time_buffer[80];
-    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\n", time_info);
+    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\r\n", time_info);
 
     return std::string(time_buffer);
 }
