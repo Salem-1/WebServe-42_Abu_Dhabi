@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DELETE.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 14:13:26 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/12 20:04:29 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 DELETE::DELETE()
 {
     std::cout << "DELETE under construction" << std::endl;
-    status_codes();
+
 }
 DELETE::~DELETE()
 {
@@ -54,9 +54,9 @@ void    DELETE::fill_request_line(packet_map &request, response_packet &response
 std::string     DELETE::fill_delete_response(response_packet &response,std::map<std::string, std::string>  &server_info)
 {
     if (response["Status-code"][0] != "200")
-        return (errored_response(response["Status-code"][0], StatusCodes[response["Status-code"][0]]));
+        return (err.code(server_info, response["Status-code"][0]));
     else if (response["Path"].size() < 2 && fill_status_code(response , "400", "bad file path format"))
-        return (errored_response(response["Status-code"][0], StatusCodes[response["Status-code"][0]]));
+        return (err.code(server_info, response["Status-code"][0]));
     else
         return (fill_ok_response(response, server_info)); 
 }
@@ -68,21 +68,21 @@ std::string DELETE::fill_ok_response(response_packet &response, std::map<std::st
     std::string path = construct_path(response, server_info);
     std::cout << "path to delete = " << path << std::endl;
     if (!sanitized_path(path, server_info))
-        return (errored_response("403", StatusCodes["403"]));
+        return (err.code(server_info, "403"));
     if (access(path.c_str(), F_OK) != 0)
     {
         std::cout << "file not exist" << std::endl;
-        return (errored_response("404", StatusCodes["404"]));
+        return (err.code(server_info, "404"));
     }
     if (std::remove(path.c_str()) != 0)
-        return (errored_response("404", StatusCodes["404"]));
+        return (err.code(server_info, "404"));
     return (successful_delete_packet());
 }
 
 std::string DELETE::successful_delete_packet()
 {
     std::string success_delete = "HTTP/1.1 204 No Content\n";
-    success_delete += "Date: " + get_timebuffer() +"\n";
+    success_delete += "Date: " + err.get_timebuffer() +"\n";
     success_delete += "Server: Webserv 1.0\n";
     return (success_delete);
 }
@@ -138,77 +138,4 @@ std::string    DELETE::construct_path(response_packet &response , std::map<std::
     if (server_info.find(dir) != server_info.end())
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);
-}
-std::string DELETE::errored_response(std::string error_code, std::string error_message)
-{
-   std::string response_packet = "HTTP/1.1 " + error_code 
-        + " " + error_message + "\r\n";
-    response_packet += "Server: webserve/1.0\r\n";
-    response_packet += "Date: ";
-    response_packet += get_timebuffer();
-    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
-    response_packet += "Content-Length: 1050\r\n\r\n";
-    response_packet += "<!DOCTYPE html>\r\n";
-    response_packet += "<html>\r\n";
-    response_packet += "<head>\r\n";
-    response_packet += "    <title>";
-    response_packet += error_code ;
-    response_packet += " " + error_message + "</title>\r\n";
-    response_packet += "</head>\r\n";
-    response_packet += "<body>\r\n";
-    response_packet += "    <h1>error under construction " + error_code + " " + error_message + "</h1>\r\n";
-    response_packet += "</body>\r\n";
-    response_packet += "</html>\r\n";
-    response_packet += "<p>\r\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
-    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
-    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\r\n";
-    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\r\n";
-    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\r\n";
-    response_packet += "</p>\r\n";
-
-    return (response_packet);
-}
-
-
-void    DELETE::status_codes()
-{
-    StatusCodes["100"] =  "Continue";
-    StatusCodes["101"] =  "Switching Protocols";
-    StatusCodes["200"] =  "OK";
-    StatusCodes["201"] =  "Created";
-    StatusCodes["202"] =  "Accepted";
-    StatusCodes["204"] =  "No Content";
-    StatusCodes["300"] =  "Multiple Choices";
-    StatusCodes["301"] =  "Moved Permanently";
-    StatusCodes["302"] =  "Found";
-    StatusCodes["304"] =  "Not Modified";
-    StatusCodes["400"] =  "Bad Request";
-    StatusCodes["401"] =  "Unauthorized";
-    StatusCodes["403"] =  "Forbidden";
-    StatusCodes["404"] =  "Not Found";
-    StatusCodes["405"] =  "Method Not Allowed";
-    StatusCodes["500"] =  "Internal Server Error";
-    StatusCodes["501"] =  "Not Implemented";
-    StatusCodes["502"] =  "Bad Gateway";
-    StatusCodes["503"] =  "Service Unavailable";
-    StatusCodes["504"] =  "Gateway Timeout";
-}
-
-std::string DELETE::get_timebuffer() {
-    std::time_t current_time = std::time(NULL);
-    std::tm* time_info = std::gmtime(&current_time);
-
-    char time_buffer[80];
-    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\r\n", time_info);
-
-    return std::string(time_buffer);
 }
