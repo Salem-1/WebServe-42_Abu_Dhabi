@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 20:06:26 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/13 08:38:55 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,14 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
     // infile.seekg(0, std::ios::end);
     // int file_size = infile.tellg();
     response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
-        + " " + *(++reponse_check["Status-code"].begin()) + "\n";
-    response_packet += "Server: webserve/1.0\n";
+        + " " + *(++reponse_check["Status-code"].begin()) + "\r\n";
+    response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += err.get_timebuffer();
-    response_packet += "Content-Type: text/html\n";
+    response_packet += "Content-Type: text/html\r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
-    response_packet += "Content-Length: " + ss.str() + "\n\n";
+    response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string;
 }
 
