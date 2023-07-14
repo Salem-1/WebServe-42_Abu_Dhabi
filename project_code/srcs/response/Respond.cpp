@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 00:32:31 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 01:12:03 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,19 @@
 Respond::Respond()
 {};
 
-Respond::Respond(int    client_socket) :client_socket(client_socket)
+Respond::Respond(int    client_socket) :client_socket(client_socket),  sending(false)
 {
 }
 
 Respond::~Respond()
 {
+}
+
+void* send_all_thread(void* arg)
+{
+    Respond* respondObj = static_cast<Respond*>(arg);
+    respondObj->send_all();
+    pthread_exit(NULL);
 }
 
 void    Respond::respond(packet_map &request,  conf &servers, std::string port)
@@ -32,6 +39,8 @@ void    Respond::respond(packet_map &request,  conf &servers, std::string port)
     visualize_string_map(server_info);
     fill_response(request, server_info);
     send_all();
+    // pthread_create(&sendThread, NULL, send_all_thread, this);
+    // usleep(5000);
     flush_response();
 
 }
@@ -120,22 +129,24 @@ void    Respond::visualize_response()
 
 void    Respond::send_all()
 {
-    size_t             response_bytes_sent = 0;
+    size_t  response_bytes_sent = 0;
+    size_t  packet_len = response_packet.length(); 
     std::cout << "inside send all" << std::endl;
+    const char *a = response_packet.c_str();
+    // sending = true ;
     visualize_response();
 
-    if (response_packet.length() < 10000)
+    if (packet_len < 10000)
         std::cout << "visualizign response \n" << response_packet << std::endl;
     else
         std::cout <<"large response packet not gonna visualize\n" ;
     std::cout << "COnversion ends" << std::endl;
-     const char *a = response_packet.c_str();
-    while (response_bytes_sent < response_packet.length())
+    while (response_bytes_sent < packet_len)
     {
-        if (response_packet.length() - response_bytes_sent > BUFFER_SIZE)
+        if (packet_len - response_bytes_sent > BUFFER_SIZE)
             response_bytes_sent += send(client_socket, a, BUFFER_SIZE, 0);
         else
-            response_bytes_sent += send(client_socket, a, response_packet.length() - response_bytes_sent, 0);  
+            response_bytes_sent += send(client_socket, a, packet_len - response_bytes_sent, 0);  
         usleep(5000);
         if (response_bytes_sent <= 0)
         {
@@ -144,7 +155,7 @@ void    Respond::send_all()
         }
     }
     std::cout << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl;
-
+    // sending = false;
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)
