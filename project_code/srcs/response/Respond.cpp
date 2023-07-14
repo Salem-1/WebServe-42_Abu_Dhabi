@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 17:27:47 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 02:30:25 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ void    Respond::respond(packet_map &request,  conf &servers, std::string port)
     
     visualize_string_map(server_info);
     fill_response(request, server_info);
-    fill_errored_response(server_info);
     send_all();
     flush_response();
 
@@ -94,15 +93,6 @@ int Respond::check_poisoned_url(packet_map &request)
     return (0);
 }
 
-void    Respond::fill_errored_response(std::map<std::string, std::string> &server_info)
-{
-    if (response["Status-code"][0] == "200")
-        return ;
-    (void)server_info;
-    visualize_response();
-    exit(0);
-    
-}
 
 void    Respond::visualize_response()
 {
