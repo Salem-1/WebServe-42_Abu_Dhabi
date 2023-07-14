@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:37 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/27 05:40:09 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 03:02:21 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Listner::Listner(std::string port): Socket(port)
     if (listen(sockfd, BACKLOG) == -1)
     {
         perror("listen error");
-        exit(1);
+        throw(std::runtime_error("Listen error"));
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 02:48:52 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 03:01:15 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,18 +148,18 @@ void    Kque::delete_fd_event(int fd)
 void   Kque::kque_error(std::string msg)
 {
     perror(msg.c_str());
-    std::system_error("Kque error");
+    throw(std::runtime_error("Kque error"));
 }
 
 
 std::string  Kque::socket_info(int sockfd)
 {
-        struct sockaddr_in addr;
+    struct sockaddr_in addr;
     socklen_t addr_len = sizeof(addr);
-
-        if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1) {
+    if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1)
+    {
         perror("getsockname");
-        exit(1);
+        throw(std::runtime_error("getsockname error"));
     }
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
