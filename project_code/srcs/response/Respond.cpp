@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 02:30:25 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 22:22:42 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,17 @@ void    Respond::visualize_response()
     std::cout << "{" << std::endl;
     for (response_pack::iterator it = response.begin(); it != response.end(); it++)
     {
-        std::cout << "  \"" << it->first << "\": [";
+        if ((it->first).length() < 10000)
+            std::cout << "  \"" << it->first << "\": [";
+        else
+            std::cout << "\"" << "large packet not gonna visualize" << "\", ";
 
          for (std::vector<std::string>::iterator vit = it->second.begin(); vit != it->second.end(); ++vit)
         {
-            std::cout << "\"" << *vit << "\", ";
+            if ((*vit).length() < 10000)
+                std::cout << "\"" << *vit << "\", ";
+            else
+                std::cout << "\"" << "large packet not gonna visualize" << "\", ";
         }
         std::cout << "]" << std::endl;
     }
@@ -115,11 +121,24 @@ void    Respond::visualize_response()
 void    Respond::send_all()
 {
     size_t             response_bytes_sent = 0;
+    std::cout << "inside send all" << std::endl;
     visualize_response();
 
-    std::cout << "visualizign response \n" << response_packet << std::endl;
+    if (response_packet.length() < 10000)
+        std::cout << "visualizign response \n" << response_packet << std::endl;
+    else
+        std::cout <<"large response packet not gonna visualize\n" ;
+    // std::cout << "converting the packet to char * = " << response_packet << std::endl;
+    std::cout << "COnversion ends" << std::endl;
+     const char *a = response_packet.c_str();
     while (response_bytes_sent < response_packet.length())
-            response_bytes_sent += send(client_socket, response_packet.c_str(), response_packet.length(), 0);
+    {
+        if (response_packet.length() - response_bytes_sent > BUFFER_SIZE)
+            response_bytes_sent += send(client_socket, a, BUFFER_SIZE, 0);
+        else
+            response_bytes_sent += send(client_socket, a, response_packet.length() - response_bytes_sent, 0);  
+        usleep(5000);
+    }
     std::cout << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl;
     // if (response_bytes_sent < 0)
     //    perror("sent failed");

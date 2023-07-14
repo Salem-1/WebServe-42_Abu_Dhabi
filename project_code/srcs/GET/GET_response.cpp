@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/13 08:38:55 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/14 04:00:59 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
         std::cout << file_path << std::endl;
         fill_status_code(reponse_check , "403", "file not found ya basha!");
         response_packet = err.code(server_info, reponse_check["Status-code"][0]);
-        std::cout << response_packet << std::endl;
+        if (response_packet.length() < 10000)
+            std::cout << response_packet << std::endl;
+        else
+            std::cout << "inside GET_response has large response not gonna visualize\n";
         return ;
     }
     std::stringstream content_stream;
