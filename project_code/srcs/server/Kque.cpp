@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 09:53:17 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 02:48:52 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ void    Kque::delete_fd_event(int fd)
 void   Kque::kque_error(std::string msg)
 {
     perror(msg.c_str());
-    exit(1);
+    std::system_error("Kque error");
 }
 
 
