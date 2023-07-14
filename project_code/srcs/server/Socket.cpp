@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/27 05:41:53 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/13 09:00:10 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void    Socket::non_block_sock(void)
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
         error_in_socket("error setting socket option: ");
     std::cout << "Socket set to non block" << std::endl;
-    sleep(1);
+    usleep(500);
 }
 void    Socket::error_in_socket(std::string err)
 {
