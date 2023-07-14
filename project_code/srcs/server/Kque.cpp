@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 22:50:42 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 01:10:48 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void    Kque::handle_request_by_client(int tmp_fd)
     if (clients[tmp_fd].state == KILL_CONNECTION)
     {
         std::cout << "closing the connection and deleting client "<< tmp_fd << " inside kqueue\n";
+        // pthread_join(clients[tmp_fd].responder.sendThread, NULL);
         delete_fd_event(tmp_fd);
         clients.erase(tmp_fd);
         return ;
