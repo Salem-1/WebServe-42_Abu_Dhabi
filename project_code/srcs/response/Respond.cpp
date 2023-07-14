@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 22:22:42 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 00:32:31 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,6 @@ void    Respond::send_all()
         std::cout << "visualizign response \n" << response_packet << std::endl;
     else
         std::cout <<"large response packet not gonna visualize\n" ;
-    // std::cout << "converting the packet to char * = " << response_packet << std::endl;
     std::cout << "COnversion ends" << std::endl;
      const char *a = response_packet.c_str();
     while (response_bytes_sent < response_packet.length())
@@ -138,10 +137,13 @@ void    Respond::send_all()
         else
             response_bytes_sent += send(client_socket, a, response_packet.length() - response_bytes_sent, 0);  
         usleep(5000);
+        if (response_bytes_sent <= 0)
+        {
+            perror("sent failed");
+            break ;
+        }
     }
     std::cout << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl;
-    // if (response_bytes_sent < 0)
-    //    perror("sent failed");
 
 }
 
