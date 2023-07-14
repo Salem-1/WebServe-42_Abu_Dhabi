@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/08 00:37:08 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/14 22:24:01 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ Client::~Client()
 void Client::handle_request()
 {
     start_time = clock();
-//receiver
+
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
     receiver.receive_all();
@@ -62,7 +62,10 @@ void Client::handle_request()
     else if (!receiver.parser.read_again)
     {
         //stopped here should build respond clas
-        std::cout << "\ninside client sending packet\n" << receiver.parser.packet;
+        if (receiver.parser.packet.length() < 10000)
+            std::cout << "\ninside client sending packet\n" << receiver.parser.packet;
+        else
+            std::cout << "should send large packet not gonna visualize\n";
         responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
     }
 }
