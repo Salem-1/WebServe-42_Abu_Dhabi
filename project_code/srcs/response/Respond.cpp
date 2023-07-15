@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 18:15:31 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/15 19:46:16 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,19 +99,19 @@ int Respond::check_poisoned_url(packet_map &request)
 
 void    Respond::visualize_response()
 {
-    std::cout << "\nVisualizing reponse API\n" << std::endl;
-    std::cout << "{" << std::endl;
+    std::cout << BOLDRED << "\nVisualizing reponse API\n" << std::endl;
+    std::cout << "{" << std::endl << RESET;
     for (response_pack::iterator it = response.begin(); it != response.end(); it++)
     {
-        std::cout << "  \"" << it->first << "\": [";
+        std::cout << BOLDBLUE << "  \"" << it->first << "\": [" << RESET;
 
          for (std::vector<std::string>::iterator vit = it->second.begin(); vit != it->second.end(); ++vit)
         {
             std::cout << "\"" << *vit << "\", ";
         }
-        std::cout << "]" << std::endl;
+        std::cout << BOLDBLUE << "]" << std::endl << RESET;
     }
-    std::cout << "}" << std::endl;
+    std::cout << BOLDRED << "}" << std::endl << RESET;
 }
 
 
@@ -120,10 +120,10 @@ void    Respond::send_all()
     size_t             response_bytes_sent = 0;
     visualize_response();
 
-    std::cout << "visualizign response \n" << response_packet << std::endl;
+    std::cout << BOLDRED << "visualizign response \n" << WHITE << response_packet << std::endl << RESET;
     while (response_bytes_sent < response_packet.length())
             response_bytes_sent += send(client_socket, response_packet.c_str(), response_packet.length(), 0);
-    std::cout << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl;
+    std::cout << GREEN << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl << RESET;
     // if (response_bytes_sent < 0)
     //    perror("sent failed");
 
@@ -141,9 +141,9 @@ std::map<std::string, std::string>  Respond::get_server_info(packet_map &request
 {
     std::vector<int>            nominated_servers;
     std::vector<std::string>    server_names;
-    std::cout << "port  = " << port << std::endl;
+    std::cout << BOLDGREEN << "port  = " << port << std::endl;
     unsigned long n = servers.size();
-    std::cout << "we have " << n << "servers\n";
+    std::cout << "we have " << n << "servers\n" << RESET;
     for (unsigned long i = 0; i < servers.size(); i++)
     {
         std::cout << "config port = " << servers[i]["Port"] << std::endl ;
