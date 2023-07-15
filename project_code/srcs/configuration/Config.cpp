@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 20:06:51 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 02:42:13 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["DELETE path"] = "POST";
     servers[2]["server_name"] = "127.0.0.1";
     servers[2]["Port"] = "5555";
-    servers[2]["root"] = pwd + "/website";
+    servers[2]["root"] = pwd + "/intra/website";
     servers[2]["index"] = "index.html";
     servers[2]["/"] = servers[2]["root"] + "/" + servers[2] ["index"];
     servers[2]["/images"] = servers[2]["root"] + "/path_to_images/";
@@ -141,7 +141,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[3]["DELETE path"] = "POST";
     servers[3]["server_name"] = "defaultserver";
     servers[3]["Port"] = "4444";
-    servers[3]["root"] = pwd + "/website";
+    servers[3]["root"] = pwd + "/intra/website";
     servers[3]["index"] = "index.html";
     servers[3]["/"] = servers[3]["root"] + "/" + servers[3] ["index"];
     servers[3]["/images"] = servers[3]["root"] + "/path_to_images/";
