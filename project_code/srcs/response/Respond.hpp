@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 14:40:50 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 18:21:45 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../GET/GET_response.hpp"
 # include "../GET/GET.hpp"
 # include "../DELETE/DELETE.hpp"
+# include "../POST/Post.hpp"
 
 class Respond
 {
@@ -33,8 +34,6 @@ public:
     void                                respond(packet_map &request,
                                             conf &servers, std::string port);
     void                                fill_response(packet_map &request,
-                                            std::map<std::string, std::string> &server_info);
-    void                                fill_errored_response(
                                             std::map<std::string, std::string> &server_info);
     void                                visualize_response();
     int                                 fill_status_code(std::string status_code,
