@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 04:00:59 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 12:05:30 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,7 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
     //checking file size in bytes
     // infile.seekg(0, std::ios::end);
     // int file_size = infile.tellg();
-    response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
-        + " " + *(++reponse_check["Status-code"].begin()) + "\r\n";
+    response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += err.get_timebuffer();
