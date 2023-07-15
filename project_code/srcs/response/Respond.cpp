@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 02:30:25 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/14 18:15:31 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void    Respond::fill_response(packet_map &request, std::map<std::string, std::s
     if (request.find("GET") != request.end())
         response_packet = normal_GET_Response(request, server_info);
     else if (request.find("POST") != request.end())
-        std::cout << "POST request under construction" << std::endl;
+    {
+        Post apost(request, server_info);
+        // response_packet = apost.get_response();
+    }
     else if (request.find("DELETE") != request.end())
     {
         DELETE DELETE_response;

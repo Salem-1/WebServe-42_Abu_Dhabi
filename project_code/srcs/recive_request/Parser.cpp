@@ -6,14 +6,14 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/07 16:21:48 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 13:49:57 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
 
-Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0)
+Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0), is_post(false)
 {
     fill_valid_headers();
 }
@@ -59,13 +59,42 @@ void    Parser::parse(char *new_buffer)
     packet += str;
     std::cout << "\n\ninside parser buffer = \n<" << new_buffer << ">" << std::endl;
     std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
-    if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+    // if (is_post)
+    // {
+    //     //you have a ready header 
+    //     //body parsing
+    //     //yassin and ahmed do the parsing of body
+        
+    //     //fill_body_request(body)
+        
+    //     //after finishing reading
+        
+
+    //     // packet = "";
+    //     // read_again = 0;
+    //     // is_post = false;
+    // }  
+    // else
+     if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
         fill_header_request(packet);
         check_headers();
-        packet = "";
-        read_again = 0;
+        //here I can know if it post or get or delete
+        // if (request.find("GET") != request.end() || request.find("DELETE") != request.end())
+        // {
+            read_again = 0;
+            packet = "";
+        // }
+        // else
+        // {
+        //     //
+        //     //I will save the body , and check if the body is empty
+        //     // std::vector<std::string> splitted_packet = split(packet,"\r\n\r\n");
+        //     std::string body = split(packet,"\r\n\r\n")[1];
+        //     packet = "";
+        //     is_post = true;
+        // }
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -94,7 +123,6 @@ void    Parser::fill_header_request(std::string packet)
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
 
-  
 
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
@@ -123,7 +151,5 @@ void    Parser::fill_header_request(std::string packet)
         }
     }
 }
-
-
 
 

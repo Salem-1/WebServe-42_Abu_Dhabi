@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:01 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 13:44:59 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ class Parser
         response_pack           response;
         std::set<std::string>   valid_headers;
         std::string             filled_response;
-};
+        bool                    is_post;
+        std::string             body;
+};      
 
 #endif
