@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/07 16:21:48 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 17:54:23 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,3 @@ void    Parser::fill_header_request(std::string packet)
         }
     }
 }
-
-
-
-
