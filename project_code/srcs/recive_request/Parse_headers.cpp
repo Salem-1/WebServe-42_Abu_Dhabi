@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parse_headers.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/07 16:19:44 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/17 16:23:05 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int    Parser::check_headers()
 {
     std::vector<std::string> status;
-    std::cout << "visualizing insid Get request" << std::endl;
+    std::cout << "visualizing inside Get request" << std::endl;
     visualize_request_packet();
    
     if (!valid_packet_headers())
@@ -34,6 +34,7 @@ int    Parser::check_headers()
     }
     return (1);
 }
+
 int Parser::valid_packet_headers()
 {
     bool    valid = false;
@@ -121,18 +122,18 @@ void  Parser::fill_valid_headers()
 
 void    Parser::visualize_request_packet()
 {
-    std::cout << "visualizing requesest packet API\n\n" << std::endl;
-    std::cout << "{" << std::endl;
+    std::cout << BOLDRED << "visualizing requesest packet API\n\n" << std::endl;
+    std::cout << "{" << std::endl << RESET;
     for (packet_map::iterator hit = request.begin();
             hit != request.end(); ++hit)
     {
-        std::cout << "\"" << hit->first << "\": [" ;
+        std::cout << BOLDGREEN << "\"" << hit->first << "\": [" << RESET;
         for (std::vector<std::string>::iterator it = hit->second.begin();
                 it != hit->second.end(); ++it)
         {
-            std::cout << "\"" << *it << "\", ";
+            std::cout << " " << *it;
         }
-        std::cout << "]" << std::endl;
+        std::cout << BOLDGREEN << "]" << std::endl << RESET;
     }
-    std::cout << "}\n packet visualization ends\n\n\n";
+    std::cout << BOLDRED << "}\n packet visualization ends\n\n\n" << RESET;
 }
