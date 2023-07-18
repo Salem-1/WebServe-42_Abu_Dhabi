@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 01:36:56 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/18 14:18:40 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <iostream>
 # include <fstream>
 # include <string>
+#include <dirent.h>
 // # include<thread>
 # include <map>
 # include <set>
@@ -90,7 +91,7 @@ void    visualize_servers(
     std::vector<std::map<std::string, std::string> > servers);
 
 void    visualize_string_map(std::map<std::string, std::string>  &map);
-
+void    vis_str(std::string packet, std::string message);
 //---------------------------------------------
 
 

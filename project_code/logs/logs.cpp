@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:18 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 13:32:48 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/18 13:48:42 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,3 +181,11 @@ public:
         logFile.flush();  // Flush the buffer to ensure immediate write to the file
     }
 };
+
+void    vis_str(std::string packet, std::string message)
+{
+        if (packet.length() < 10000)
+            std::cout << packet << std::endl;
+        else
+            std::cout << message;
+}

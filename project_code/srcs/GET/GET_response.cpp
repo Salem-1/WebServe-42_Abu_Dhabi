@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 12:05:30 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/18 14:37:55 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,43 +31,58 @@ std::string     GET_response::fill_get_response(std::map<std::string, std::strin
 }
 void        GET_response::fill_ok_response(std::map<std::string, std::string> &server_info)
 {
-    /*
-    chunking or storing bytes on vector instead of string, or array of strings should happen
-        here |
-             v  
-    */
-
     response_packet = "";
-
-    // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
     std::string file_path = construct_path(server_info);
     std::cout << "requested file path = " << file_path << std::endl;
-    if (!sanitized_path(file_path))
-    {
-        fill_status_code(reponse_check , "403", "malicous header!");
-        response_packet = err.code(server_info, reponse_check["Status-code"][0]);
+    if (!sanitized_path(file_path)&& fill_bad_path(server_info))
         return ;
-    }
     std::cout << "constructed path = " << file_path << std::endl;
-
-    std::ifstream infile(file_path.c_str());
-    if (infile.fail())
+    DIR *dir;
+    std::string full_file_to_string;
+    if ((dir  = opendir(file_path.c_str())) != NULL)
     {
-        std::cout << file_path << std::endl;
-        fill_status_code(reponse_check , "403", "file not found ya basha!");
-        response_packet = err.code(server_info, reponse_check["Status-code"][0]);
-        if (response_packet.length() < 10000)
-            std::cout << response_packet << std::endl;
-        else
-            std::cout << "inside GET_response has large response not gonna visualize\n";
-        return ;
+        struct dirent *files;
+        std::vector<std::string> ls;
+        ls.push_back(file_path);
+        while ((files = readdir(dir)) != NULL)
+            ls.push_back(files->d_name);
+        construct_dir_response(ls, full_file_to_string);
     }
-    std::stringstream content_stream;
-    content_stream  << infile.rdbuf();
-    std::string full_file_to_string = content_stream.str();
-    //checking file size in bytes
-    // infile.seekg(0, std::ios::end);
-    // int file_size = infile.tellg();
+    else
+    {
+        std::ifstream infile(file_path.c_str());
+        if (infile.fail() && fill_bad_path(server_info))
+            return ;
+        std::stringstream content_stream;
+        content_stream  << infile.rdbuf();
+        full_file_to_string = content_stream.str();
+    }
+    filling_response_packet(full_file_to_string);
+}
+
+void    GET_response::construct_dir_response(std::vector<std::string> &ls,
+    std::string &full_file_to_string)
+{
+    std::string file_name = ls[0].substr(ls[0].rfind("/"), ls[0].length());
+    full_file_to_string = "<!DOCTYPE html>";
+    full_file_to_string += "<html>";
+    full_file_to_string += "<head>";
+    full_file_to_string += "    <title>Index of" +  file_name + "</title>";
+    full_file_to_string += "</head>";
+    full_file_to_string += "<body>";
+    full_file_to_string += "  <h1>Index of " + file_name +"</h1>";
+    full_file_to_string += "<ul>";
+    full_file_to_string += "    <ul>";
+    for (std::vector<std::string>::iterator it = ++ls.begin();
+        it != ls.end(); ++it) 
+        full_file_to_string += "        <li>" + *it +"</li>";
+    full_file_to_string += "    </ul>";
+    full_file_to_string += "</body>";
+    full_file_to_string += "</html>";
+    
+}
+void     GET_response::filling_response_packet(std::string &full_file_to_string)
+{
     response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
@@ -77,8 +92,17 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
 	ss << full_file_to_string.length();
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string;
+    
 }
 
+bool    GET_response::fill_bad_path(std::map<std::string, std::string> &server_info)
+{
+        fill_status_code(reponse_check , "403", "file not found ya basha!");
+        response_packet = err.code(server_info, reponse_check["Status-code"][0]);
+        vis_str(response_packet, "inside GET_response has large response not gonna visualize\n");
+        return (true);
+
+}
 std::string    GET_response::construct_path(std::map<std::string, std::string> &server_info)
 {
 
