@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 01:42:39 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 13:57:11 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,8 +147,6 @@ void    Respond::send_all()
             response_bytes_sent += send(client_socket, a, BUFFER_SIZE, 0);
         else
             response_bytes_sent += send(client_socket, a, packet_len - response_bytes_sent, 0);  
-        std::cout << "sent = " << response_bytes_sent << " length is " << packet_len;
-        std::cout << " , " << packet_len - response_bytes_sent << " left\n";
         // usleep(100);
         if (response_bytes_sent <= 0)
         {
