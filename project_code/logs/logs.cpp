@@ -184,7 +184,7 @@ public:
 void    vis_str(std::string packet, std::string message)
 {
         if (packet.length() < 10000)
-            std::cout << packet << std::endl;
+            std::cout << MAGENTA << packet << RESET << std::endl;
         else
-            std::cout << message;
+            std::cout << MAGENTA  << message << RESET;
 }
