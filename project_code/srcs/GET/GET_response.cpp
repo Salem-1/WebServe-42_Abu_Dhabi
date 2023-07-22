@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/18 14:37:55 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/22 21:26:21 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,12 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
 {
     response_packet = "";
     std::string file_path = construct_path(server_info);
-    std::cout << "requested file path = " << file_path << std::endl;
+
+    std::cout << BOLDMAGENTA << "requested file path = "
+    		<< RESET << file_path << std::endl <<RESET;
     if (!sanitized_path(file_path)&& fill_bad_path(server_info))
         return ;
-    std::cout << "constructed path = " << file_path << std::endl;
+    std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
     DIR *dir;
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
@@ -107,7 +109,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
 {
 
     std::string path = reponse_check["Path"][1];
-    std::cout << "construcing path = " << path << std::endl ;
+    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
     if (path == "/")
         return (server_info[path]);
     if (std::count(path.begin(), path.end(), '/') < 2)
@@ -118,7 +120,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
             return (server_info["root"] + path);
     }
     std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << "dir == " << dir << " path = " << path << std::endl;
+    std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
     // /images/ case
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
@@ -128,7 +130,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
     }
     // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
-    std::cout << "rest of path = " << rest_of_path << std::endl;
+    std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     if (server_info.find(dir) != server_info.end())
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);

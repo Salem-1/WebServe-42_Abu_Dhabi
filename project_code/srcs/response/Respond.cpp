@@ -6,9 +6,10 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 00:44:34 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/22 21:23:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Respond.hpp"
 
@@ -65,7 +66,10 @@ void    Respond::fill_response(packet_map &request, std::map<std::string, std::s
     if (request.find("GET") != request.end())
         response_packet = normal_GET_Response(request, server_info);
     else if (request.find("POST") != request.end())
-        std::cout << "POST request under construction" << std::endl;
+    {
+        Post apost(request, server_info);
+        // response_packet = apost.get_response();
+    }
     else if (request.find("DELETE") != request.end())
     {
         DELETE DELETE_response;
@@ -105,8 +109,8 @@ int Respond::check_poisoned_url(packet_map &request)
 
 void    Respond::visualize_response()
 {
-    std::cout << "\nVisualizing reponse API\n" << std::endl;
-    std::cout << "{" << std::endl;
+    std::cout << BOLDRED << "\nVisualizing reponse API\n" << std::endl;
+    std::cout << "{" << std::endl << RESET;
     for (response_pack::iterator it = response.begin(); it != response.end(); it++)
     {
         if ((it->first).length() < 10000)
@@ -121,9 +125,9 @@ void    Respond::visualize_response()
             else
                 std::cout << "\"" << "large packet not gonna visualize" << "\", ";
         }
-        std::cout << "]" << std::endl;
+        std::cout << BOLDBLUE << "]" << std::endl << RESET;
     }
-    std::cout << "}" << std::endl;
+    std::cout << BOLDRED << "}" << std::endl << RESET;
 }
 
 
@@ -135,11 +139,10 @@ void    Respond::send_all()
     const char *a = response_packet.c_str();
     // sending = true ;
     visualize_response();
-
     if (packet_len < 10000)
-        std::cout << "visualizign response \n" << response_packet << std::endl;
+        std::cout << BOLDRED << "visualizign response \n" << WHITE << response_packet << std::endl << RESET;
     else
-        std::cout <<"large response packet not gonna visualize\n" ;
+        std::cout << "large response packet not gonna visualize\n" ;
     std::cout << "COnversion ends" << std::endl;
     while (response_bytes_sent < packet_len)
     {
@@ -169,9 +172,9 @@ std::map<std::string, std::string>  Respond::get_server_info(packet_map &request
 {
     std::vector<int>            nominated_servers;
     std::vector<std::string>    server_names;
-    std::cout << "port  = " << port << std::endl;
+    std::cout << BOLDGREEN << "port  = " << port << std::endl;
     unsigned long n = servers.size();
-    std::cout << "we have " << n << "servers\n";
+    std::cout << "we have " << n << "servers\n" << RESET;
     for (unsigned long i = 0; i < servers.size(); i++)
     {
         std::cout << "config port = " << servers[i]["Port"] << std::endl ;
