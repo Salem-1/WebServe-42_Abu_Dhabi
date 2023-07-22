@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 00:44:29 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/22 21:24:20 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../GET/GET_response.hpp"
 # include "../GET/GET.hpp"
 # include "../DELETE/DELETE.hpp"
+# include "../POST/Post.hpp"
 
 
 class Respond
