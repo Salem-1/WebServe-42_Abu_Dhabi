@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 13:57:11 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/22 00:44:34 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ Respond::~Respond()
 {
 }
 
-void* send_all_thread(void* arg)
-{
-    Respond* respondObj = static_cast<Respond*>(arg);
-    respondObj->send_all();
-    pthread_exit(NULL);
-}
+// void* send_all_thread(void* arg)
+// {
+//     Respond* respondObj = static_cast<Respond*>(arg);
+//     respondObj->send_all();
+//     pthread_exit(NULL);
+// }
 
 void    Respond::respond(packet_map &request,  conf &servers, std::string port)
 {
