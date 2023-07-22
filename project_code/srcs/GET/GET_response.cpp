@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 21:26:21 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/22 21:33:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ void    GET_response::construct_dir_response(std::vector<std::string> &ls,
     full_file_to_string += "    </ul>";
     full_file_to_string += "</body>";
     full_file_to_string += "</html>";
-    
 }
 void     GET_response::filling_response_packet(std::string &full_file_to_string)
 {
