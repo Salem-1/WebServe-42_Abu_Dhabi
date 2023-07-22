@@ -6,9 +6,10 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 12:52:55 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/22 22:39:15 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Kque.hpp"
 
@@ -36,10 +37,6 @@ void    Kque::watch_fds(conf &servers)
         for (int i = 0; i < active_fds; i++)
         {
             tmp_fd = events[i].ident;
-            //check here the which socket is open, and get the
-            //port server info of the port then inside the client 
-            //check port and host name, 
-            // so the client must be able to read the config map
             if (tmp_fd_in_server_socket(tmp_fd))
             {
                 if (events[i].filter == EVFILT_READ)
@@ -49,11 +46,7 @@ void    Kque::watch_fds(conf &servers)
                     if(client_socket < 0)
                         continue ;
                     add_read_event(client_socket);
-                    //should give the clinet all configs
-
-                    //inshalla
                     clients[client_socket] = Client(client_socket, servers);
-                    // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
                     active_clients.insert(client_socket);
                 }
             }
@@ -74,6 +67,7 @@ bool Kque::tmp_fd_in_server_socket(int tmp_fd)
         }
         return (false);
 }
+
 void    Kque::kill_timeouted_clients()
 {
     int active = 0;
@@ -114,6 +108,7 @@ void    Kque::handle_request_by_client(int tmp_fd)
     if (clients[tmp_fd].state == KILL_CONNECTION)
     {
         std::cout << "closing the connection and deleting client "<< tmp_fd << " inside kqueue\n";
+        // pthread_join(clients[tmp_fd].responder.sendThread, NULL);
         delete_fd_event(tmp_fd);
         clients.erase(tmp_fd);
         return ;

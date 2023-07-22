@@ -3,25 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 19:46:16 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/22 21:23:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Respond.hpp"
 
 Respond::Respond()
 {};
 
-Respond::Respond(int    client_socket) :client_socket(client_socket)
+Respond::Respond(int    client_socket) :client_socket(client_socket),  sending(false)
 {
 }
 
 Respond::~Respond()
 {
 }
+
+// void* send_all_thread(void* arg)
+// {
+//     Respond* respondObj = static_cast<Respond*>(arg);
+//     respondObj->send_all();
+//     pthread_exit(NULL);
+// }
 
 void    Respond::respond(packet_map &request,  conf &servers, std::string port)
 {
@@ -32,6 +40,8 @@ void    Respond::respond(packet_map &request,  conf &servers, std::string port)
     visualize_string_map(server_info);
     fill_response(request, server_info);
     send_all();
+    // pthread_create(&sendThread, NULL, send_all_thread, this);
+    // usleep(5000);
     flush_response();
 
 }
@@ -103,11 +113,17 @@ void    Respond::visualize_response()
     std::cout << "{" << std::endl << RESET;
     for (response_pack::iterator it = response.begin(); it != response.end(); it++)
     {
-        std::cout << BOLDBLUE << "  \"" << it->first << "\": [" << RESET;
+        if ((it->first).length() < 10000)
+            std::cout << "  \"" << it->first << "\": [";
+        else
+            std::cout << "\"" << "large packet not gonna visualize" << "\", ";
 
          for (std::vector<std::string>::iterator vit = it->second.begin(); vit != it->second.end(); ++vit)
         {
-            std::cout << "\"" << *vit << "\", ";
+            if ((*vit).length() < 10000)
+                std::cout << "\"" << *vit << "\", ";
+            else
+                std::cout << "\"" << "large packet not gonna visualize" << "\", ";
         }
         std::cout << BOLDBLUE << "]" << std::endl << RESET;
     }
@@ -117,16 +133,31 @@ void    Respond::visualize_response()
 
 void    Respond::send_all()
 {
-    size_t             response_bytes_sent = 0;
+    size_t  response_bytes_sent = 0;
+    size_t  packet_len = response_packet.length(); 
+    std::cout << "inside send all" << std::endl;
+    const char *a = response_packet.c_str();
+    // sending = true ;
     visualize_response();
-
-    std::cout << BOLDRED << "visualizign response \n" << WHITE << response_packet << std::endl << RESET;
-    while (response_bytes_sent < response_packet.length())
-            response_bytes_sent += send(client_socket, response_packet.c_str(), response_packet.length(), 0);
-    std::cout << GREEN << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl << RESET;
-    // if (response_bytes_sent < 0)
-    //    perror("sent failed");
-
+    if (packet_len < 10000)
+        std::cout << BOLDRED << "visualizign response \n" << WHITE << response_packet << std::endl << RESET;
+    else
+        std::cout << "large response packet not gonna visualize\n" ;
+    std::cout << "COnversion ends" << std::endl;
+    while (response_bytes_sent < packet_len)
+    {
+        if (packet_len - response_bytes_sent > BUFFER_SIZE)
+            response_bytes_sent += send(client_socket, a, BUFFER_SIZE, 0);
+        else
+            response_bytes_sent += send(client_socket, a, packet_len - response_bytes_sent, 0);  
+        // usleep(100);
+        if (response_bytes_sent <= 0)
+        {
+            perror("sent failed");
+            break ;
+        }
+    }
+    // sending = false;
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)
