@@ -5,9 +5,7 @@ documentation/resources/source_codes
 .DS_Store
 .drawio*./documentation/resources
 documentation/resources
-project_code/testers/webserv_tester
 project_code/testers/other_tester
-/Users/ahsalem/projects/cursus/webserve/project_code/testers/webserv_tester
 /Users/ahsalem/projects/cursus/webserve/project_code/testers/other_tester
 *.DS_Store
 project_code/testers/our_tester/website/stress.html
