@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 00:44:53 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 15:04:56 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Kque
         void                    delete_fd_event(int fd);
         int                     accepting(int fd);
         void                    handle_request_by_client
-                                    (int tmp_fd);
+                                    (struct kevent event);
         std::string                    socket_info(int sockfd);
         bool                     tmp_fd_in_server_socket(int tmp_fd);
     private:
