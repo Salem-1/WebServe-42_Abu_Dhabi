@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 21:24:20 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 16:45:31 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Respond
         Respond(int client_socket);
         ~Respond();
         void                                flush_response(void);
-         void                                send_all(void);
+         void                                send_all(connection_state &state);
         void                                respond(packet_map &request,
                                                 conf &servers, std::string port);
         void                                fill_response(packet_map &request,
@@ -47,8 +47,10 @@ class Respond
         std::string                         response_packet;
         pthread_t                           sendThread;
         bool                                sending;
+        
     private:
         int     check_poisoned_url(packet_map &request);
+        size_t     response_bytes_sent;
     
 };
 // void* send_all_thread(void* arg);

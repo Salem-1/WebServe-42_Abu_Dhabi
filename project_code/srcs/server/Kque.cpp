@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 15:06:21 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:45:17 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Kque::Kque(std::vector<int> socket_fds): kq(kqueue()), server_sockets(socket_fds
     for (std::vector<int>::iterator it = server_sockets.begin();
             it != server_sockets.end(); ++it)
     {
-        add_read_event(*it);
+        add_read_write_event(*it);
     }
 };
 
@@ -44,7 +44,7 @@ void    Kque::watch_fds(conf &servers)
                     std::string hero_port = socket_info(client_socket);
                     if(client_socket < 0)
                         continue ;
-                    add_read_event(client_socket);
+                    add_read_write_event(client_socket);
                     clients[client_socket] = Client(client_socket, servers);
                     active_clients.insert(client_socket);
                 }
@@ -100,7 +100,6 @@ void    Kque::kill_timeouted_clients()
 void    Kque::handle_request_by_client(struct kevent event)
 {
     active_clients.insert(event.ident);
-//I believe thread should be here 
     clients[event.ident].handle_request(event);
     std::cout << "inside kque after handling request state = ";
     std::cout << clients[event.ident].state << std::endl;
@@ -114,10 +113,13 @@ void    Kque::handle_request_by_client(struct kevent event)
     }
 }
 
-void    Kque::add_read_event(int fd)
+void    Kque::add_read_write_event(int fd)
 {
-    EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
+    EV_SET(&event[0], fd, EVFILT_READ , EV_ADD, 0, 0, NULL);
+    if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
+        kque_error("failed to add socket to event kque: ");
+    EV_SET(&event[1], fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+    if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kque_error("failed to add socket to event kque: ");
 }
 
@@ -133,8 +135,11 @@ int    Kque::accepting(int  fd)
 
 void    Kque::delete_fd_event(int fd)
 {
-    EV_SET(&event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
+    EV_SET(&event[0], fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
+    if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
+        kque_error("failed to remove socket from event kque: ");
+    EV_SET(&event[1], fd, EVFILT_WRITE , EV_DELETE, 0, 0, NULL);
+    if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kque_error("failed to remove socket from event kque: ");
     close(fd);
 }
