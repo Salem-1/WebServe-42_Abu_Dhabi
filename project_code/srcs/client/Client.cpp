@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 01:11:49 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 14:16:51 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,7 @@ void Client::handle_request()
     }
     else if (!receiver.parser.read_again)
     {
-        //stopped here should build respond clas
-        // if (responder.sending)
-        // {
-        //     // pthread_join(responder.sendThread, NULL);
-        //     responder.sending = false;
-        // }
-        if (receiver.parser.packet.length() < 10000)
-            std::cout << "\ninside client sending packet\n" << receiver.parser.packet;
-        else
-            std::cout << "should send large packet not gonna visualize\n";
+        vis_str(receiver.parser.packet, "inside client sending packet");
         responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
     }
 }
@@ -85,7 +76,6 @@ std::string Client::get_port(int client_socket)
         perror("getsockname");
         return ("no port attached");
     }
-
     // Convert the IP address to a human-readable string
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
