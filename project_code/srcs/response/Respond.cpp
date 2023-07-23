@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 16:50:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 23:06:30 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@ void    Respond::send_all(connection_state &state)
         response_bytes_sent += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
     if (response_bytes_sent <= 0)
     {
-        perror("sent failed");
-        sending = false;
+        perror("send failed");
+        flush_response();
         state = KILL_CONNECTION;
     }
     if (response_bytes_sent == packet_len)

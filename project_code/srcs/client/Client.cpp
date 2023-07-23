@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 22:54:45 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:58:11 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@ void Client::handle_request(struct kevent event)
     if (event.filter == EVFILT_READ)
         std::cout << "socket open for READ " << std::endl; 
 
-    if (event.filter == EVFILT_WRITE && responder.sending)
+    if (event.filter == EVFILT_WRITE && responder.sending && receiver.state == KEEP_ALIVE)
         responder.send_all(receiver.state);
-    else if (event.filter == EVFILT_READ)
+    else if (event.filter == EVFILT_READ && receiver.state == KEEP_ALIVE)
     {
         receiver.receive_all();
         std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
