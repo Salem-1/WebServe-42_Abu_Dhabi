@@ -6,8 +6,6 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:18 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 19:51:44 by ayassin          ###   ########.fr       */
-/*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libs.hpp"
@@ -182,3 +180,11 @@ public:
         logFile.flush();  // Flush the buffer to ensure immediate write to the file
     }
 };
+
+void    vis_str(std::string packet, std::string message)
+{
+        if (packet.length() < 10000)
+            std::cout << MAGENTA << packet << RESET << std::endl;
+        else
+            std::cout << MAGENTA  << message << RESET;
+}
