@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:58 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 14:13:06 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 14:14:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ void    Receive::receive_all()
     }
     if (parser.read_again)
         state = KEEP_ALIVE;
-    // else if (parser.read_again)
-    //     receive_all();
     return ;
 }
 
