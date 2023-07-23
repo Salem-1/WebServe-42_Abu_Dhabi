@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 14:19:05 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 15:07:31 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,15 @@ Client::Client(const Client &obj2)
 Client::~Client()
 {};
 
-void Client::handle_request()
+
+void Client::handle_request(struct kevent event)
 {
+    (void)event;
+
+// if (packet open for write and have packet to send)
+//     send_all() ;
+// else if (socket open for read)
+//     recieve and ignore sending packet if have any;
     start_time = clock();
 
     receiver.read_sock = client_socket;

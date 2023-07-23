@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 00:44:56 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 15:06:21 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void    Kque::watch_fds(conf &servers)
                 }
             }
             else
-                handle_request_by_client(tmp_fd);
+                handle_request_by_client(events[i]);
         }
         // kill_timeouted_clients();
     }
@@ -97,19 +97,19 @@ void    Kque::kill_timeouted_clients()
     active_clients.clear();
 };
 
-void    Kque::handle_request_by_client(int tmp_fd)
+void    Kque::handle_request_by_client(struct kevent event)
 {
-    active_clients.insert(tmp_fd);
+    active_clients.insert(event.ident);
 //I believe thread should be here 
-    clients[tmp_fd].handle_request();
+    clients[event.ident].handle_request(event);
     std::cout << "inside kque after handling request state = ";
-    std::cout << clients[tmp_fd].state << std::endl;
-    if (clients[tmp_fd].state == KILL_CONNECTION)
+    std::cout << clients[event.ident].state << std::endl;
+    if (clients[event.ident].state == KILL_CONNECTION)
     {
-        std::cout << "closing the connection and deleting client "<< tmp_fd << " inside kqueue\n";
-        // pthread_join(clients[tmp_fd].responder.sendThread, NULL);
-        delete_fd_event(tmp_fd);
-        clients.erase(tmp_fd);
+        std::cout << "closing the connection and deleting client "<< event.ident << " inside kqueue\n";
+        // pthread_join(clients[event.ident].responder.sendThread, NULL);
+        delete_fd_event(event.ident);
+        clients.erase(event.ident);
         return ;
     }
 }
