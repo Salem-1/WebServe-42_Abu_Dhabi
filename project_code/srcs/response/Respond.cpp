@@ -3,19 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 19:46:16 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/23 23:06:30 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Respond.hpp"
 
 Respond::Respond()
 {};
 
-Respond::Respond(int    client_socket) :client_socket(client_socket)
+Respond::Respond(int    client_socket) :client_socket(client_socket),  sending(false), response_bytes_sent(0)
 {
 }
 
@@ -31,15 +32,17 @@ void    Respond::respond(packet_map &request,  conf &servers, std::string port)
     
     visualize_string_map(server_info);
     fill_response(request, server_info);
-    send_all();
-    flush_response();
-
+    sending = true;
+    
+    std::cout << "We have ready response" << std::endl;
 }
 
 void    Respond::flush_response()
 {
     response.clear();
     response_packet = "";
+    response_bytes_sent = 0;
+    sending = false;
 
 }
 
@@ -103,30 +106,47 @@ void    Respond::visualize_response()
     std::cout << "{" << std::endl << RESET;
     for (response_pack::iterator it = response.begin(); it != response.end(); it++)
     {
-        std::cout << BOLDBLUE << "  \"" << it->first << "\": [" << RESET;
+        if ((it->first).length() < 10000)
+            std::cout << "  \"" << it->first << "\": [";
+        else
+            std::cout << "\"" << "large packet not gonna visualize" << "\", ";
 
          for (std::vector<std::string>::iterator vit = it->second.begin(); vit != it->second.end(); ++vit)
         {
-            std::cout << "\"" << *vit << "\", ";
+            if ((*vit).length() < 10000)
+                std::cout << "\"" << *vit << "\", ";
+            else
+                std::cout << "\"" << "large packet not gonna visualize" << "\", ";
         }
         std::cout << BOLDBLUE << "]" << std::endl << RESET;
     }
     std::cout << BOLDRED << "}" << std::endl << RESET;
 }
 
-
-void    Respond::send_all()
+// this ugly syntax :&a[response_bytes_sent]
+// because I am not able to save const char *a as private asset as the conversion change for each packet
+//while it's constant, I will try to change it later inshalla, for now take the code below for granted
+//till make the new sending scaling work for now
+void    Respond::send_all(connection_state &state)
 {
-    size_t             response_bytes_sent = 0;
+    size_t  packet_len = response_packet.length(); 
+    std::cout << "inside send all" << std::endl;
+    const char *a = response_packet.c_str();
+    // sending = true ;
     visualize_response();
-
-    std::cout << BOLDRED << "visualizign response \n" << WHITE << response_packet << std::endl << RESET;
-    while (response_bytes_sent < response_packet.length())
-            response_bytes_sent += send(client_socket, response_packet.c_str(), response_packet.length(), 0);
-    std::cout << GREEN << "sent = " << response_bytes_sent << " length is " << response_packet.length() << std::endl << RESET;
-    // if (response_bytes_sent < 0)
-    //    perror("sent failed");
-
+    vis_str(response_packet, "inside send all");
+    if (packet_len - response_bytes_sent > BUFFER_SIZE)
+        response_bytes_sent += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
+    else
+        response_bytes_sent += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
+    if (response_bytes_sent <= 0)
+    {
+        perror("send failed");
+        flush_response();
+        state = KILL_CONNECTION;
+    }
+    if (response_bytes_sent == packet_len)
+        flush_response();
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)

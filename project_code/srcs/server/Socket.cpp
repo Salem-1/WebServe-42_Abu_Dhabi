@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/13 09:00:10 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/14 03:02:00 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,6 @@ void    Socket::error_in_socket(std::string err)
 {
     perror(err.c_str());
     freeaddrinfo(res);
-    exit(1);   
+    throw(std::runtime_error("Socket opening error"));  
 }
 
