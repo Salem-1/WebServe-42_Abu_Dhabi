@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 00:44:53 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:44:01 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ class Kque
     
     private:
         void                    kque_error(std::string msg);
-        void                    add_read_event(int fd);
+        void                    add_read_write_event(int fd);
         void                    delete_fd_event(int fd);
         int                     accepting(int fd);
         void                    handle_request_by_client
-                                    (int tmp_fd);
+                                    (struct kevent event);
         std::string                    socket_info(int sockfd);
         bool                     tmp_fd_in_server_socket(int tmp_fd);
     private:
@@ -38,7 +38,7 @@ class Kque
         std::map<int, Client>   clients;
         std::set<int>           active_clients;
         struct sockaddr_in      client_address;
-        struct kevent           event;
+        struct kevent           event[2];
         struct kevent           events[MAX_EVENTS];
         socklen_t               client_address_len;
         int                     kq;
