@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 15:07:31 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:54:45 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,27 +49,32 @@ Client::~Client()
 
 void Client::handle_request(struct kevent event)
 {
-    (void)event;
-
-// if (packet open for write and have packet to send)
-//     send_all() ;
-// else if (socket open for read)
-//     recieve and ignore sending packet if have any;
     start_time = clock();
-
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
-    receiver.receive_all();
-    std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+    std::cout << "responder.sending  = "   << responder.sending << std::endl; 
+    if (event.filter == EVFILT_WRITE)
+        std::cout << "socket open for write " << std::endl; 
+    if (event.filter == EVFILT_READ)
+        std::cout << "socket open for READ " << std::endl; 
+
+    if (event.filter == EVFILT_WRITE && responder.sending)
+        responder.send_all(receiver.state);
+    else if (event.filter == EVFILT_READ)
+    {
+        receiver.receive_all();
+        std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+        if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
+        {
+            vis_str(receiver.parser.packet, "Start packet parsing");
+            responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
+        }
+    }
     if (receiver.state == KILL_CONNECTION)
     {
         std::cout << "Killing connection inside client" << std::endl;
         this->state = KILL_CONNECTION;
-    }
-    else if (!receiver.parser.read_again)
-    {
-        vis_str(receiver.parser.packet, "inside client sending packet");
-        responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
+        return ;
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 21:23:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 16:50:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,13 @@
 Respond::Respond()
 {};
 
-Respond::Respond(int    client_socket) :client_socket(client_socket),  sending(false)
+Respond::Respond(int    client_socket) :client_socket(client_socket),  sending(false), response_bytes_sent(0)
 {
 }
 
 Respond::~Respond()
 {
 }
-
-// void* send_all_thread(void* arg)
-// {
-//     Respond* respondObj = static_cast<Respond*>(arg);
-//     respondObj->send_all();
-//     pthread_exit(NULL);
-// }
 
 void    Respond::respond(packet_map &request,  conf &servers, std::string port)
 {
@@ -39,17 +32,17 @@ void    Respond::respond(packet_map &request,  conf &servers, std::string port)
     
     visualize_string_map(server_info);
     fill_response(request, server_info);
-    send_all();
-    // pthread_create(&sendThread, NULL, send_all_thread, this);
-    // usleep(5000);
-    flush_response();
-
+    sending = true;
+    
+    std::cout << "We have ready response" << std::endl;
 }
 
 void    Respond::flush_response()
 {
     response.clear();
     response_packet = "";
+    response_bytes_sent = 0;
+    sending = false;
 
 }
 
@@ -130,34 +123,30 @@ void    Respond::visualize_response()
     std::cout << BOLDRED << "}" << std::endl << RESET;
 }
 
-
-void    Respond::send_all()
+// this ugly syntax :&a[response_bytes_sent]
+// because I am not able to save const char *a as private asset as the conversion change for each packet
+//while it's constant, I will try to change it later inshalla, for now take the code below for granted
+//till make the new sending scaling work for now
+void    Respond::send_all(connection_state &state)
 {
-    size_t  response_bytes_sent = 0;
     size_t  packet_len = response_packet.length(); 
     std::cout << "inside send all" << std::endl;
     const char *a = response_packet.c_str();
     // sending = true ;
     visualize_response();
-    if (packet_len < 10000)
-        std::cout << BOLDRED << "visualizign response \n" << WHITE << response_packet << std::endl << RESET;
+    vis_str(response_packet, "inside send all");
+    if (packet_len - response_bytes_sent > BUFFER_SIZE)
+        response_bytes_sent += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
     else
-        std::cout << "large response packet not gonna visualize\n" ;
-    std::cout << "COnversion ends" << std::endl;
-    while (response_bytes_sent < packet_len)
+        response_bytes_sent += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
+    if (response_bytes_sent <= 0)
     {
-        if (packet_len - response_bytes_sent > BUFFER_SIZE)
-            response_bytes_sent += send(client_socket, a, BUFFER_SIZE, 0);
-        else
-            response_bytes_sent += send(client_socket, a, packet_len - response_bytes_sent, 0);  
-        // usleep(100);
-        if (response_bytes_sent <= 0)
-        {
-            perror("sent failed");
-            break ;
-        }
+        perror("sent failed");
+        sending = false;
+        state = KILL_CONNECTION;
     }
-    // sending = false;
+    if (response_bytes_sent == packet_len)
+        flush_response();
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)
