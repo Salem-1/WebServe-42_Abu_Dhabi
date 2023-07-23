@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 14:16:51 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 14:19:05 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ std::string Client::get_port(int client_socket)
 	ss << ntohs(addr.sin_port);
 	std::string port(ss.str());
     // Print the local address information
-    printf("Socket Local Address: %s\n", ip_str);
-    printf("Socket Local Port: %d\n", ntohs(addr.sin_port));
+    std::cout << "Socket Local Address: " << ip_str << std::endl;
+    std::cout << "Socket Local Port: " << ntohs(addr.sin_port) << std::endl;
     return (port);
 }
