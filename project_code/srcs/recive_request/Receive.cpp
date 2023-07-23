@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:58 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 01:04:52 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 14:13:06 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,7 @@ void    Receive::receive_all()
     read_packet(buffer);
     parser.set_byteread_and_readsock(bytes_read, read_sock);
     parser.parse(buffer);
-    if (strlen(buffer) < 10000)
-        std::cout << read_sock <<" back to recieve all buffer still\n<"<< buffer << ">" << std::endl;
-    else
-        std::cout << "recieved a large packet\n";
+    vis_str(buffer, "inside recievea;");
     if (bytes_read == 0)
     {
         std::cout << "byter read = " << bytes_read << "will kill connection\n";
