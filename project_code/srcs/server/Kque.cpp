@@ -101,6 +101,7 @@ void    Kque::handle_request_by_client(struct kevent event)
     clients[event.ident].handle_request(event);
     std::cout << "inside kque after handling request state = ";
     std::cout << clients[event.ident].state << std::endl;
+    std::cout << "client " << event.ident << " is open" << std::endl;
     if (clients[event.ident].state == KILL_CONNECTION)
     {
         std::cout << "closing the connection and deleting client "<< event.ident << " inside kqueue\n";
