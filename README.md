@@ -5,6 +5,9 @@
 - First : Pre starting the project let's do tutorials on building simple webserver in C language (all of us).
 	- Intra [PDF](./documentation/webserve.pdf)
   	- Getting started toutorial [web serve](https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa)
+	- Writing a Simple TCP Server [Using Kqueue](https://dev.to/frosnerd/writing-a-simple-tcp-server-using-kqueue-cah)
+	- Scalable I/O: [Events- Vs Multithreading-based](https://thetechsolo.wordpress.com/2016/02/29/scalable-io-events-vs-multithreading-based/)
+	- Kqueue [tutorial](http://wiki.netbsd.org/tutorials/kqueue_tutorial/)
   	- Extensive resources [document](./documentation/webserve.md)
   	- [Beej guide for network programing](./documentation/resources/Beej_guide/bgnet_a4_c_2.pdf)
 - Second: Here are the project requirments that can be assigned per person:
