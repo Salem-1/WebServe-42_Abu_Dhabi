@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 17:54:23 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/24 22:25:32 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,15 @@ void    Parser::parse(char *new_buffer)
     }
     std::string str(new_buffer);
     packet += str;
-    std::cout << "\n\ninside parser buffer = \n<" << new_buffer << ">" << std::endl;
-    std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
+    if (strlen(new_buffer) < 10000)
+        std::cout << "inside parser buffer is \n<" <<  new_buffer << ">" << std::endl;
+    else
+        std::cout << "recieved a large packet\n";
+    if (packet.length() < 10000)
+        std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
+    else
+        std::cout << "We have large packet not gonna visulize\n";
+    
     if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;

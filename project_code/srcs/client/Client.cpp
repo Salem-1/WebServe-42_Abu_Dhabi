@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/08 00:37:08 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:58:11 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,24 +46,35 @@ Client::Client(const Client &obj2)
 Client::~Client()
 {};
 
-void Client::handle_request()
+
+void Client::handle_request(struct kevent event)
 {
     start_time = clock();
-//receiver
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
-    receiver.receive_all();
-    std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+    std::cout << "responder.sending  = "   << responder.sending << std::endl; 
+    if (event.filter == EVFILT_WRITE)
+        std::cout << "socket open for write " << std::endl; 
+    if (event.filter == EVFILT_READ)
+        std::cout << "socket open for READ " << std::endl; 
+
+    if (event.filter == EVFILT_WRITE && responder.sending && receiver.state == KEEP_ALIVE)
+        responder.send_all(receiver.state);
+    else if (event.filter == EVFILT_READ && receiver.state == KEEP_ALIVE)
+    {
+        receiver.receive_all();
+        std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+        if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
+        {
+            vis_str(receiver.parser.packet, "Start packet parsing");
+            responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
+        }
+    }
     if (receiver.state == KILL_CONNECTION)
     {
         std::cout << "Killing connection inside client" << std::endl;
         this->state = KILL_CONNECTION;
-    }
-    else if (!receiver.parser.read_again)
-    {
-        //stopped here should build respond clas
-        std::cout << "\ninside client sending packet\n" << receiver.parser.packet;
-        responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
+        return ;
     }
 }
 
@@ -77,7 +88,6 @@ std::string Client::get_port(int client_socket)
         perror("getsockname");
         return ("no port attached");
     }
-
     // Convert the IP address to a human-readable string
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
@@ -86,7 +96,7 @@ std::string Client::get_port(int client_socket)
 	ss << ntohs(addr.sin_port);
 	std::string port(ss.str());
     // Print the local address information
-    printf("Socket Local Address: %s\n", ip_str);
-    printf("Socket Local Port: %d\n", ntohs(addr.sin_port));
+    std::cout << "Socket Local Address: " << ip_str << std::endl;
+    std::cout << "Socket Local Port: " << ntohs(addr.sin_port) << std::endl;
     return (port);
 }

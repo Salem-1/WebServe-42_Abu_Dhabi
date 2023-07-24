@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DELETE.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 20:04:29 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/15 20:21:59 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ std::string DELETE::fill_ok_response(response_packet &response, std::map<std::st
 {
     //all the heavy lifting is here inshalla
     std::string path = construct_path(response, server_info);
-    std::cout << "path to delete = " << path << std::endl;
+    std::cout << BOLDMAGENTA << "path to delete = " << RESET << path << std::endl;
     if (!sanitized_path(path, server_info))
         return (err.code(server_info, "403"));
     if (access(path.c_str(), F_OK) != 0)
@@ -113,7 +113,7 @@ std::string    DELETE::construct_path(response_packet &response , std::map<std::
 {
 
     std::string path = response["Path"][1];
-    std::cout << "construcing path = " << path << std::endl ;
+    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET;
     if (path == "/")
         return (server_info[path]);
     if (std::count(path.begin(), path.end(), '/') < 2)
@@ -124,7 +124,7 @@ std::string    DELETE::construct_path(response_packet &response , std::map<std::
             return (server_info["root"] + path);
     }
     std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << "dir == " << dir << " path = " << path << std::endl;
+    std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
     // /images/ case
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
@@ -134,7 +134,7 @@ std::string    DELETE::construct_path(response_packet &response , std::map<std::
     }
     // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
-    std::cout << "rest of path = " << rest_of_path << std::endl;
+    std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     if (server_info.find(dir) != server_info.end())
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);

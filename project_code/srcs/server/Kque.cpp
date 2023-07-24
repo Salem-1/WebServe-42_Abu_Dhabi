@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 02:56:39 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 22:45:17 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ Kque::Kque(std::vector<int> socket_fds): kq(kqueue()), server_sockets(socket_fds
     for (std::vector<int>::iterator it = server_sockets.begin();
             it != server_sockets.end(); ++it)
     {
-        add_read_event(*it);
+        add_read_write_event(*it);
     }
 };
 
@@ -36,10 +36,6 @@ void    Kque::watch_fds(conf &servers)
         for (int i = 0; i < active_fds; i++)
         {
             tmp_fd = events[i].ident;
-            //check here the which socket is open, and get the
-            //port server info of the port then inside the client 
-            //check port and host name, 
-            // so the client must be able to read the config map
             if (tmp_fd_in_server_socket(tmp_fd))
             {
                 if (events[i].filter == EVFILT_READ)
@@ -48,17 +44,13 @@ void    Kque::watch_fds(conf &servers)
                     std::string hero_port = socket_info(client_socket);
                     if(client_socket < 0)
                         continue ;
-                    add_read_event(client_socket);
-                    //should give the clinet all configs
-
-                    //inshalla
+                    add_read_write_event(client_socket);
                     clients[client_socket] = Client(client_socket, servers);
-                    // clients.insert(std::pair<int, Client>(client_socket, Client(client_socket)));
                     active_clients.insert(client_socket);
                 }
             }
             else
-                handle_request_by_client(tmp_fd);
+                handle_request_by_client(events[i]);
         }
         // kill_timeouted_clients();
     }
@@ -74,6 +66,7 @@ bool Kque::tmp_fd_in_server_socket(int tmp_fd)
         }
         return (false);
 }
+
 void    Kque::kill_timeouted_clients()
 {
     int active = 0;
@@ -104,26 +97,29 @@ void    Kque::kill_timeouted_clients()
     active_clients.clear();
 };
 
-void    Kque::handle_request_by_client(int tmp_fd)
+void    Kque::handle_request_by_client(struct kevent event)
 {
-    active_clients.insert(tmp_fd);
-//I believe thread should be here 
-    clients[tmp_fd].handle_request();
+    active_clients.insert(event.ident);
+    clients[event.ident].handle_request(event);
     std::cout << "inside kque after handling request state = ";
-    std::cout << clients[tmp_fd].state << std::endl;
-    if (clients[tmp_fd].state == KILL_CONNECTION)
+    std::cout << clients[event.ident].state << std::endl;
+    if (clients[event.ident].state == KILL_CONNECTION)
     {
-        std::cout << "closing the connection and deleting client "<< tmp_fd << " inside kqueue\n";
-        delete_fd_event(tmp_fd);
-        clients.erase(tmp_fd);
+        std::cout << "closing the connection and deleting client "<< event.ident << " inside kqueue\n";
+        // pthread_join(clients[event.ident].responder.sendThread, NULL);
+        delete_fd_event(event.ident);
+        clients.erase(event.ident);
         return ;
     }
 }
 
-void    Kque::add_read_event(int fd)
+void    Kque::add_read_write_event(int fd)
 {
-    EV_SET(&event, fd, EVFILT_READ, EV_ADD, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
+    EV_SET(&event[0], fd, EVFILT_READ , EV_ADD, 0, 0, NULL);
+    if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
+        kque_error("failed to add socket to event kque: ");
+    EV_SET(&event[1], fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+    if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kque_error("failed to add socket to event kque: ");
 }
 
@@ -139,8 +135,11 @@ int    Kque::accepting(int  fd)
 
 void    Kque::delete_fd_event(int fd)
 {
-    EV_SET(&event, fd, EVFILT_READ, EV_DELETE, 0, 0, NULL);
-    if (kevent(kq, &event, 1, NULL, 0, NULL) < 0)
+    EV_SET(&event[0], fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
+    if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
+        kque_error("failed to remove socket from event kque: ");
+    EV_SET(&event[1], fd, EVFILT_WRITE , EV_DELETE, 0, 0, NULL);
+    if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kque_error("failed to remove socket from event kque: ");
     close(fd);
 }
@@ -148,18 +147,18 @@ void    Kque::delete_fd_event(int fd)
 void   Kque::kque_error(std::string msg)
 {
     perror(msg.c_str());
-    exit(1);
+    throw(std::runtime_error("Kque error"));
 }
 
 
 std::string  Kque::socket_info(int sockfd)
 {
-        struct sockaddr_in addr;
+    struct sockaddr_in addr;
     socklen_t addr_len = sizeof(addr);
-
-        if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1) {
+    if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1)
+    {
         perror("getsockname");
-        exit(1);
+        throw(std::runtime_error("getsockname error"));
     }
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+         #
+#    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/07/14 18:28:12 by ymohamed         ###   ########.fr        #
+#    Updated: 2023/07/15 20:24:28 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ HEADER = includes/libs.hpp includs/webserve.hpp
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror -std=c++98
+CFLAGS =  -Wall -Wextra -Werror -std=c++98 -g3 # -fsanitize=address
 
 INCS =
 ifeq ($(shell uname), Linux)

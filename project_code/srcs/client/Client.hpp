@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:22 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 10:05:24 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/23 15:06:58 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Client
         Client(const Client &obj2);
         Client &operator= (const Client &obj2);
         ~Client();
-        void                                handle_request();
+        void                                handle_request(struct kevent event);
         int                                 get_timeout();
         std::string                         get_port(int client_socket);
         connection_state                    state;

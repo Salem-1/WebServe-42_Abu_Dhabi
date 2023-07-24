@@ -3,11 +3,9 @@
 /*                                                        :::      ::::::::   */
 /*   logs.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:18 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/04 13:32:48 by ahsalem          ###   ########.fr       */
-/*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libs.hpp"
@@ -101,36 +99,37 @@ void printAddrInfo( struct addrinfo *ai)
 void    visualize_servers(
     std::vector<std::map<std::string, std::string> > servers)
 {
-    std::cout << "visualizing "  << servers.size() <<" servers\n";
-    std::cout << "---------------------------------------\n\n"; 
+    std::cout << BOLDRED << "visualizing "  << servers.size() <<" servers\n";
+    std::cout << "---------------------------------------\n\n" << RESET; 
     for (unsigned long i = 0; i < servers.size(); i++)
     {
-        std::cout << "server " << i + 1 << " {\n";
+        std::cout << RED << "server " << i + 1 << " {\n" << RESET;
         for (std::map<std::string, std::string>::reverse_iterator it = servers[i].rbegin();
             it != servers[i].rend(); ++it)
         {
-            std::cout << "  \""<< it->first << "\": " << "\"" << it->second << "\",\n";
+            std::cout << BOLD << "  \""<< it->first << RESET << "\": " << "\"" << it->second << "\",\n";
         }
 
         std::cout << " }\n";
     }
-    std::cout << "\n---------------------------------------\n\n";
-    std::cout << "servers visualization ends" << std::endl;
+    std::cout << BOLDRED << "\n---------------------------------------\n\n";
+    std::cout << "servers visualization ends" << std::endl << RESET;
 }
 
 void    visualize_string_map(std::map<std::string, std::string>  &map)
 {
-    std::cout << "visualizing string map\n";
+    std::cout << BOLDRED << "visualizing string map\n" << RESET << RED;
     if (map.size() == 0)
         std::cout << "The map you are trying to visualize is empty" << std::endl;
     else
         std::cout << "visualizing map of strings\n\n\n" << std::endl;
+	std::cout << RESET;
     for (std::map<std::string, std::string>::reverse_iterator rit = map.rbegin();
         rit != map.rend(); ++rit)
     {
-        std::cout << "\"" << rit->first << "\":  \"" << rit->second << "\"" << std::endl;
+        std::cout << "\"" << BOLDBLUE << rit->first << RESET << "\":  \"" << rit->second << "\"" << std::endl;
     }
-        std::cout << "\n\nvisualization ends\n\n\n" << std::endl;
+        std::cout << BOLDRED << "\n\nvisualization ends\n\n\n" << std::endl << RESET;
 }
 
 class Logger {
@@ -181,3 +180,11 @@ public:
         logFile.flush();  // Flush the buffer to ensure immediate write to the file
     }
 };
+
+void    vis_str(std::string packet, std::string message)
+{
+        if (packet.length() < 10000)
+            std::cout << MAGENTA << packet << RESET << std::endl;
+        else
+            std::cout << MAGENTA  << message << RESET;
+}

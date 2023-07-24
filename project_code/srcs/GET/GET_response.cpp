@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/13 08:38:55 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/22 21:33:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,42 +31,60 @@ std::string     GET_response::fill_get_response(std::map<std::string, std::strin
 }
 void        GET_response::fill_ok_response(std::map<std::string, std::string> &server_info)
 {
-    /*
-    chunking or storing bytes on vector instead of string, or array of strings should happen
-        here |
-             v  
-    */
-
     response_packet = "";
-
-    // std::string file_path = DEFAULT_PATH + *(++reponse_check["Path"].begin())+ DEFAULT_LOCATION;
     std::string file_path = construct_path(server_info);
-    std::cout << "requested file path = " << file_path << std::endl;
-    if (!sanitized_path(file_path))
-    {
-        fill_status_code(reponse_check , "403", "malicous header!");
-        response_packet = err.code(server_info, reponse_check["Status-code"][0]);
-        return ;
-    }
-    std::cout << "constructed path = " << file_path << std::endl;
 
-    std::ifstream infile(file_path.c_str());
-    if (infile.fail())
-    {
-        std::cout << file_path << std::endl;
-        fill_status_code(reponse_check , "403", "file not found ya basha!");
-        response_packet = err.code(server_info, reponse_check["Status-code"][0]);
-        std::cout << response_packet << std::endl;
+    std::cout << BOLDMAGENTA << "requested file path = "
+    		<< RESET << file_path << std::endl <<RESET;
+    if (!sanitized_path(file_path)&& fill_bad_path(server_info))
         return ;
+    std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
+    DIR *dir;
+    std::string full_file_to_string;
+    if ((dir  = opendir(file_path.c_str())) != NULL)
+    {
+        struct dirent *files;
+        std::vector<std::string> ls;
+        ls.push_back(file_path);
+        while ((files = readdir(dir)) != NULL)
+            ls.push_back(files->d_name);
+        construct_dir_response(ls, full_file_to_string);
     }
-    std::stringstream content_stream;
-    content_stream  << infile.rdbuf();
-    std::string full_file_to_string = content_stream.str();
-    //checking file size in bytes
-    // infile.seekg(0, std::ios::end);
-    // int file_size = infile.tellg();
-    response_packet = "HTTP/1.1 " + *(reponse_check["Status-code"].begin()) 
-        + " " + *(++reponse_check["Status-code"].begin()) + "\r\n";
+    else
+    {
+        std::ifstream infile(file_path.c_str());
+        if (infile.fail() && fill_bad_path(server_info))
+            return ;
+        std::stringstream content_stream;
+        content_stream  << infile.rdbuf();
+        full_file_to_string = content_stream.str();
+    }
+    filling_response_packet(full_file_to_string);
+}
+
+void    GET_response::construct_dir_response(std::vector<std::string> &ls,
+    std::string &full_file_to_string)
+{
+    std::string file_name = ls[0].substr(ls[0].rfind("/"), ls[0].length());
+    full_file_to_string = "<!DOCTYPE html>";
+    full_file_to_string += "<html>";
+    full_file_to_string += "<head>";
+    full_file_to_string += "    <title>Index of" +  file_name + "</title>";
+    full_file_to_string += "</head>";
+    full_file_to_string += "<body>";
+    full_file_to_string += "  <h1>Index of " + file_name +"</h1>";
+    full_file_to_string += "<ul>";
+    full_file_to_string += "    <ul>";
+    for (std::vector<std::string>::iterator it = ++ls.begin();
+        it != ls.end(); ++it) 
+        full_file_to_string += "        <li>" + *it +"</li>";
+    full_file_to_string += "    </ul>";
+    full_file_to_string += "</body>";
+    full_file_to_string += "</html>";
+}
+void     GET_response::filling_response_packet(std::string &full_file_to_string)
+{
+    response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += err.get_timebuffer();
@@ -75,13 +93,22 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
 	ss << full_file_to_string.length();
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string;
+    
 }
 
+bool    GET_response::fill_bad_path(std::map<std::string, std::string> &server_info)
+{
+        fill_status_code(reponse_check , "403", "file not found ya basha!");
+        response_packet = err.code(server_info, reponse_check["Status-code"][0]);
+        vis_str(response_packet, "inside GET_response has large response not gonna visualize\n");
+        return (true);
+
+}
 std::string    GET_response::construct_path(std::map<std::string, std::string> &server_info)
 {
 
     std::string path = reponse_check["Path"][1];
-    std::cout << "construcing path = " << path << std::endl ;
+    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
     if (path == "/")
         return (server_info[path]);
     if (std::count(path.begin(), path.end(), '/') < 2)
@@ -92,7 +119,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
             return (server_info["root"] + path);
     }
     std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << "dir == " << dir << " path = " << path << std::endl;
+    std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
     // /images/ case
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
@@ -102,7 +129,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
     }
     // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
-    std::cout << "rest of path = " << rest_of_path << std::endl;
+    std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     if (server_info.find(dir) != server_info.end())
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);
