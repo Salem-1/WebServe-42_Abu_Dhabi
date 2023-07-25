@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DELETE.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 20:21:59 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/25 15:20:42 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void    DELETE::fill_request_line(packet_map &request, response_packet &response
             && fill_status_code(response, "414", "URI Too Long"))
         return ;
     if (!(request["DELETE"][1] == "HTTP/1.1")
-        && (fill_status_code(response, "505", "version not supported")))
+        && (fill_status_code(response, "505", "version not   supported")))
         return ;
     if ((request["DELETE"].size() != 2) 
         && (fill_status_code(response, "400", "DELETE vec has wrong number items bad request")))
