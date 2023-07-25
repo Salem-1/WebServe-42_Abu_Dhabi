@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 23:01:58 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 17:08:05 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@
 # define BACKLOG 256
 # define MAX_EVENTS 256
 # define BUFFER_SIZE 260000
-# define PERSISTANCE 75
+# define PERSISTANCE 5
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000

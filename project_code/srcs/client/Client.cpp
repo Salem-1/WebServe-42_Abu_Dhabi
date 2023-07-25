@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 22:58:11 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 17:53:16 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,27 +52,34 @@ void Client::handle_request(struct kevent event)
     start_time = clock();
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
-    std::cout << "responder.sending  = "   << responder.sending << std::endl; 
-    if (event.filter == EVFILT_WRITE)
-        std::cout << "socket open for write " << std::endl; 
-    if (event.filter == EVFILT_READ)
-        std::cout << "socket open for READ " << std::endl; 
+    // std::cout << "responder.sending  = "   << responder.sending << std::endl; 
+    // if (event.filter == EVFILT_WRITE)
+    //     std::cout << "socket open for write " << std::endl; 
+    // if (event.filter == EVFILT_READ)
+    //     std::cout << "socket open for READ " << std::endl; 
 
-    if (event.filter == EVFILT_WRITE && responder.sending && receiver.state == KEEP_ALIVE)
+    if (event.filter == EVFILT_WRITE && responder.sending 
+        && receiver.state == KEEP_ALIVE)
         responder.send_all(receiver.state);
-    else if (event.filter == EVFILT_READ && receiver.state == KEEP_ALIVE)
+    else if (event.filter == EVFILT_READ 
+        && receiver.state == KEEP_ALIVE)
     {
+        responder.sending = false;
         receiver.receive_all();
-        std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+        
+        // std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
         if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
         {
-            vis_str(receiver.parser.packet, "Start packet parsing");
+            // vis_str(receiver.parser.packet, "Start packet parsing");
             responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
         }
     }
+    
+    // else 
+    //     receiver.state = KILL_CONNECTION;
     if (receiver.state == KILL_CONNECTION)
     {
-        std::cout << "Killing connection inside client" << std::endl;
+        // std::cout << "Killing connection inside client" << std::endl;
         this->state = KILL_CONNECTION;
         return ;
     }

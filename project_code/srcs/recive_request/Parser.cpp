@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 04:00:59 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 17:27:58 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,21 +56,20 @@ void    Parser::parse(char *new_buffer)
         return ;
     }
     std::string str(new_buffer);
-    packet += str;
-    if (strlen(new_buffer) < 10000)
-        std::cout << "inside parser buffer is \n<" <<  new_buffer << ">" << std::endl;
-    else
-        std::cout << "recieved a large packet\n";
-    if (packet.length() < 10000)
-        std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
-    else
-        std::cout << "We have large packet not gonna visulize\n";
     
-    if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+    packet += str;
+    
+    vis_str(new_buffer, "new_buffer inside parser");
+    vis_str(packet, "packet inside parser");
+    
+    //this will parse the headers
+    if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+        || early_bad_request(packet))
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
         fill_header_request(packet);
-        check_headers();
+        check_headers();    
+        
         packet = "";
         read_again = 0;
     }
@@ -84,11 +83,20 @@ void    Parser::parse(char *new_buffer)
     }
     else
     {
-        std::cout << "\nin-complete packet let's read again\n";
+        std::cout << "in-complete packet let's read again\n";
         read_again = 1;
     }
 }
-
+bool Parser::early_bad_request(std::string packet)
+{
+    if (packet.length() >= 1)
+    {
+        if (packet[0] != 'G' || packet[0] != 'P' 
+            || packet[0] != 'D')
+            return (true);
+    }
+    return (false);
+}
 void    Parser::set_byteread_and_readsock(int bytes, int sock)
 {
     this->bytes_read = bytes;

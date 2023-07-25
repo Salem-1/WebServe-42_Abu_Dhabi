@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 23:06:30 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 18:15:19 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void    Respond::flush_response()
 
 }
 
-
+//all should work from here
 void    Respond::fill_response(packet_map &request, std::map<std::string, std::string> &server_info)
 {
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
@@ -57,7 +57,9 @@ void    Respond::fill_response(packet_map &request, std::map<std::string, std::s
     }
     response["Status-code"].push_back("200");
     if (request.find("GET") != request.end())
+    {
         response_packet = normal_GET_Response(request, server_info);
+    }
     else if (request.find("POST") != request.end())
     {
         Post apost(request, server_info);
@@ -69,7 +71,10 @@ void    Respond::fill_response(packet_map &request, std::map<std::string, std::s
         response_packet = DELETE_response.delete_response_filler(request, response, server_info);
     }
     else
-        fill_status_code("400", "request method not supported");   
+    {
+        ErrResponse err;
+        response_packet = err.code(server_info, "501");;   
+    }
 };
 
 std::string     Respond::normal_GET_Response(packet_map &request, std::map<std::string, std::string> &server_info)
@@ -146,7 +151,10 @@ void    Respond::send_all(connection_state &state)
         state = KILL_CONNECTION;
     }
     if (response_bytes_sent == packet_len)
+    {
+        state = KILL_CONNECTION;
         flush_response();
+    }
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)

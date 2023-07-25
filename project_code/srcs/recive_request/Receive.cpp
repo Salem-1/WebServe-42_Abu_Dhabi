@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:58 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 14:14:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 17:19:52 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,11 @@ void    Receive::receive_all()
     memset(buffer, 0, BUFFER_SIZE);
     read_packet(buffer);
     parser.set_byteread_and_readsock(bytes_read, read_sock);
+    
+    
     parser.parse(buffer);
+    
+    
     vis_str(buffer, "inside recievea;");
     if (bytes_read == 0)
     {

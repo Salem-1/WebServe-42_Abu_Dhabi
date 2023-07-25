@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 22:44:01 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 16:57:05 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ class Kque
                                     (struct kevent event);
         std::string                    socket_info(int sockfd);
         bool                     tmp_fd_in_server_socket(int tmp_fd);
+        bool                    in_active_clients(int tmp_fd);
+
     private:
         void                    kill_timeouted_clients();
         std::map<int, Client>   clients;

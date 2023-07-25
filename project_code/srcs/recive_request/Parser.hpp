@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:01 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/24 17:24:32 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ class Parser
         void                    fill_get_request(std::string packet);
     
     private:
+        bool                    early_bad_request(std::string packet);
         void                    fill_response();  
         void                    fill_valid_headers();
         int                     valid_packet_headers();
