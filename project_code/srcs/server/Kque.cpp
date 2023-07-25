@@ -6,9 +6,10 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/24 18:15:07 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 13:29:51 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Kque.hpp"
 
@@ -120,7 +121,7 @@ void    Kque::handle_request_by_client(struct kevent event)
     active_clients.insert(client_socket);
     
     clients[client_socket].handle_request(event);
-
+// visualization only
     std::cout << "inside kque after handling request state = ";
     std::cout << clients[client_socket].state << std::endl;
     std::cout << "client " << client_socket << " is open" << std::endl;
@@ -129,6 +130,7 @@ void    Kque::handle_request_by_client(struct kevent event)
         std::cout << "Open for read" << std::endl;
     else if (event.filter == EVFILT_WRITE)
         std::cout << "Open for write" << std::endl;
+//visualization ends
     if (clients[client_socket].state == KILL_CONNECTION)
     {
         // std::cout << "closing the connection and deleting client "<< client_socket << " inside kqueue\n";

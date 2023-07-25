@@ -6,9 +6,10 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/24 17:24:32 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 13:28:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef PARSER_HPP
 # define PARSER_HPP
@@ -55,6 +56,8 @@ class Parser
         response_pack           response;
         std::set<std::string>   valid_headers;
         std::string             filled_response;
-};
+        bool                    is_post;
+        std::string             body;
+};      
 
 #endif

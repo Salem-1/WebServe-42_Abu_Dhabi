@@ -6,14 +6,15 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/24 17:27:58 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 13:28:47 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "Parser.hpp"
 
 
-Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0)
+Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0), is_post(false)
 {
     fill_valid_headers();
 }
@@ -47,6 +48,7 @@ void    Parser::flush_parsing()
         filled_response = "";
 }
 
+//to stop receiving the packet change the value of read_again to 0
 void    Parser::parse(char *new_buffer)
 {
     flush_parsing();
@@ -72,6 +74,7 @@ void    Parser::parse(char *new_buffer)
         
         packet = "";
         read_again = 0;
+
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -109,7 +112,6 @@ void    Parser::fill_header_request(std::string packet)
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
 
-  
 
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
@@ -138,7 +140,5 @@ void    Parser::fill_header_request(std::string packet)
         }
     }
 }
-
-
 
 
