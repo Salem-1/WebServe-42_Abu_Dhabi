@@ -9,7 +9,7 @@ class Post
 private:
 	/* data */
 public:
-	Post(packet_map &request, std::map<std::string, std::string> &server_info);
+	Post(packet_map &request, t_body &body, std::map<std::string, std::string> &server_info);
 	~Post();
 };
 

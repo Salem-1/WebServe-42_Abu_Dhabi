@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 23:01:58 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/27 01:09:13 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
+# define MAX_BODY_SIZE 10485760 // 10 MB Will be part of the configuration file
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
@@ -96,6 +97,12 @@ enum LogLevel {
     FATAL
 };
 class Logger;
+
+typedef struct s_body 
+{
+	std::string		body;
+	size_t			content_length;
+}				t_body;
 
 typedef std::vector<std::map<std::string, std::string> > conf; 
 enum connection_state
