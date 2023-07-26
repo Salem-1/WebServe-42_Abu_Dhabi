@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Receive.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:58 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 14:14:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 02:30:09 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void    Receive::read_packet(char *buffer)
         return ;
     }
 }
-
+// ?? it is already public
 std::map<std::string, std::vector<std::string> >       &Receive::get_request_packet()
 {
     return (parser.request);

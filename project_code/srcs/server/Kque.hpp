@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 22:44:01 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 01:28:16 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Kque
     public:
         Kque(std::vector<int> socket_fds);
         ~Kque();
-        void                    watch_fds(conf &servers);
+        void                    watc_fds(conf &servers);
     
     private:
         void                    kque_error(std::string msg);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 22:58:11 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 02:00:17 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void Client::handle_request(struct kevent event)
     start_time = clock();
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
-    std::cout << "responder.sending  = "   << responder.sending << std::endl; 
+    std::cout << "responder.sending  = "   << responder.sending << std::endl;
     if (event.filter == EVFILT_WRITE)
         std::cout << "socket open for write " << std::endl; 
     if (event.filter == EVFILT_READ)
