@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 01:09:13 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/27 04:43:32 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,9 +100,10 @@ class Logger;
 
 typedef struct s_body 
 {
+	std::string		header;
 	std::string		body;
-	size_t			content_length;
-}				t_body;
+	size_t			body_content_length;
+}				t_request;
 
 typedef std::vector<std::map<std::string, std::string> > conf; 
 enum connection_state

@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/25 02:00:17 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/27 04:56:48 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void Client::handle_request(struct kevent event)
         if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
         {
             vis_str(receiver.parser.packet, "Start packet parsing");
-            responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
+            responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, get_port(client_socket));
         }
     }
     if (receiver.state == KILL_CONNECTION)
