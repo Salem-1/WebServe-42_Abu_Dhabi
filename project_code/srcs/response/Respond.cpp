@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 18:28:08 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/27 22:02:43 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void    Respond::fill_response(packet_map &request, t_request &full_request, std
     response["Status-code"].push_back("200");
     if (request.find("GET") != request.end())
         response_packet = normal_GET_Response(request, server_info);
-    else if (request.find("POST") != request.end())
+    else if (request.find("POST") != request.end() && full_request.request_is_valid)
     {
         Post apost(request, full_request, server_info);
 		apost.printPostHeader();
