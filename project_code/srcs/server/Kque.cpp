@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 22:45:17 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/25 12:03:51 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,10 @@ void    Kque::handle_request_by_client(struct kevent event)
 
 void    Kque::add_read_write_event(int fd)
 {
-    EV_SET(&event[0], fd, EVFILT_READ , EV_ADD, 0, 0, NULL);
+    EV_SET(&event[0], fd, EVFILT_READ ,  EV_ADD | EV_CLEAR, 0, 0, NULL);
     if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
         kque_error("failed to add socket to event kque: ");
-    EV_SET(&event[1], fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
+    EV_SET(&event[1], fd, EVFILT_WRITE,  EV_ADD | EV_CLEAR, 0, 0, NULL);
     if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kque_error("failed to add socket to event kque: ");
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 23:06:30 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/27 21:18:08 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ void    Respond::fill_response(packet_map &request, std::map<std::string, std::s
         return ;
     }
     response["Status-code"].push_back("200");
+	std::string cgi_path = isCGI(request);
+	std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
+	if (cgi_path != "")
+		response_packet = responseCGI(request, server_info, cgi_path);
     if (request.find("GET") != request.end())
         response_packet = normal_GET_Response(request, server_info);
     else if (request.find("POST") != request.end())
@@ -107,7 +111,7 @@ void    Respond::visualize_response()
     for (response_pack::iterator it = response.begin(); it != response.end(); it++)
     {
         if ((it->first).length() < 10000)
-            std::cout << "  \"" << it->first << "\": [";
+            std::cout << BOLDBLUE << "  \"" << it->first << "\": [" << RESET;
         else
             std::cout << "\"" << "large packet not gonna visualize" << "\", ";
 
@@ -201,4 +205,30 @@ std::map<std::string, std::string>  Respond::get_server_info(packet_map &request
         }
     }
     return (servers[0]);
+}
+
+std::string	Respond::isCGI(packet_map &request)
+{
+	packet_map::iterator it = request.find("GET");
+	if (it == request.end())
+		it = request.find("POST");
+	if (it == request.end())
+		return ("");
+	if (it->second[0].find("cgi-bin") != std::string::npos)
+		return (it->second[0]);
+	return ("");
+}
+
+std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path)
+{
+	(void) request;
+	if (cgi_path.find("?") != std::string::npos)
+	{
+		std::string query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
+		cgi_path = cgi_path.substr(0, cgi_path.find("?"));
+		// server_info["query"] = query;
+	}
+	std::string full_cgi_path = server_info["root"] + cgi_path;
+	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
+	return "";
 }

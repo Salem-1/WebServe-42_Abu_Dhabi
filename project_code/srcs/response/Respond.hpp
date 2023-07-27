@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 16:45:31 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/27 20:44:39 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,9 @@ class Respond
         std::string                         response_packet;
         pthread_t                           sendThread;
         bool                                sending;
+	private:
+		std::string					isCGI(packet_map &request);
+		std::string					responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
         
     private:
         int     check_poisoned_url(packet_map &request);
