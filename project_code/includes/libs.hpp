@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 04:43:32 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/27 21:15:32 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ typedef struct s_body
 	std::string		header;
 	std::string		body;
 	size_t			body_content_length;
+	int				request_is_valid;
 }				t_request;
 
 typedef std::vector<std::map<std::string, std::string> > conf; 

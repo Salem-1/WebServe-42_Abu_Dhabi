@@ -12,28 +12,28 @@ Post::~Post()
 
 }
 
-void	Post::print_post_header()
+void	Post::printPostHeader()
 {
-	std::cout << YELLOW << "POST request header is: " << std::endl;
+	std::cout << YELLOW << "\nPOST request header is: " << std::endl;
 	std::cout << this->_request.header << std::endl;
 	std::cout << RESET;
 }
 
-void	Post::print_post_body()
+void	Post::printPostBody()
 {
-	std::cout << YELLOW << "POST request body is: " << std::endl;
+	std::cout << YELLOW << "\nPOST request body is: " << std::endl;
 	std::cout << this->_request.body << std::endl;
 	std::cout << RESET;
 }
 
-void Post::print_received_request_map()
+void Post::printReceivedRequestMap()
 {
-	std::cout << YELLOW << "POST request header is: " << std::endl;
-	visualize_string_map(this->_request_map);
+	std::cout << YELLOW << "\nPOST request header map is: " << std::endl;
+	visualizeStringMap(this->_request_map);
 	std::cout << RESET;
 }
 
-void Post::visualize_string_map(packet_map &map)
+void Post::visualizeStringMap(packet_map &map)
 {
     for (packet_map::iterator it = map.begin(); it != map.end(); it++)
     {
@@ -43,7 +43,7 @@ void Post::visualize_string_map(packet_map &map)
             std::cout << it->second[i];
             if (i != it->second.size() - 1)
             {
-                std::cout << ", ";
+                std::cout << " ";
             }
         }
         std::cout << std::endl;

@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 04:51:55 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/27 18:28:08 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@ Respond::~Respond()
 {
 }
 
-void    Respond::respond(packet_map &request, t_request &body,  conf &servers, std::string port)
+void    Respond::respond(packet_map &request, t_request &full_request,  conf &servers, std::string port)
 {
     
     //here should extract the port and hostname to give to the corresponding method
     std::map<std::string, std::string> server_info = get_server_info(request, servers, port);
     
     visualize_string_map(server_info);
-    fill_response(request, body, server_info);
+    fill_response(request, full_request, server_info);
     sending = true;
     
     std::cout << "We have ready response" << std::endl;
@@ -47,7 +47,7 @@ void    Respond::flush_response()
 }
 
 
-void    Respond::fill_response(packet_map &request, t_request &body, std::map<std::string, std::string> &server_info)
+void    Respond::fill_response(packet_map &request, t_request &full_request, std::map<std::string, std::string> &server_info)
 {
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
         || check_poisoned_url(request))
@@ -60,10 +60,10 @@ void    Respond::fill_response(packet_map &request, t_request &body, std::map<st
         response_packet = normal_GET_Response(request, server_info);
     else if (request.find("POST") != request.end())
     {
-        Post apost(request, body, server_info);
-		apost.print_post_body();
-		apost.print_post_header();
-		apost.print_received_request_map();
+        Post apost(request, full_request, server_info);
+		apost.printPostHeader();
+		apost.printPostBody();
+		apost.printReceivedRequestMap();
         // response_packet = apost.get_response();
     }
     else if (request.find("DELETE") != request.end())
