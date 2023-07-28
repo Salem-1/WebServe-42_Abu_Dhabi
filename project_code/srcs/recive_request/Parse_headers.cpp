@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parse_headers.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/17 16:23:05 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/27 21:27:36 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int Parser::valid_packet_headers()
         }
         else
         {
-            std::cout << "Header <" << it->first << "> not a valid header" << std::endl;
+            std::cout << BOLDGREEN << "Header <" << it->first << "> not a valid header" << RESET <<std::endl;
             return (0);
         }
     }
@@ -68,7 +68,10 @@ int Parser::valid_packet_headers()
 void  Parser::fill_valid_headers()
 {
     valid_headers.insert("GET");
+	valid_headers.insert("POST");
+	valid_headers.insert("DELETE");
     valid_headers.insert("Standard headers:");
+    valid_headers.insert("accept-encoding:");
     valid_headers.insert("A-IM:");
     valid_headers.insert("Accept:");
     valid_headers.insert("Accept-Charset:");
@@ -81,6 +84,7 @@ void  Parser::fill_valid_headers()
     valid_headers.insert("Cache-Control:");
     valid_headers.insert("Connection:");
     valid_headers.insert("Content-Length:");
+    valid_headers.insert("content-length:");
     valid_headers.insert("Content-Type:");
     valid_headers.insert("Cookie:");
     valid_headers.insert("Date:");

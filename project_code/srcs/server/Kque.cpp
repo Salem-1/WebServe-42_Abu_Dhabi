@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/25 12:03:51 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/28 18:11:53 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@ void    Kque::handle_request_by_client(struct kevent event)
 {
     active_clients.insert(event.ident);
     clients[event.ident].handle_request(event);
-    std::cout << "inside kque after handling request state = ";
-    std::cout << clients[event.ident].state << std::endl;
+    // std::cout << "inside kque after handling request state = ";
+    // std::cout << clients[event.ident].state << std::endl;
     if (clients[event.ident].state == KILL_CONNECTION)
     {
         std::cout << "closing the connection and deleting client "<< event.ident << " inside kqueue\n";

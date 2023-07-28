@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 04:00:59 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 16:59:15 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,11 @@
 
 Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0)
 {
+	Parser::full_request.body_content_length = 0;
+	Parser::full_request.request_is_valid = 0;
+	Parser::full_request.header = "";
+	Parser::full_request.body = "";
+	Parser::body_start_pos = 0;
     fill_valid_headers();
 }
 
@@ -65,14 +70,33 @@ void    Parser::parse(char *new_buffer)
         std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
     else
         std::cout << "We have large packet not gonna visulize\n";
-    
-    if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+    if (full_request.body_content_length)
+		Parser::fill_body_request();
+    else if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
-        fill_header_request(packet);
-        check_headers();
-        packet = "";
-        read_again = 0;
+		body_start_pos = packet.find("\r\n\r\n") + 4;
+		if (body_start_pos == std::string::npos)
+			body_start_pos = packet.find("\n\n") + 2;
+		if (body_start_pos)
+			full_request.header = packet.substr(0, body_start_pos);
+        fill_header_request(full_request.header);
+		full_request.request_is_valid = check_headers();
+		if (Parser::request.find("content-length:") != request.end() && full_request.request_is_valid)
+		{
+			std::cout << YELLOW <<"body content length is " << request["content-length:"][0] << std::endl << RESET;
+			std::istringstream iss(request["content-length:"][0]);
+			iss >> full_request.body_content_length;
+		}
+		if (!full_request.body_content_length || full_request.body_content_length > MAX_BODY_SIZE)
+		{
+			if (full_request.body_content_length > MAX_BODY_SIZE)
+				std::cout << "body is too large\n";
+			packet = "";
+			read_again = 0;
+		}
+		else
+			Parser::fill_body_request();
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -131,6 +155,27 @@ void    Parser::fill_header_request(std::string packet)
     }
 }
 
-
-
-
+void	Parser::fill_body_request()
+{
+	// body chuncked request is not handled yet
+	if (Parser::packet.length() > MAX_BODY_SIZE + HEADER_MAX_LENGTH)
+	{
+		std::cout << "body is too large\n";
+		Parser::full_request.body = "";
+		Parser::full_request.body_content_length = 0;
+		Parser::packet = "";
+		Parser::read_again = 0;
+		return ;
+	}
+	else if (Parser::packet.length() < Parser::full_request.body_content_length + Parser::body_start_pos)
+	{
+		Parser::read_again = 1;
+		return ;
+	}
+	else
+	{
+		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos, Parser::full_request.body_content_length);
+		Parser::packet = "";
+		Parser::read_again = 0;
+	}
+}

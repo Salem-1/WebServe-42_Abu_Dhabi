@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/24 15:38:01 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/27 04:30:09 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 class Parser 
 {
     public:
+
          typedef std::map<std::string, std::vector<std::string> >    packet_map;
         typedef std::map<std::string, std::vector<std::string> >    response_pack;
     public:
@@ -32,6 +33,7 @@ class Parser
         void                    visualize_request_packet();
         int                    check_headers();
         void                    fill_get_request(std::string packet);
+		void 					fill_body_request();
     
     private:
         void                    fill_response();  
@@ -50,7 +52,9 @@ class Parser
         std::string             reponse_packet;
         int                     packet_counter;
         int                     i;
+		size_t					body_start_pos;
         packet_map              request;
+		t_request				full_request;
         response_pack           response;
         std::set<std::string>   valid_headers;
         std::string             filled_response;

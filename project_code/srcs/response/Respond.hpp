@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 20:44:39 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/27 04:20:18 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ class Respond
         Respond(int client_socket);
         ~Respond();
         void                                flush_response(void);
-         void                                send_all(connection_state &state);
-        void                                respond(packet_map &request,
+        void                                send_all(connection_state &state);
+        void                                respond(packet_map &request, t_request &body,
                                                 conf &servers, std::string port);
-        void                                fill_response(packet_map &request,
+        void                                fill_response(packet_map &request, t_request &body,
                                                 std::map<std::string, std::string> &server_info);
         void                                visualize_response(void);
         int                                 fill_status_code(std::string status_code,

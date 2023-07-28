@@ -65,6 +65,7 @@
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
+# define MAX_BODY_SIZE 10485760 // 10 MB Will be part of the configuration file
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
@@ -97,7 +98,15 @@ enum LogLevel {
 };
 class Logger;
 
-typedef std::vector<std::map<std::string, std::string> >	conf;
+typedef struct s_body 
+{
+	std::string		header;
+	std::string		body;
+	size_t			body_content_length;
+	int				request_is_valid;
+}				t_request;
+
+typedef std::vector<std::map<std::string, std::string> > conf; 
 typedef std::map<std::string, std::string>					stringmap;; 
 enum connection_state
 {

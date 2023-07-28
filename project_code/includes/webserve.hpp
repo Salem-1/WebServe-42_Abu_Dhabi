@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:03 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 17:58:02 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/24 23:47:01 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,8 @@
 # include "libs.hpp"
 # include "../srcs/configuration/Config.hpp"
 # include "../srcs/POST/Post.hpp"
+
+#include "request/Request.hpp"
+#include "request/RequestHandler.hpp"
 
 #endif
