@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 21:32:51 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/28 16:59:15 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,10 @@ void    Parser::parse(char *new_buffer)
 			std::istringstream iss(request["content-length:"][0]);
 			iss >> full_request.body_content_length;
 		}
-		if (!full_request.body_content_length)
+		if (!full_request.body_content_length || full_request.body_content_length > MAX_BODY_SIZE)
 		{
+			if (full_request.body_content_length > MAX_BODY_SIZE)
+				std::cout << "body is too large\n";
 			packet = "";
 			read_again = 0;
 		}
