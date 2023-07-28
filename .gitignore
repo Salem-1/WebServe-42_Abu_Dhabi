@@ -12,7 +12,6 @@ project_code/testers/our_tester/website/stress.html
 project_code/testers/our_tester/webserv
 project_code/intra/website/stress.html
 project_code/testers/our_tester/website/stress.html
-project_code/testersgit_ssl_update.sh
+project_code/testers/webserv_tester
 *.o
 web_serve
-project_code/testers
