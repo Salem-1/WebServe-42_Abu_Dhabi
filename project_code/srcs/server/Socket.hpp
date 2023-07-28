@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:25 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/27 05:41:05 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:46:30 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 
 class Socket
 {
-     public:
-        typedef std::map<std::string, std::string>  conf; 
     public:
         Socket(std::string port);
         Socket( struct  addrinfo *try_another_info);
@@ -26,11 +24,11 @@ class Socket
         struct  addrinfo    *res;
         struct  addrinfo    *try_addr;
         std::string         port;
-        void                get_my_addinfo(void);
-        void                open_socket(struct  addrinfo    *try_addr);
-        void                try_open_socket_again( struct  addrinfo *try_another_info);
-        void                non_block_sock(void);
-        void                error_in_socket(std::string err);
+        void                getMyAddinfo(void);
+        void                openSocket(struct  addrinfo    *try_addr);
+        void                tryOpenSocketAgain( struct  addrinfo *try_another_info);
+        void                nonBlockSock(void);
+        void                errorInSocket(std::string err);
         int                 sockfd;
         int                 try_again;
         // conf                server;

@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Parse_headers.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 21:27:36 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/28 23:57:17 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Parser.hpp"
 
-int    Parser::check_headers()
+int    Parser::checkHeaders()
 {
     std::vector<std::string> status;
     std::cout << "visualizing inside Get request" << std::endl;
-    visualize_request_packet();
+    visualizeRequestPacket();
    
-    if (!valid_packet_headers())
+    if (!validPacketHeaders())
     {
         status.push_back("400");
         status.push_back("Bad Request");
@@ -35,7 +35,7 @@ int    Parser::check_headers()
     return (1);
 }
 
-int Parser::valid_packet_headers()
+int Parser::validPacketHeaders()
 {
     bool    valid = false;
     std::set<std::string>::iterator vit = valid_headers.begin();
@@ -65,7 +65,7 @@ int Parser::valid_packet_headers()
 
 
 
-void  Parser::fill_valid_headers()
+void  Parser::fillValidHeaders()
 {
     valid_headers.insert("GET");
 	valid_headers.insert("POST");
@@ -124,7 +124,7 @@ void  Parser::fill_valid_headers()
     valid_headers.insert("Purpose:");
 }
 
-void    Parser::visualize_request_packet()
+void    Parser::visualizeRequestPacket()
 {
     std::cout << BOLDRED << "visualizing requesest packet API\n\n" << std::endl;
     std::cout << "{" << std::endl << RESET;

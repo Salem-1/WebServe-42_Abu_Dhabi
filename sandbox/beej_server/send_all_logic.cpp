@@ -1,7 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-int send_all(int sock, char *buff, int *len)
+int sendAll(int sock, char *buff, int *len)
 {
     int total = 0;
     int bytes_left = *len;

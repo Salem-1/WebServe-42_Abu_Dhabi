@@ -3,30 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   Receive.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:56 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/25 02:21:55 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/28 23:54:18 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RECEIVE_HPP
 # define RECEIVE_HPP
 
-# include "../../includes/libs.hpp"
+// # include "../../includes/libs.hpp"
+// # include "../../includes/webserve.hpp"
 # include "Parser.hpp"
+// # include "Parser.hpp"
 class Receive
 {
-    public:
-         typedef  std::map<std::string, std::vector<std::string> >    packet_map;
     public:
         Receive();
         Receive(int read_sock);
         Receive(const Receive &obj2);
         Receive &operator= (const Receive &obj2);
         ~Receive();
-        void                read_packet(char *buffer);
-        void                receive_all();
+        void                readPacket(char *buffer);
+        void                receiveAll();
         int                 read_sock;
         int                 bytes_read;
         char                buffer[BUFFER_SIZE];

@@ -3,38 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/18 14:37:17 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:43:37 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # ifndef GET_RESPONSE_HPP
 # define GET_RESPONSE_HPP
 # include "../../includes/libs.hpp"
+# include "../parsing/parsing_lib.hpp"
+// # include "../../includes/webserve.hpp"
 # include "../response/ErrResponse.hpp"
 
 class GET_response
 {
     public:
-            typedef std::map<std::string, std::vector<std::string> >    response_type;
-
-    public:
         GET_response(response_type &res);
         ~GET_response();
-        std::string     fill_get_response(std::map<std::string, std::string> &server_info);
-        std::string     errored_response();
-        std::string     construct_path(std::map<std::string, std::string> &server_info);
-        void            fill_ok_response(std::map<std::string, std::string> &server_info);
-        bool            sanitized_path(std::string path);
-        bool            fill_bad_path(std::map<std::string,
+        std::string		fillGetResponse(std::map<std::string, std::string> &server_info);
+        std::string		erroredResponse(); // repeated code
+        std::string		constructPath(std::map<std::string, std::string> &server_info); // repeated code
+        void			fillOkResponse(std::map<std::string, std::string> &server_info); // repeated code
+        bool			sanitizedPath(std::string path); // repeated code
+        bool			fillBadPath(std::map<std::string,
                                 std::string> &server_info);
-        void            filling_response_packet(std::string &full_file_to_string);
-        void     construct_dir_response(std::vector<std::string> &ls,
+        void			fillingResponsePacket(std::string &full_file_to_string);
+        void			constructDirResponse(std::vector<std::string> &ls,
                                 std::string &full_file_to_string);
-        std::string     response_packet;
-        ErrResponse     err;
-        response_type   reponse_check;
+        std::string		response_packet;
+        ErrResponse		err;
+        response_type	reponse_check;
 };
 # endif

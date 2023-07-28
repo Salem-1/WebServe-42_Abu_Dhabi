@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Config.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 02:42:13 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 20:44:09 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Config::Config()
     // python_tester_config(servers);
     intra_and_dummy_fill_till_config_parsing(servers);
 
-    fill_ports();
+    fillPorts();
 }
 
 Config::~Config()
@@ -30,7 +30,7 @@ Config::~Config()
 
 }
 
-void    Config::fill_ports()
+void    Config::fillPorts()
 {
     for (unsigned long i = 0; i < servers.size(); i++)
     {

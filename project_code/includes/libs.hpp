@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 20:44:23 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:33:44 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,17 @@
 # include <sys/time.h>
 # include <fstream>
 # include <cstdio>
-# include "../srcs/parsing/parsing_lib.hpp"
 # include <algorithm>
 #include <math.h>
 #include <map>
+#include <vector>
+#include <sstream>
+
+
+class Client;
+class Parser;
+class Respond;
+// class Receive;
 
 # define BACKLOG 256
 # define MAX_EVENTS 256
@@ -106,8 +113,13 @@ typedef struct s_body
 	int				request_is_valid;
 }				t_request;
 
-typedef std::vector<std::map<std::string, std::string> > conf; 
-typedef std::map<std::string, std::string>					stringmap;; 
+typedef std::vector<std::map<std::string, std::string> >	conf; 
+// typedef std::map<std::string, std::string>					conf_map; 
+typedef std::map<std::string, std::string>					stringmap;
+typedef std::map<std::string, std::vector<std::string> >	packet_map;
+typedef std::map<std::string, std::vector<std::string> >	response_packet;
+typedef std::map<std::string, std::vector<std::string> >	response_type;
+
 enum connection_state
 {
     KILL_CONNECTION = 0,

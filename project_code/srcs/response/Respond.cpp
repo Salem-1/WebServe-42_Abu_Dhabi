@@ -3,13 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 22:02:43 by ymohamed         ###   ########.fr       */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   Updated: 2023/07/28 23:59:31 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 
 #include "Respond.hpp"
@@ -29,65 +29,65 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
 {
     
     //here should extract the port and hostname to give to the corresponding method
-    std::map<std::string, std::string> server_info = get_server_info(request, servers, port);
+    std::map<std::string, std::string> server_info = getServerInfo(request, servers, port);
     
     visualize_string_map(server_info);
-    fill_response(request, full_request, server_info);
+    fillResponse(request, full_request, server_info);
     sending = true;
     
     std::cout << "We have ready response" << std::endl;
 }
 
-void    Respond::flush_response()
+void    Respond::flushResponse()
 {
     response.clear();
-    response_packet = "";
+    response_string = "";
     response_bytes_sent = 0;
     sending = false;
 
 }
 
 
-void    Respond::fill_response(packet_map &request, t_request &full_request, std::map<std::string, std::string> &server_info)
+void    Respond::fillResponse(packet_map &request, t_request &full_request, std::map<std::string, std::string> &server_info)
 {
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
-        || check_poisoned_url(request))
+        || checkPoisonedURL(request))
     {
-        fill_status_code("400", "request method not supported");
+        fillStatuCode("400", "request method not supported");
         return ;
     }
     response["Status-code"].push_back("200");
 	std::string cgi_path = isCGI(request);
 	std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
 	if (cgi_path != "")
-		response_packet = responseCGI(request, server_info, cgi_path);
+		response_string = responseCGI(request, server_info, cgi_path);
     if (request.find("GET") != request.end())
-        response_packet = normal_GET_Response(request, server_info);
+        response_string = normalGETResponse(request, server_info);
     else if (request.find("POST") != request.end() && full_request.request_is_valid)
     {
         Post apost(request, full_request, server_info);
 		apost.printPostHeader();
 		apost.printPostBody();
 		apost.printReceivedRequestMap();
-        // response_packet = apost.get_response();
+        // response_string = apost.get_response();
     }
     else if (request.find("DELETE") != request.end())
     {
         DELETE DELETE_response;
-        response_packet = DELETE_response.delete_response_filler(request, response, server_info);
+        response_string = DELETE_response.deleteResponseFiller(request, response, server_info);
     }
     else
-        fill_status_code("400", "request method not supported");   
+        fillStatuCode("400", "request method not supported");   
 };
 
-std::string     Respond::normal_GET_Response(packet_map &request, std::map<std::string, std::string> &server_info)
+std::string     Respond::normalGETResponse(packet_map &request, std::map<std::string, std::string> &server_info)
 {
     GET GET_fill(request, response);
-    GET_fill.prepare_get_response(server_info);
-    return (GET_response(GET_fill.response).fill_get_response(server_info));
+    GET_fill.prepareGetResponse(server_info);
+    return (GET_response(GET_fill.response).fillGetResponse(server_info));
 }
 
-int Respond::check_poisoned_url(packet_map &request)
+int Respond::checkPoisonedURL(packet_map &request)
 {
     if (request.find("GET") != request.end())
     {
@@ -108,11 +108,11 @@ int Respond::check_poisoned_url(packet_map &request)
 }
 
 
-void    Respond::visualize_response()
+void    Respond::visualizeResponse()
 {
     std::cout << BOLDRED << "\nVisualizing reponse API\n" << std::endl;
     std::cout << "{" << std::endl << RESET;
-    for (response_pack::iterator it = response.begin(); it != response.end(); it++)
+    for (response_packet::iterator it = response.begin(); it != response.end(); it++)
     {
         if ((it->first).length() < 10000)
             std::cout << BOLDBLUE << "  \"" << it->first << "\": [" << RESET;
@@ -135,14 +135,14 @@ void    Respond::visualize_response()
 // because I am not able to save const char *a as private asset as the conversion change for each packet
 //while it's constant, I will try to change it later inshalla, for now take the code below for granted
 //till make the new sending scaling work for now
-void    Respond::send_all(connection_state &state)
+void    Respond::sendAll(connection_state &state)
 {
-    size_t  packet_len = response_packet.length(); 
+    size_t  packet_len = response_string.length(); 
     std::cout << "inside send all" << std::endl;
-    const char *a = response_packet.c_str();
+    const char *a = response_string.c_str();
     // sending = true ;
-    visualize_response();
-    vis_str(response_packet, "inside send all");
+    visualizeResponse();
+    vis_str(response_string, "inside send all");
     if (packet_len - response_bytes_sent > BUFFER_SIZE)
         response_bytes_sent += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
     else
@@ -150,14 +150,14 @@ void    Respond::send_all(connection_state &state)
     if (response_bytes_sent <= 0)
     {
         perror("send failed");
-        flush_response();
+        flushResponse();
         state = KILL_CONNECTION;
     }
     if (response_bytes_sent == packet_len)
-        flush_response();
+        flushResponse();
 }
 
-int Respond::fill_status_code(std::string status_code, std::string message)
+int Respond::fillStatuCode(std::string status_code, std::string message)
 {
     response["Status-code"].clear();
     response["Status-code"].push_back(status_code);
@@ -165,7 +165,7 @@ int Respond::fill_status_code(std::string status_code, std::string message)
     return (1);
 }
 
-std::map<std::string, std::string>  Respond::get_server_info(packet_map &request,conf &servers, std::string port)
+std::map<std::string, std::string>  Respond::getServerInfo(packet_map &request,conf &servers, std::string port)
 {
     std::vector<int>            nominated_servers;
     std::vector<std::string>    server_names;

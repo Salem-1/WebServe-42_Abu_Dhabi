@@ -3,38 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   DELETE.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:16 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/12 19:00:45 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:41:57 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef DELETE_HPP
 # define DELETE_HPP
 # include "../../includes/libs.hpp"
+#include "../parsing/parsing_lib.hpp"
+// # include "../../includes/webserve.hpp"
+#include "../response/ErrResponse.hpp"
 # include "../response/ErrResponse.hpp"
 
 class DELETE
 {
     public:
-        typedef std::map<std::string, std::vector<std::string> >    packet_map;
-        typedef std::map<std::string, std::vector<std::string> >    response_packet;
-    public:
         DELETE();
         ~DELETE();
-        std::string         fill_delete_response(response_packet &response,
+        std::string         fillDeleteResponse(response_packet &response,
                                 std::map<std::string, std::string> &server_info);
-        std::string         delete_response_filler(packet_map &request, response_packet &response, std::map<std::string, std::string> &server_info);
-        std::string         fill_ok_response(response_packet &response, std::map<std::string, std::string>  &server_info);
-        void                fill_request_line(packet_map &request, response_packet &response);
-        bool                sanitized_path(std::string path, std::map<std::string, std::string>  &server_info);
-        void                status_codes();  
-        std::string         construct_path(response_packet &response,
+        std::string         deleteResponseFiller(packet_map &request, response_packet &response, std::map<std::string, std::string> &server_info);
+        std::string         fillOkResponse(response_packet &response, std::map<std::string, std::string>  &server_info);
+        void                fillRequestLine(packet_map &request, response_packet &response);
+        bool                sanitizedPath(std::string path, std::map<std::string, std::string>  &server_info);
+        void                statusCodes();  
+        std::string         constructPath(response_packet &response,
                                 std::map<std::string, std::string> &server_info);
-        std::string         errored_response(std::string error_code, std::string error_message);
-        std::string         get_timebuffer();
-        std::string         successful_delete_packet();
+        std::string         erroredResponse(std::string error_code, std::string error_message);
+        std::string         getTimeBuffer();
+        std::string         successfulDeletePacket();
         std::map<std::string, std::string>    StatusCodes;
         
         packet_map                                      request;
