@@ -1,0 +1,29 @@
+1-Must have port and host section
+2-first Host/Port is the defualt for this Host/Port
+3-Setup server name or not
+4-Setup default error page (done)
+5-Limit client body size
+6-Define list of accepted HTTP methods
+7-HTTP redirection  (???????)
+8-define directory path 
+9-Turn on/off directory listing 
+10-Set default file answer if request is directory
+11-CGI extension
+12-Upload file and decide where to save them
+
+server{
+
+    listen (); //Must
+    hostname (); //Must
+    servername (); //optional
+
+    default_error_page (); //option
+    Limit_client_body_size (); //optional
+    allowed_methods (); //optional
+    /images (); //optional
+    dir_listing (); //optional
+    if_dir_def_path (); //optional
+    CGI_extension ();optional
+    file_upload_enable ();//optional
+    file_upload_path (); //optional
+}
