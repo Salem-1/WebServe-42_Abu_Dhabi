@@ -15,3 +15,4 @@ project_code/testers/our_tester/website/stress.html
 project_code/testersgit_ssl_update.sh
 *.o
 web_serve
+project_code/testers
