@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 04:30:09 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/28 23:57:53 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,36 +14,36 @@
 # define PARSER_HPP
 
 # include "../../includes/libs.hpp"
-# include "../GET/GET.hpp" 
+// # include "../GET/GET.hpp" 
 class Parser 
 {
     public:
 
-         typedef std::map<std::string, std::vector<std::string> >    packet_map;
-        typedef std::map<std::string, std::vector<std::string> >    response_pack;
+        //  typedef std::map<std::string, std::vector<std::string> >    packet_map;
+        // typedef std::map<std::string, std::vector<std::string> >    response_pack;
     public:
         Parser();
         ~Parser();
         Parser(const Parser &obj2);
         Parser &operator= (const Parser &obj2);
         
-        void                    fill_header_request(std::string packet);
+        void                    fillHeaderRequest(std::string packet);
         void                    parse(char *new_buffer);
-        void                    set_byteread_and_readsock(int bytes, int sock);
-        void                    visualize_request_packet();
-        int                    check_headers();
-        void                    fill_get_request(std::string packet);
-		void 					fill_body_request();
+        void                    setBytereadAndReadsock(int bytes, int sock);
+        void                    visualizeRequestPacket();
+        int                    checkHeaders();
+        void                    fillGetRequest(std::string packet);
+		void 					fillBodyRequest();
     
     private:
-        void                    fill_response();  
-        void                    fill_valid_headers();
-        int                     valid_packet_headers();
-        void                    fill_request_line();
-        void                    fill_path();
-        void                    visualize_response();
-        int                     fill_status_code(std::string status_code, std::string message);
-        void                    flush_parsing();
+        void                    fillResponse();  
+        void                    fillValidHeaders();
+        int                     validPacketHeaders();
+        void                    fillRequestLine();
+        void                    fillPath();
+        void                    visualizeResponse();
+        int                     fillStatuCode(std::string status_code, std::string message);
+        void                    flushParsing();
     public:
         int                     read_again;
         std::string             packet;
@@ -55,7 +55,7 @@ class Parser
 		size_t					body_start_pos;
         packet_map              request;
 		t_request				full_request;
-        response_pack           response;
+        response_packet          response;
         std::set<std::string>   valid_headers;
         std::string             filled_response;
 };

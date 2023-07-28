@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 22:41:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:53:42 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 ErrResponse::ErrResponse()
 {
-    status_codes();   
+    statusCodes();   
 };
 ErrResponse::~ErrResponse()
 {
@@ -27,29 +27,29 @@ std::string ErrResponse::code(
     if (server_info.find(err) == server_info.end())
     {
         std::cout << "didn't foudn err " << server_info[err] << std::endl;
-        return (errored_response(err));
+        return (erroredResponse(err));
     }
     std::ifstream infile(server_info[err].c_str());
     std::cout << server_info[err].c_str() << std::endl;
     if (infile.fail())
     {
         std::cout << "failed opening the file \n";
-        return (errored_response(err));
+        return (erroredResponse(err));
     }
     std::cout << "success open the file \n";
     std::stringstream content_stream;
     content_stream  << infile.rdbuf();
     std::string full_file_to_string = content_stream.str();
-    return (construct_custom_err_packet(err, full_file_to_string));
+    return (constructCustomErrPacket(err, full_file_to_string));
 }
 
-std::string ErrResponse::construct_custom_err_packet(std::string err, std::string & full_file_to_string)
+std::string ErrResponse::constructCustomErrPacket(std::string err, std::string & full_file_to_string)
 {
       response_packet = "HTTP/1.1 " + err 
         + " " + StatusCodes[err] + "\r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
-    response_packet += get_timebuffer();
+    response_packet += getTimeBuffer();
     response_packet += "Content-Type: text/html\r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
@@ -57,13 +57,13 @@ std::string ErrResponse::construct_custom_err_packet(std::string err, std::strin
     response_packet += full_file_to_string;
     return (response_packet);
 }
-std::string ErrResponse::errored_response(std::string err)
+std::string ErrResponse::erroredResponse(std::string err)
 {
     response_packet = "HTTP/1.1 " + err
         + " " + StatusCodes[err] + "\r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
-    response_packet += get_timebuffer();
+    response_packet += getTimeBuffer();
     response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
     response_packet += "Content-Length: 1050\r\n\r\n";
     response_packet += "<!DOCTYPE html>\r\n";
@@ -96,7 +96,7 @@ std::string ErrResponse::errored_response(std::string err)
     return (response_packet);
 }
 
-void    ErrResponse::status_codes()
+void    ErrResponse::statusCodes()
 {
     StatusCodes["100"] =  "Continue";
     StatusCodes["101"] =  "Switching Protocols";
@@ -120,7 +120,7 @@ void    ErrResponse::status_codes()
     StatusCodes["504"] =  "Gateway Timeout";
 }
 
-std::string ErrResponse::get_timebuffer() {
+std::string ErrResponse::getTimeBuffer() {
     std::time_t current_time = std::time(NULL);
     std::tm* time_info = std::gmtime(&current_time);
 

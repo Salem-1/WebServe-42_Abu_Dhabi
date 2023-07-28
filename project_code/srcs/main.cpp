@@ -1,4 +1,5 @@
 #include "../includes/webserve.hpp"
+#include "../includes/libs.hpp"
 
 
 int main()
@@ -15,7 +16,7 @@ int main()
     }
     std::cout << "server waiting for connection....\n" << std::endl;
     Kque socket_manager(servers.sockets);
-    socket_manager.watch_fds(servers.servers);
+    socket_manager.watchFds(servers.servers);
     //open sockets in array of sockets
     //give the array of sockets to the kque, 
     //make all in loops in side kque, which is the add initial socket ot the kq as events as I expect
@@ -32,7 +33,7 @@ int main()
 
 //     printf("server waiting for connection....\n");
 //     Kque socket_manager(binded_sock.sockfd);
-//     socket_manager.watch_fds(one_server);
+//     socket_manager.watchFds(one_server);
 // }
 
 // struct ServerRunner
