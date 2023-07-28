@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/24 18:15:19 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 14:11:06 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,14 +137,17 @@ void    Respond::send_all(connection_state &state)
     size_t  packet_len = response_packet.length(); 
     std::cout << "inside send all" << std::endl;
     const char *a = response_packet.c_str();
+    int send_ret = 0;
     // sending = true ;
     visualize_response();
     vis_str(response_packet, "inside send all");
     if (packet_len - response_bytes_sent > BUFFER_SIZE)
-        response_bytes_sent += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
+        send_ret += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
     else
-        response_bytes_sent += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
-    if (response_bytes_sent <= 0)
+        send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
+    std::cout << send_ret << " bytes sent \n";
+    response_bytes_sent += send_ret;
+    if (send_ret <= 0)
     {
         perror("send failed");
         flush_response();
@@ -155,6 +158,7 @@ void    Respond::send_all(connection_state &state)
         state = KILL_CONNECTION;
         flush_response();
     }
+
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)
