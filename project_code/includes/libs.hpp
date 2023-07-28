@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/27 21:15:32 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/27 20:44:23 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ typedef struct s_body
 }				t_request;
 
 typedef std::vector<std::map<std::string, std::string> > conf; 
+typedef std::map<std::string, std::string>					stringmap;; 
 enum connection_state
 {
     KILL_CONNECTION = 0,

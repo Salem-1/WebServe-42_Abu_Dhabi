@@ -47,6 +47,9 @@ class Respond
         std::string                         response_packet;
         pthread_t                           sendThread;
         bool                                sending;
+	private:
+		std::string					isCGI(packet_map &request);
+		std::string					responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
         
     private:
         int     check_poisoned_url(packet_map &request);
