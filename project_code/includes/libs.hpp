@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 15:03:55 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 03:02:12 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@
 # define BACKLOG 256
 # define MAX_EVENTS 256
 # define BUFFER_SIZE 260000
-# define PERSISTANCE 5
+# define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
@@ -87,7 +87,6 @@
 #define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
 #define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
-
 
 enum LogLevel {
     server,

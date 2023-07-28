@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Respond.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 14:11:06 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 
 #include "Respond.hpp"
@@ -46,7 +35,6 @@ void    Respond::flush_response()
 
 }
 
-//all should work from here
 void    Respond::fill_response(packet_map &request, std::map<std::string, std::string> &server_info)
 {
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
@@ -138,6 +126,7 @@ void    Respond::send_all(connection_state &state)
     std::cout << "inside send all" << std::endl;
     const char *a = response_packet.c_str();
     int send_ret = 0;
+
     // sending = true ;
     visualize_response();
     vis_str(response_packet, "inside send all");
@@ -158,7 +147,6 @@ void    Respond::send_all(connection_state &state)
         state = KILL_CONNECTION;
         flush_response();
     }
-
 }
 
 int Respond::fill_status_code(std::string status_code, std::string message)

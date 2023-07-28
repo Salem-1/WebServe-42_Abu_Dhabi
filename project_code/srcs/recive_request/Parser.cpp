@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Parser.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/25 13:28:47 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 
 #include "Parser.hpp"
@@ -48,7 +37,7 @@ void    Parser::flush_parsing()
         filled_response = "";
 }
 
-//to stop receiving the packet change the value of read_again to 0
+
 void    Parser::parse(char *new_buffer)
 {
     flush_parsing();
@@ -58,7 +47,6 @@ void    Parser::parse(char *new_buffer)
         return ;
     }
     std::string str(new_buffer);
-    
     packet += str;
     
     vis_str(new_buffer, "new_buffer inside parser");
@@ -74,7 +62,6 @@ void    Parser::parse(char *new_buffer)
         
         packet = "";
         read_again = 0;
-
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -100,6 +87,7 @@ bool Parser::early_bad_request(std::string packet)
     }
     return (false);
 }
+
 void    Parser::set_byteread_and_readsock(int bytes, int sock)
 {
     this->bytes_read = bytes;
@@ -111,7 +99,6 @@ void    Parser::fill_header_request(std::string packet)
     std::vector<std::string> tmp_vec;
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
-
 
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
@@ -140,5 +127,3 @@ void    Parser::fill_header_request(std::string packet)
         }
     }
 }
-
-

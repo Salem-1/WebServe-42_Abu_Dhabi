@@ -1,16 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Kque.cpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/25 13:29:51 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-
 #include "Kque.hpp"
 
 Kque::Kque(std::vector<int> socket_fds): kq(kqueue()), server_sockets(socket_fds)
@@ -34,7 +21,6 @@ void    Kque::watch_fds(conf &servers)
         active_fds = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
         if (active_fds == -1)
             kque_error("Kevent loop failed: ");
-        //modify this to loop over the active clients only
         for (int i = 0; i < active_fds; i++)
         {
             tmp_fd = events[i].ident;
