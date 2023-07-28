@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:57:53 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 02:24:53 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void    Parser::fillHeaderRequest(std::string packet)
 void	Parser::fillBodyRequest()
 {
 	// body chuncked request is not handled yet
-	if (Parser::packet.length() > MAX_BODY_SIZE + HEADER_MAX_LENGTH)
+	if (Parser::packet.length() > MAX_BODY_SIZE + body_start_pos)
 	{
 		std::cout << "body is too large\n";
 		Parser::full_request.body = "";
