@@ -98,7 +98,7 @@ void    Parser::parse(char *new_buffer)
         read_again = 1;
     }
 }
-bool Parser::early_bad_request(std::string packet)
+bool Parser::earlyBadRequest(std::string packet)
 {
     if (packet.length() >= 1)
     {

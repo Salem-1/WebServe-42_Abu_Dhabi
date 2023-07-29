@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 16:08:35 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 16:12:24 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void Client::handleRequest(struct kevent event)
 
     if (event.filter == EVFILT_WRITE && responder.sending 
         && receiver.state == KEEP_ALIVE)
-        responder.send_all(receiver.state);
+        responder.sendAll(receiver.state);
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
     {

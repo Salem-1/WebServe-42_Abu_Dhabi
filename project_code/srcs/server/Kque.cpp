@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 15:32:29 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 16:12:14 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,13 @@ void    Kque::watchFds(conf &servers)
                 }
             }
             else if (inactiveClients(tmp_fd))
-                handle_request_by_client(events[i]);
+                handleRequestByClient(events[i]);
         }
         // killTimeoutedClients();
     }
 }
 
-bool    Kque::in_active_clients(int tmp_fd)
+bool    Kque::inactiveClients(int tmp_fd)
 {
     for(std::set<int>::iterator it = active_clients.begin(); 
         it != active_clients.end(); it++)

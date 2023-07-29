@@ -28,7 +28,7 @@ void    DELETE::fillRequestLine(packet_map &request, response_packet &response)
             && fillStatuCode(response, "414", "URI Too Long"))
         return ;
     if (!(request["DELETE"][1] == "HTTP/1.1")
-        && (fillStatusCode(response, "505", "version not   supported")))
+        && (fillStatuCode(response, "505", "version not   supported")))
         return ;
     if ((request["DELETE"].size() != 2) 
         && (fillStatuCode(response, "400", "DELETE vec has wrong number items bad request")))
