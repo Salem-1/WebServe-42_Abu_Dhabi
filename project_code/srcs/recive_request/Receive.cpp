@@ -1,3 +1,4 @@
+
 #include "Receive.hpp"
 
 Receive::Receive(): state(KEEP_ALIVE)
@@ -27,11 +28,11 @@ Receive:: Receive(const Receive &obj2)
 Receive::~Receive()
 {}
 
-void    Receive::receive_all()
+void    Receive::receiveAll()
 {
     memset(buffer, 0, BUFFER_SIZE);
-    read_packet(buffer);
-    parser.set_byteread_and_readsock(bytes_read, read_sock);
+    readPacket(buffer);
+    parser.setBytereadAndReadsock(bytes_read, read_sock);
     parser.parse(buffer);
     vis_str(buffer, "inside recievea;");
     if (bytes_read == 0)
@@ -46,7 +47,7 @@ void    Receive::receive_all()
 }
 
 
-void    Receive::read_packet(char *buffer)
+void    Receive::readPacket(char *buffer)
 {
     bytes_read = recv(read_sock, buffer, BUFFER_SIZE, 0);
     if (strlen(buffer) < 10000)
@@ -61,7 +62,7 @@ void    Receive::read_packet(char *buffer)
         return ;
     }
 }
-
+// ?? it is already public
 std::map<std::string, std::vector<std::string> >       &Receive::get_request_packet()
 {
     return (parser.request);

@@ -1,4 +1,3 @@
-
 #include "Config.hpp"
 
 void    intra_and_dummy_fill_till_config_parsing(conf &server);
@@ -10,7 +9,7 @@ Config::Config()
     // python_tester_config(servers);
     intra_and_dummy_fill_till_config_parsing(servers);
 
-    fill_ports();
+    fillPorts();
 }
 
 Config::~Config()
@@ -18,7 +17,7 @@ Config::~Config()
 
 }
 
-void    Config::fill_ports()
+void    Config::fillPorts()
 {
     for (unsigned long i = 0; i < servers.size(); i++)
     {

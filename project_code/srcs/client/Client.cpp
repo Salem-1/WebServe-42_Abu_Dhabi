@@ -1,7 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/07/29 16:12:24 by ayassin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Client.hpp"
 
-Client::Client(int  client_socket, conf servers): state(KEEP_ALIVE), client_socket(client_socket),
+Client::Client(int  client_socket, conf  servers): state(KEEP_ALIVE), client_socket(client_socket),
     start_time(clock()), receiver(client_socket), responder(client_socket), servers(servers)
 {
 
@@ -20,7 +31,7 @@ Client &Client::operator= (const Client &obj2)
     return (*this);
 };
 
-int Client::get_timeout()
+int Client::getTimeout()
 {
     connection_duration = (static_cast<int>(clock()) / TIME_PER_SEC)
         - (static_cast<int>(start_time) / TIME_PER_SEC);
@@ -36,7 +47,7 @@ Client::~Client()
 {};
 
 
-void Client::handle_request(struct kevent event)
+void Client::handleRequest(struct kevent event)
 {
     start_time = clock();
     receiver.read_sock = client_socket;
@@ -49,18 +60,18 @@ void Client::handle_request(struct kevent event)
 
     if (event.filter == EVFILT_WRITE && responder.sending 
         && receiver.state == KEEP_ALIVE)
-        responder.send_all(receiver.state);
+        responder.sendAll(receiver.state);
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
     {
         responder.sending = false;
-        receiver.receive_all();
+        receiver.receiveAll();
         
         // std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
         if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
         {
-            // vis_str(receiver.parser.packet, "Start packet parsing");
-            responder.respond(receiver.get_request_packet(), servers, get_port(client_socket));
+            vis_str(receiver.parser.packet, "Start packet parsing");
+            responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
         }
     }
     
@@ -74,7 +85,7 @@ void Client::handle_request(struct kevent event)
     }
 }
 
-std::string Client::get_port(int client_socket)
+std::string Client::getPort(int client_socket)
 {
     struct sockaddr_in addr;
     socklen_t addr_len = sizeof(addr);

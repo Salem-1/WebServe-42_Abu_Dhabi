@@ -1,5 +1,3 @@
-
-
 #include "DELETE.hpp"
 
 DELETE::DELETE()
@@ -12,28 +10,28 @@ DELETE::~DELETE()
 
 }
 
-std::string    DELETE::delete_response_filler(packet_map &request, response_packet &response, std::map<std::string, std::string> &server_info)
+std::string    DELETE::deleteResponseFiller(packet_map &request, response_packet &response, stringmap &server_info)
 
 {
 
-    fill_request_line(request, response);
-    fill_path(request, response, "DELETE");
-    return (fill_delete_response(response, server_info));
+    fillRequestLine(request, response);
+    fillPath(request, response, "DELETE");
+    return (fillDeleteResponse(response, server_info));
 }
 
-void    DELETE::fill_request_line(packet_map &request, response_packet &response)
+void    DELETE::fillRequestLine(packet_map &request, response_packet &response)
 {
     if ((request.find("POST") != request.end() || request.find("GET") != request.end())
-        && fill_status_code(response, "400", "Invalid multiple methods inside GET"))
+        && fillStatuCode(response, "400", "Invalid multiple methods inside GET"))
         return ;
     if ((request["DELETE"][0].length() + request["DELETE"][1].length()) > HEADER_MAX_LENGTH
-            && fill_status_code(response, "414", "URI Too Long"))
+            && fillStatuCode(response, "414", "URI Too Long"))
         return ;
     if (!(request["DELETE"][1] == "HTTP/1.1")
-        && (fill_status_code(response, "505", "version not   supported")))
+        && (fillStatuCode(response, "505", "version not   supported")))
         return ;
     if ((request["DELETE"].size() != 2) 
-        && (fill_status_code(response, "400", "DELETE vec has wrong number items bad request")))
+        && (fillStatuCode(response, "400", "DELETE vec has wrong number items bad request")))
         return ;
     else
         response["HTTP version"].push_back(request["DELETE"][1]);
@@ -41,23 +39,23 @@ void    DELETE::fill_request_line(packet_map &request, response_packet &response
 
 }
 
-std::string     DELETE::fill_delete_response(response_packet &response,std::map<std::string, std::string>  &server_info)
+std::string     DELETE::fillDeleteResponse(response_packet &response,stringmap  &server_info)
 {
     if (response["Status-code"][0] != "200")
         return (err.code(server_info, response["Status-code"][0]));
-    else if (response["Path"].size() < 2 && fill_status_code(response , "400", "bad file path format"))
+    else if (response["Path"].size() < 2 && fillStatuCode(response , "400", "bad file path format"))
         return (err.code(server_info, response["Status-code"][0]));
     else
-        return (fill_ok_response(response, server_info)); 
+        return (fillOkResponse(response, server_info)); 
 }
 
 
-std::string DELETE::fill_ok_response(response_packet &response, std::map<std::string, std::string> &server_info)
+std::string DELETE::fillOkResponse(response_packet &response, stringmap &server_info)
 {
     //all the heavy lifting is here inshalla
-    std::string path = construct_path(response, server_info);
+    std::string path = constructPath(response, server_info);
     std::cout << BOLDMAGENTA << "path to delete = " << RESET << path << std::endl;
-    if (!sanitized_path(path, server_info))
+    if (!sanitizedPath(path, server_info))
         return (err.code(server_info, "403"));
     if (access(path.c_str(), F_OK) != 0)
     {
@@ -66,17 +64,17 @@ std::string DELETE::fill_ok_response(response_packet &response, std::map<std::st
     }
     if (std::remove(path.c_str()) != 0)
         return (err.code(server_info, "404"));
-    return (successful_delete_packet());
+    return (successfulDeletePacket());
 }
 
-std::string DELETE::successful_delete_packet()
+std::string DELETE::successfulDeletePacket()
 {
     std::string success_delete = "HTTP/1.1 204 No Content\n";
-    success_delete += "Date: " + err.get_timebuffer() +"\n";
+    success_delete += "Date: " + err.getTimeBuffer() +"\n";
     success_delete += "Server: Webserv 1.0\n";
     return (success_delete);
 }
-bool DELETE::sanitized_path(std::string path, std::map<std::string, std::string> &server_info)
+bool DELETE::sanitizedPath(std::string path, stringmap &server_info)
 {
     std::vector<std::string> malicous_inputs;
     malicous_inputs.push_back("..");
@@ -99,7 +97,7 @@ bool DELETE::sanitized_path(std::string path, std::map<std::string, std::string>
     return (true);
 }
 
-std::string    DELETE::construct_path(response_packet &response , std::map<std::string, std::string> &server_info)
+std::string    DELETE::constructPath(response_packet &response , stringmap &server_info)
 {
 
     std::string path = response["Path"][1];
