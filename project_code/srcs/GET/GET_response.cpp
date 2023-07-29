@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 18:24:30 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 18:54:24 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += err.getTimeBuffer();
-    response_packet += Content-Type: " + getContentType(file_path) +" \r\n";
+    response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";

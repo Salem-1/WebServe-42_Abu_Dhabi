@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 14:22:08 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 18:52:13 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <math.h>
 # include <fstream>
 # include <string>
+# include <string.h>
 # include <sstream>
 # include <dirent.h>
 # include <algorithm>
