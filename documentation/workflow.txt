@@ -59,8 +59,5 @@ continue GET parsing till finish 9112 inshalla
 Enjoy playing with testers
     Do MIME types
 Consider doing config file if done all testers
+
 learn js nodejs react and APIS 
-
-
-
-N.B: Remember to limit the body size

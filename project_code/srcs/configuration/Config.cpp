@@ -1,16 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Config.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:38:20 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/15 12:17:19 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-
 #include "Config.hpp"
 
 void    intra_and_dummy_fill_till_config_parsing(conf &server);
@@ -22,7 +9,7 @@ Config::Config()
     // python_tester_config(servers);
     intra_and_dummy_fill_till_config_parsing(servers);
 
-    fill_ports();
+    fillPorts();
 }
 
 Config::~Config()
@@ -30,7 +17,7 @@ Config::~Config()
 
 }
 
-void    Config::fill_ports()
+void    Config::fillPorts()
 {
     for (unsigned long i = 0; i < servers.size(); i++)
     {

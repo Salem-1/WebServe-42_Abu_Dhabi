@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 15:03:55 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 18:52:13 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,29 @@
 # define LIBS_HPP
 
 # include <iostream>
+# include <stdlib.h>
+# include <unistd.h>
+# include <math.h>
 # include <fstream>
 # include <string>
-#include <dirent.h>
-// # include<thread>
+# include <string.h>
+# include <sstream>
+# include <dirent.h>
+# include <algorithm>
 # include <map>
+# include <vector>
 # include <set>
 # include <sys/types.h>
 # include <sys/socket.h>
-# include <netdb.h>
-# include <fcntl.h>
-// # include <chrono>
-# include <ctime>
-# include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
-# include <stdio.h>
-# include <errno.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <netdb.h>
-# include <arpa/inet.h>
 # include <sys/wait.h>
-# include <signal.h>
+# include <sys/time.h>
+# include <netdb.h>
 # include <fcntl.h>
-# include <sys/types.h>
+# include <ctime>
+# include <errno.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <signal.h>
 #ifdef __APPLE__
 # include <sys/event.h>
 #endif
@@ -50,21 +46,23 @@
 # include <kqueue/sys/event.h>
 #include <event.h>
 #endif
-# include <sys/time.h>
-# include <fstream>
-# include <cstdio>
-# include "../srcs/parsing/parsing_lib.hpp"
-# include <algorithm>
-#include <math.h>
-#include <map>
+// # include<thread>
+// # include <chrono>
+
+typedef std::vector<std::map<std::string, std::string> >	conf; 
+typedef std::map<std::string, std::string>					stringmap;
+typedef std::map<std::string, std::vector<std::string> >	packet_map;
+typedef std::map<std::string, std::vector<std::string> >	response_packet;
+typedef std::map<std::string, std::vector<std::string> >	response_type;
 
 # define BACKLOG 256
 # define MAX_EVENTS 256
 # define BUFFER_SIZE 260000
-# define PERSISTANCE 5
+# define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
+# define MAX_BODY_SIZE 10485760 // 10 MB Will be part of the configuration file
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
@@ -88,7 +86,6 @@
 #define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
 #define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
 
-
 enum LogLevel {
     server,
     request,
@@ -98,7 +95,15 @@ enum LogLevel {
 };
 class Logger;
 
-typedef std::vector<std::map<std::string, std::string> > conf; 
+typedef struct s_body 
+{
+	std::string		header;
+	std::string		body;
+	size_t			body_content_length;
+	int				request_is_valid;
+}				t_request;
+
+
 enum connection_state
 {
     KILL_CONNECTION = 0,

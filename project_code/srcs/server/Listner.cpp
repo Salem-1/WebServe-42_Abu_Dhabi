@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Listner.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:37 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/14 03:02:21 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:47:09 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ Listner::Listner(std::string port): Socket(port)
     {
         close(sockfd);
         perror("server: Listner");
-        try_open_socket_again(try_addr->ai_next);
+        tryOpenSocketAgain(try_addr->ai_next);
     }
     std::cout << "SOCKET binded " << std::endl;
     printAddrInfo(try_addr);
@@ -37,7 +37,7 @@ Listner::~Listner()
 
 }
 
-int Listner::get_sockfd()
+int Listner::getSockfd()
 {
     return (sockfd);
 }
