@@ -2,10 +2,19 @@
 #include "../includes/webserve.hpp"
 
 
+void handle_pipes(int sig)
+{
+    if (sig == SIGPIPE)
+    {
+        std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
+    }
+}
+
 int main()
 {
     Config  servers;
-    //create set of needed ports
+    signal(SIGPIPE, &handle_pipes);
+
     for (std::set<std::string>::iterator it = servers.ports.begin();
             it != servers.ports.end(); ++it)
     {

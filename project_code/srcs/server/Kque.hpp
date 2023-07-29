@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Kque.hpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:37:40 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 11:04:14 by ayassin          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef KQUE_HPP
 # define KQUE_HPP
 
@@ -33,6 +21,7 @@ class Kque
         void		handleRequestByClient(struct kevent event);
         std::string	socketInfo(int sockfd);
         bool		tmpFdInServerSocket(int tmp_fd);
+		bool		inactiveClients(int tmp_fd);
     private:
         void		killTimeoutedClients();
 		

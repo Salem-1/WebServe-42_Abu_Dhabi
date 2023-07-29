@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 10:40:32 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 15:41:16 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class Parser
 		void 					fillBodyRequest();
     
     private:
+        bool                    earlyBadRequest(std::string packet);
         void					fillResponse();  
         void					fillValidHeaders();
         int						validPacketHeaders();
@@ -41,19 +42,21 @@ class Parser
         int						fillStatuCode(std::string status_code, std::string message);
         void					flushParsing();
     public:
-        int						read_again;
-        std::string				packet;
-        int						bytes_read;
-        int						read_sock;
-        std::string				reponse_packet;
-        int						packet_counter;
-        int						i;
+		int						read_again;
+		std::string				packet;
+		int						bytes_read;
+		int						read_sock;
+		std::string				reponse_packet;
+		int						packet_counter;
+		int						i;
 		size_t					body_start_pos;
-        packet_map				request;
+		packet_map				request;
 		t_request				full_request;
-        response_packet			response;
-        std::set<std::string>	valid_headers;
-        std::string				filled_response;
-};
+		response_packet			response;
+		std::set<std::string>	valid_headers;
+		std::string				filled_response;
+		bool                    is_post;
+		std::string             body;
+};      
 
 #endif

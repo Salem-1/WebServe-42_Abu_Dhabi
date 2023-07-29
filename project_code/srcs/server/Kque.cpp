@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 09:05:52 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 15:32:29 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,27 @@ void    Kque::watchFds(conf &servers)
                     active_clients.insert(client_socket);
                 }
             }
-            else
-                handleRequestByClient(events[i]);
+            else if (inactiveClients(tmp_fd))
+                handle_request_by_client(events[i]);
         }
         // killTimeoutedClients();
     }
+}
+
+bool    Kque::in_active_clients(int tmp_fd)
+{
+    for(std::set<int>::iterator it = active_clients.begin(); 
+        it != active_clients.end(); it++)
+    {
+        std::cout << "active fd " << *it << std::endl;
+    }
+    for(std::set<int>::iterator it = active_clients.begin(); 
+        it != active_clients.end(); it++)
+    {
+        if (*it == tmp_fd)
+            return (true);
+    }
+    return (false);
 }
 
 bool Kque::tmpFdInServerSocket(int tmp_fd)
@@ -99,16 +115,26 @@ void    Kque::killTimeoutedClients()
 
 void    Kque::handleRequestByClient(struct kevent event)
 {
-    active_clients.insert(event.ident);
-    clients[event.ident].handleRequest(event);
-    // std::cout << "inside kque after handling request state = ";
-    // std::cout << clients[event.ident].state << std::endl;
+    int client_socket = event.ident;
+    active_clients.insert(client_socket);
+    clients[client_socket].handleRequest(event);
+    // visualization only
+    std::cout << "inside kque after handling request state = ";
+    std::cout << clients[client_socket].state << std::endl;
+    std::cout << "client " << client_socket << " is open" << std::endl;
+    clients[client_socket].getPort(client_socket);
+    if (event.filter == EVFILT_READ)
+        std::cout << "Open for read" << std::endl;
+    else if (event.filter == EVFILT_WRITE)
+        std::cout << "Open for write" << std::endl;
+	//visualization ends
     if (clients[event.ident].state == KILL_CONNECTION)
     {
         std::cout << "closing the connection and deleting client "<< event.ident << " inside kqueue\n";
         // pthread_join(clients[event.ident].responder.sendThread, NULL);
-        deleteFdEvent(event.ident);
-        clients.erase(event.ident);
+        deleteFdEvent(client_socket);
+        clients.erase(client_socket);
+        active_clients.erase(client_socket);
         return ;
     }
 }
@@ -118,7 +144,7 @@ void    Kque::addReadWriteEvent(int fd)
     EV_SET(&event[0], fd, EVFILT_READ ,  EV_ADD, 0, 0, NULL);
     if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
         kqueError("failed to add socket to event kque: ");
-    EV_SET(&event[1], fd, EVFILT_WRITE,  EV_ADD, 0, 0, NULL);
+    EV_SET(&event[1], fd, EVFILT_WRITE, EV_ADD, 0, 0, NULL);
     if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kqueError("failed to add socket to event kque: ");
 }
@@ -142,12 +168,13 @@ void    Kque::deleteFdEvent(int fd)
     if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kqueError("failed to remove socket from event kque: ");
     close(fd);
+    // sleep(1);
 }
 
 void   Kque::kqueError(std::string msg)
 {
     perror(msg.c_str());
-    throw(std::runtime_error("Kque error"));
+    // throw(std::runtime_error("Kque error"));
 }
 
 
