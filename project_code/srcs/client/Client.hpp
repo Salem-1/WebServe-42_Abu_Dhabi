@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:22 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/23 15:06:58 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:33:52 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CLIENT_HPP
 # define CLIENT_HPP
 
+# include "../response/Respond.hpp"
 # include "../../includes/libs.hpp"
 # include "../recive_request/Receive.hpp"
-# include "../response/Respond.hpp"
 
 class Client
 {
@@ -25,19 +25,18 @@ class Client
         Client(const Client &obj2);
         Client &operator= (const Client &obj2);
         ~Client();
-        void                                handle_request(struct kevent event);
-        int                                 get_timeout();
-        std::string                         get_port(int client_socket);
-        connection_state                    state;
-        int                                 client_socket;
-        clock_t                             start_time;
-        int                                 connection_duration;
-        Receive                             receiver;
-        Respond                             responder;
-        std::string                         response_packet;
-        conf                                servers;
         
-    private:
+		void				handleRequest(struct kevent event);
+        int					getTimeout();
+        std::string			getPort(int client_socket);
+		connection_state	state;
+        int					client_socket;
+        clock_t				start_time;
+        int					connection_duration;
+        Receive				receiver;
+        Respond				responder;
+        std::string			response_string;
+        conf				servers;
 };
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 21:33:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:51:56 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,24 @@ GET_response::GET_response(response_type &res): reponse_check(res)
 GET_response::~GET_response()
 {}
 
-std::string     GET_response::fill_get_response(std::map<std::string, std::string> &server_info)
+std::string     GET_response::fillGetResponse(stringmap &server_info)
 {
     if (*(reponse_check["Status-code"].begin()) != "200")
         return (err.code(server_info, reponse_check["Status-code"][0]));
-    else if (reponse_check["Path"].size() < 2 && fill_status_code(reponse_check , "400", "bad file path format"))
+    else if (reponse_check["Path"].size() < 2 && fillStatuCode(reponse_check , "400", "bad file path format"))
         return (err.code(server_info, reponse_check["Status-code"][0]));
     else
-        fill_ok_response(server_info); 
+        fillOkResponse(server_info); 
     return (response_packet);
 }
-void        GET_response::fill_ok_response(std::map<std::string, std::string> &server_info)
+void        GET_response::fillOkResponse(stringmap &server_info)
 {
     response_packet = "";
-    std::string file_path = construct_path(server_info);
+    std::string file_path = constructPath(server_info);
 
     std::cout << BOLDMAGENTA << "requested file path = "
     		<< RESET << file_path << std::endl <<RESET;
-    if (!sanitized_path(file_path)&& fill_bad_path(server_info))
+    if (!sanitizedPath(file_path)&& fillBadPath(server_info))
         return ;
     std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
     DIR *dir;
@@ -48,21 +48,21 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
         ls.push_back(file_path);
         while ((files = readdir(dir)) != NULL)
             ls.push_back(files->d_name);
-        construct_dir_response(ls, full_file_to_string);
+        constructDirResponse(ls, full_file_to_string);
     }
     else
     {
         std::ifstream infile(file_path.c_str());
-        if (infile.fail() && fill_bad_path(server_info))
+        if (infile.fail() && fillBadPath(server_info))
             return ;
         std::stringstream content_stream;
         content_stream  << infile.rdbuf();
         full_file_to_string = content_stream.str();
     }
-    filling_response_packet(full_file_to_string);
+    fillingResponsePacket(full_file_to_string);
 }
 
-void    GET_response::construct_dir_response(std::vector<std::string> &ls,
+void    GET_response::constructDirResponse(std::vector<std::string> &ls,
     std::string &full_file_to_string)
 {
     std::string file_name = ls[0].substr(ls[0].rfind("/"), ls[0].length());
@@ -82,12 +82,12 @@ void    GET_response::construct_dir_response(std::vector<std::string> &ls,
     full_file_to_string += "</body>";
     full_file_to_string += "</html>";
 }
-void     GET_response::filling_response_packet(std::string &full_file_to_string)
+void     GET_response::fillingResponsePacket(std::string &full_file_to_string)
 {
     response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
-    response_packet += err.get_timebuffer();
+    response_packet += err.getTimeBuffer();
     response_packet += "Content-Type: text/html\r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
@@ -96,15 +96,15 @@ void     GET_response::filling_response_packet(std::string &full_file_to_string)
     
 }
 
-bool    GET_response::fill_bad_path(std::map<std::string, std::string> &server_info)
+bool    GET_response::fillBadPath(stringmap &server_info)
 {
-        fill_status_code(reponse_check , "403", "file not found ya basha!");
+        fillStatuCode(reponse_check , "403", "file not found ya basha!");
         response_packet = err.code(server_info, reponse_check["Status-code"][0]);
         vis_str(response_packet, "inside GET_response has large response not gonna visualize\n");
         return (true);
 
 }
-std::string    GET_response::construct_path(std::map<std::string, std::string> &server_info)
+std::string    GET_response::constructPath(stringmap &server_info)
 {
 
     std::string path = reponse_check["Path"][1];
@@ -136,7 +136,7 @@ std::string    GET_response::construct_path(std::map<std::string, std::string> &
 }
 
 
-bool GET_response::sanitized_path(std::string path)
+bool GET_response::sanitizedPath(std::string path)
 {
     std::vector<std::string> malicous_inputs;
     malicous_inputs.push_back("..");

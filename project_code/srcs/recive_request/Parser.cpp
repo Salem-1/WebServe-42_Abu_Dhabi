@@ -1,11 +1,26 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Parser.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/07/28 23:57:53 by ayassin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Parser.hpp"
 
 
 Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0), is_post(false)
 {
-    fill_valid_headers();
+	Parser::full_request.body_content_length = 0;
+	Parser::full_request.request_is_valid = 0;
+	Parser::full_request.header = "";
+	Parser::full_request.body = "";
+	Parser::body_start_pos = 0;
+    fillValidHeaders();
 }
 
 
@@ -27,7 +42,7 @@ Parser::~Parser()
 
 }
 
-void    Parser::flush_parsing()
+void    Parser::flushParsing()
 {
         read_again = 0;
         reponse_packet = ""; 
@@ -40,7 +55,7 @@ void    Parser::flush_parsing()
 
 void    Parser::parse(char *new_buffer)
 {
-    flush_parsing();
+    flushParsing();
     if (!bytes_read)  
     {
         read_again = 0;
@@ -48,20 +63,35 @@ void    Parser::parse(char *new_buffer)
     }
     std::string str(new_buffer);
     packet += str;
-    
-    vis_str(new_buffer, "new_buffer inside parser");
-    vis_str(packet, "packet inside parser");
-    
-    //this will parse the headers
-    if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
-        || early_bad_request(packet))
+	vis_str(new_buffer, "new_buffer inside parser");
+	vis_str(packet, "packet inside parser");
+    if (full_request.body_content_length)
+		Parser::fillBodyRequest();
+    else if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10 || earlyBadRequest(packet))
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
-        fill_header_request(packet);
-        check_headers();    
-        
-        packet = "";
-        read_again = 0;
+		body_start_pos = packet.find("\r\n\r\n") + 4;
+		if (body_start_pos == std::string::npos)
+			body_start_pos = packet.find("\n\n") + 2;
+		if (body_start_pos)
+			full_request.header = packet.substr(0, body_start_pos);
+        fillHeaderRequest(full_request.header);
+		full_request.request_is_valid = checkHeaders();
+		if (Parser::request.find("content-length:") != request.end() && full_request.request_is_valid)
+		{
+			std::cout << YELLOW <<"body content length is " << request["content-length:"][0] << std::endl << RESET;
+			std::istringstream iss(request["content-length:"][0]);
+			iss >> full_request.body_content_length;
+		}
+		if (!full_request.body_content_length || full_request.body_content_length > MAX_BODY_SIZE)
+		{
+			if (full_request.body_content_length > MAX_BODY_SIZE)
+				std::cout << "body is too large\n";
+			packet = "";
+			read_again = 0;
+		}
+		else
+			Parser::fillBodyRequest();
     }
     else if (packet.length() > HEADER_MAX_LENGTH)
     {
@@ -88,13 +118,13 @@ bool Parser::early_bad_request(std::string packet)
     return (false);
 }
 
-void    Parser::set_byteread_and_readsock(int bytes, int sock)
+void    Parser::setBytereadAndReadsock(int bytes, int sock)
 {
     this->bytes_read = bytes;
     this->read_sock = sock;
 }
 
-void    Parser::fill_header_request(std::string packet)
+void    Parser::fillHeaderRequest(std::string packet)
 {
     std::vector<std::string> tmp_vec;
     std::string              header;
@@ -126,4 +156,29 @@ void    Parser::fill_header_request(std::string packet)
             }
         }
     }
+}
+
+void	Parser::fillBodyRequest()
+{
+	// body chuncked request is not handled yet
+	if (Parser::packet.length() > MAX_BODY_SIZE + HEADER_MAX_LENGTH)
+	{
+		std::cout << "body is too large\n";
+		Parser::full_request.body = "";
+		Parser::full_request.body_content_length = 0;
+		Parser::packet = "";
+		Parser::read_again = 0;
+		return ;
+	}
+	else if (Parser::packet.length() < Parser::full_request.body_content_length + Parser::body_start_pos)
+	{
+		Parser::read_again = 1;
+		return ;
+	}
+	else
+	{
+		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos, Parser::full_request.body_content_length);
+		Parser::packet = "";
+		Parser::read_again = 0;
+	}
 }

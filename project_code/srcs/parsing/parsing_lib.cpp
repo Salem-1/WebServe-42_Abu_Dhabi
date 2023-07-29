@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/06/25 12:07:49 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/28 23:57:41 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ std::vector<std::string> split(std::string str, std::string delimeter)
     return (result);
 }
 
-int fill_status_code(response_packet &response, std::string status_code, std::string message)
+int fillStatuCode(response_packet &response, std::string status_code, std::string message)
 {
     response["Status-code"].clear();
     response["Status-code"].push_back(status_code);
@@ -41,13 +41,13 @@ int fill_status_code(response_packet &response, std::string status_code, std::st
     return (1);
 }
 
-void    fill_path(packet_map &request,response_packet &response, std::string method)
+void    fillPath(packet_map &request,response_packet &response, std::string method)
 {
     //decide on absouloute or origin option path 
     //400 if wrong
     if ((request[method][0].find("/") == std::string::npos ||
             request[method][0][0] != '/')
-        && (fill_status_code(response, "400", "bad origin path format")))
+        && (fillStatuCode(response, "400", "bad origin path format")))
         return ;
     if (request[method][0].find("?") == std::string::npos)
     {
@@ -57,7 +57,7 @@ void    fill_path(packet_map &request,response_packet &response, std::string met
     else
     {
         if ((request[method][0][0] !=  '/' || request[method][0].find("&&") != std::string::npos)
-            && (fill_status_code(response, "400", "bad origin path format")))
+            && (fillStatuCode(response, "400", "bad origin path format")))
                 return ;
         std::string base_path = request[method][0].substr(0, request[method][0].find("?"));
         response["Path"].push_back("origin");
