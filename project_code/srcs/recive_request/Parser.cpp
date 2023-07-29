@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -7,11 +6,9 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 02:58:54 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/07/29 23:27:01 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-=======
->>>>>>> main
 
 #include "Parser.hpp"
 
@@ -82,10 +79,10 @@ void    Parser::parse(char *new_buffer)
 			full_request.header = packet.substr(0, body_start_pos);
         fillHeaderRequest(full_request.header);
 		full_request.request_is_valid = checkHeaders();
-		if (Parser::request.find("content-length:") != request.end() && full_request.request_is_valid)
+		if (Parser::request.find("Content-Length:") != request.end() && full_request.request_is_valid)
 		{
-			std::cout << YELLOW <<"body content length is " << request["content-length:"][0] << std::endl << RESET;
-			std::istringstream iss(request["content-length:"][0]);
+			std::cout << YELLOW <<"body content length is " << request["Content-Length:"][0] << std::endl << RESET;
+			std::istringstream iss(request["Content-Length:"][0]);
 			iss >> full_request.body_content_length;
 		}
 		if (!full_request.body_content_length || full_request.body_content_length > MAX_BODY_SIZE)

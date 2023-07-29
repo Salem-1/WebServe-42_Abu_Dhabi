@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 16:12:14 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 22:51:35 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ void    Kque::watchFds(conf &servers)
 
 bool    Kque::inactiveClients(int tmp_fd)
 {
-    for(std::set<int>::iterator it = active_clients.begin(); 
-        it != active_clients.end(); it++)
-    {
-        std::cout << "active fd " << *it << std::endl;
-    }
+    // for(std::set<int>::iterator it = active_clients.begin(); 
+    //     it != active_clients.end(); it++)
+    // {
+    //     std::cout << "active fd " << *it << std::endl;
+    // }
     for(std::set<int>::iterator it = active_clients.begin(); 
         it != active_clients.end(); it++)
     {
@@ -119,14 +119,14 @@ void    Kque::handleRequestByClient(struct kevent event)
     active_clients.insert(client_socket);
     clients[client_socket].handleRequest(event);
     // visualization only
-    std::cout << "inside kque after handling request state = ";
-    std::cout << clients[client_socket].state << std::endl;
-    std::cout << "client " << client_socket << " is open" << std::endl;
+    // std::cout << "inside kque after handling request state = ";
+    // std::cout << clients[client_socket].state << std::endl;
+    // std::cout << "client " << client_socket << " is open" << std::endl;
     clients[client_socket].getPort(client_socket);
-    if (event.filter == EVFILT_READ)
-        std::cout << "Open for read" << std::endl;
-    else if (event.filter == EVFILT_WRITE)
-        std::cout << "Open for write" << std::endl;
+    // if (event.filter == EVFILT_READ)
+    //     std::cout << "Open for read" << std::endl;
+    // else if (event.filter == EVFILT_WRITE)
+    //     std::cout << "Open for write" << std::endl;
 	//visualization ends
     if (clients[event.ident].state == KILL_CONNECTION)
     {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 16:12:24 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 22:46:14 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ std::string Client::getPort(int client_socket)
 	ss << ntohs(addr.sin_port);
 	std::string port(ss.str());
     // Print the local address information
-    std::cout << "Socket Local Address: " << ip_str << std::endl;
-    std::cout << "Socket Local Port: " << ntohs(addr.sin_port) << std::endl;
+    // std::cout << "Socket Local Address: " << ip_str << std::endl;
+    // std::cout << "Socket Local Port: " << ntohs(addr.sin_port) << std::endl;
     return (port);
 }
