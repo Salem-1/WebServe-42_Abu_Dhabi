@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 18:54:24 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 20:17:22 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,8 @@ bool GET_response::sanitizedPath(std::string path)
 void    get_mime(std::map<std::string, std::string> &mimes)
 {
     std::string mimes_str = "text/plain txt\n";
-    mimes_str += "text/html html, htm\n";
+    mimes_str += "text/html html\n";
+    mimes_str += "text/html htm\n";
     mimes_str += "text/css css\n";
     mimes_str += "text/javascript js\n";
     mimes_str += "application/json json\n";
@@ -200,7 +201,6 @@ void    get_mime(std::map<std::string, std::string> &mimes)
 
 std::string GET_response::getContentType(std::string file_path)
 {
-    (void) file_path;
     size_t  file_location = file_path.rfind("/");
     if (file_location == std::string::npos || file_location == file_path.length() - 1)
         return ("text/html");
@@ -212,12 +212,12 @@ std::string GET_response::getContentType(std::string file_path)
         return ("text/html");
     std::string file_extension = file_name.substr(dot_location + 1, file_name.length() - 1);
     get_mime(mimes);
+        std::cout << "\n\n\nfile extension is " << file_extension << std::endl;
     if (mimes.find(file_extension) != mimes.end())
     {
-        std::cout << "\n\n\nfile extension is " << file_extension << std::endl;
-        std::cout << "encoding is" << mimes[file_extension] << std::endl;
-        // sleep(3);
+        std::cout << "encoding is " << mimes[file_extension] << std::endl;
         return (mimes[file_extension]);
     }
+
     return ("text/html");
 }
