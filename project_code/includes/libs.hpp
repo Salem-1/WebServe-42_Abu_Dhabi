@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:33:44 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 18:52:13 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,29 @@
 # define LIBS_HPP
 
 # include <iostream>
+# include <stdlib.h>
+# include <unistd.h>
+# include <math.h>
 # include <fstream>
 # include <string>
-#include <dirent.h>
-// # include<thread>
+# include <string.h>
+# include <sstream>
+# include <dirent.h>
+# include <algorithm>
 # include <map>
+# include <vector>
 # include <set>
 # include <sys/types.h>
 # include <sys/socket.h>
-# include <netdb.h>
-# include <fcntl.h>
-// # include <chrono>
-# include <ctime>
-# include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
-# include <stdio.h>
-# include <errno.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/socket.h>
-# include <netinet/in.h>
-# include <netdb.h>
-# include <arpa/inet.h>
 # include <sys/wait.h>
-# include <signal.h>
+# include <sys/time.h>
+# include <netdb.h>
 # include <fcntl.h>
-# include <sys/types.h>
+# include <ctime>
+# include <errno.h>
+# include <netinet/in.h>
+# include <arpa/inet.h>
+# include <signal.h>
 #ifdef __APPLE__
 # include <sys/event.h>
 #endif
@@ -50,20 +46,14 @@
 # include <kqueue/sys/event.h>
 #include <event.h>
 #endif
-# include <sys/time.h>
-# include <fstream>
-# include <cstdio>
-# include <algorithm>
-#include <math.h>
-#include <map>
-#include <vector>
-#include <sstream>
+// # include<thread>
+// # include <chrono>
 
-
-class Client;
-class Parser;
-class Respond;
-// class Receive;
+typedef std::vector<std::map<std::string, std::string> >	conf; 
+typedef std::map<std::string, std::string>					stringmap;
+typedef std::map<std::string, std::vector<std::string> >	packet_map;
+typedef std::map<std::string, std::vector<std::string> >	response_packet;
+typedef std::map<std::string, std::vector<std::string> >	response_type;
 
 # define BACKLOG 256
 # define MAX_EVENTS 256
@@ -113,12 +103,6 @@ typedef struct s_body
 	int				request_is_valid;
 }				t_request;
 
-typedef std::vector<std::map<std::string, std::string> >	conf; 
-// typedef std::map<std::string, std::string>					conf_map; 
-typedef std::map<std::string, std::string>					stringmap;
-typedef std::map<std::string, std::vector<std::string> >	packet_map;
-typedef std::map<std::string, std::vector<std::string> >	response_packet;
-typedef std::map<std::string, std::vector<std::string> >	response_type;
 
 enum connection_state
 {

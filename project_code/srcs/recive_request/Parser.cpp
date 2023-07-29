@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -9,11 +10,13 @@
 /*   Updated: 2023/07/29 02:58:54 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+=======
+>>>>>>> main
 
 #include "Parser.hpp"
 
 
-Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0)
+Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0), is_post(false)
 {
 	Parser::full_request.body_content_length = 0;
 	Parser::full_request.request_is_valid = 0;
@@ -52,6 +55,7 @@ void    Parser::flushParsing()
         filled_response = "";
 }
 
+
 void    Parser::parse(char *new_buffer)
 {
     flushParsing();
@@ -62,17 +66,13 @@ void    Parser::parse(char *new_buffer)
     }
     std::string str(new_buffer);
     packet += str;
-    if (strlen(new_buffer) < 10000)
-        std::cout << "inside parser buffer is \n<" <<  new_buffer << ">" << std::endl;
-    else
-        std::cout << "recieved a large packet\n";
-    if (packet.length() < 10000)
-        std::cout << "\n\ninside parser packet = \n<" << packet<< ">" << std::endl;
-    else
-        std::cout << "We have large packet not gonna visulize\n";
-    if (full_request.body_content_length)
-		Parser::fillBodyRequest();
-    else if ((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+    
+    vis_str(new_buffer, "new_buffer inside parser");
+    vis_str(packet, "packet inside parser");
+    
+    //this will parse the headers
+    if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+        || earlyBadRequest(packet))
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
 		body_start_pos = packet.find("\r\n\r\n") + 4;
@@ -108,9 +108,19 @@ void    Parser::parse(char *new_buffer)
     }
     else
     {
-        std::cout << "\nin-complete packet let's read again\n";
+        std::cout << "in-complete packet let's read again\n";
         read_again = 1;
     }
+}
+bool Parser::earlyBadRequest(std::string packet)
+{
+    if (packet.length() >= 1)
+    {
+        if (packet[0] != 'G' || packet[0] != 'P' 
+            || packet[0] != 'D')
+            return (true);
+    }
+    return (false);
 }
 
 void    Parser::setBytereadAndReadsock(int bytes, int sock)
@@ -124,8 +134,6 @@ void    Parser::fillHeaderRequest(std::string packet)
     std::vector<std::string> tmp_vec;
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
-
-  
 
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {

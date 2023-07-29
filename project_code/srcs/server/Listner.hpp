@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:31 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:47:09 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 11:04:22 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,6 @@ class Listner: public Socket
     public:
         Listner(std::string port);
         ~Listner();
-        int getSockfd();
+        int	getSockfd();
 }; 
 #endif

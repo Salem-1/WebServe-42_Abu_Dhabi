@@ -120,9 +120,9 @@ void    visualize_string_map(std::map<std::string, std::string>  &map)
 {
     std::cout << BOLDRED << "visualizing string map\n" << RESET << RED;
     if (map.size() == 0)
-        std::cout << "The map you are trying to visualize is empty" << std::endl;
-    else
-        std::cout << "visualizing map of strings\n\n\n" << std::endl;
+		std::cout << "The map you are trying to visualize is empty" << std::endl;
+	else
+		std::cout << "visualizing map of strings\n\n\n" << std::endl;
 	std::cout << RESET;
     for (std::map<std::string, std::string>::reverse_iterator rit = map.rbegin();
         rit != map.rend(); ++rit)
