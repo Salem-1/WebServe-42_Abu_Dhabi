@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/22 21:33:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 18:24:30 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@ std::string     GET_response::fill_get_response(std::map<std::string, std::strin
         fill_ok_response(server_info); 
     return (response_packet);
 }
+
 void        GET_response::fill_ok_response(std::map<std::string, std::string> &server_info)
 {
     response_packet = "";
     std::string file_path = construct_path(server_info);
-
     std::cout << BOLDMAGENTA << "requested file path = "
     		<< RESET << file_path << std::endl <<RESET;
     if (!sanitized_path(file_path)&& fill_bad_path(server_info))
@@ -59,7 +59,7 @@ void        GET_response::fill_ok_response(std::map<std::string, std::string> &s
         content_stream  << infile.rdbuf();
         full_file_to_string = content_stream.str();
     }
-    filling_response_packet(full_file_to_string);
+    filling_response_packet(full_file_to_string, file_path);
 }
 
 void    GET_response::construct_dir_response(std::vector<std::string> &ls,
@@ -82,19 +82,19 @@ void    GET_response::construct_dir_response(std::vector<std::string> &ls,
     full_file_to_string += "</body>";
     full_file_to_string += "</html>";
 }
-void     GET_response::filling_response_packet(std::string &full_file_to_string)
+void     GET_response::filling_response_packet(std::string &full_file_to_string, std::string file_path)
 {
     response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
     response_packet += err.get_timebuffer();
-    response_packet += "Content-Type: text/html\r\n";
+    response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
-    response_packet += full_file_to_string;
-    
+    response_packet += full_file_to_string; 
 }
+
 
 bool    GET_response::fill_bad_path(std::map<std::string, std::string> &server_info)
 {
@@ -153,4 +153,71 @@ bool GET_response::sanitized_path(std::string path)
         }
     }
     return (true);
+}
+
+void    get_mime(std::map<std::string, std::string> &mimes)
+{
+    std::string mimes_str = "text/plain txt\n";
+    mimes_str += "text/html html, htm\n";
+    mimes_str += "text/css css\n";
+    mimes_str += "text/javascript js\n";
+    mimes_str += "application/json json\n";
+    mimes_str += "application/xml xml\n";
+    mimes_str += "application/pdf pdf\n";
+    mimes_str += "application/zip zip\n";
+    mimes_str += "application/gzip gz\n";
+    mimes_str += "application/msword doc\n";
+    mimes_str += "application/vnd.ms-excel xls\n";
+    mimes_str += "application/vnd.ms-powerpoint ppt\n";
+    mimes_str += "application/vnd.openxmlformats-officedocument.wordprocessingml.document docx\n";
+    mimes_str += "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet xlsx\n";
+    mimes_str += "application/vnd.openxmlformats-officedocument.presentationml.presentation pptx\n";
+    mimes_str += "image/jpeg jpeg, jpg\n";
+    mimes_str += "image/png png\n";
+    mimes_str += "image/gif gif\n";
+    mimes_str += "image/svg+xml svg\n";
+    mimes_str += "audio/mpeg mp3\n";
+    mimes_str += "audio/wav wav\n";
+    mimes_str += "audio/ogg ogg\n";
+    mimes_str += "video/mp4 mp4\n";
+    mimes_str += "video/mpeg mpeg\n";
+    mimes_str += "video/quicktime mov\n";
+    mimes_str += "video/x-msvideo avi\n";
+    mimes_str += "application/octet-stream bin\n";
+    std::vector<std::string> mime_lines = split(mimes_str, "\n");
+    for (std::vector<std::string>::iterator it = mime_lines.begin();
+        it != mime_lines.end(); it++)
+    {
+        std::vector<std::string> tmp = split(*it, " ");
+        if (tmp.size() != 2)
+            continue ;
+        mimes[tmp[1]] = tmp[0]; 
+    }
+    visualize_string_map(mimes);
+    // mimes += "application/x-www-form-urlencoded (No specific file extension)\n";
+    // mimes += "multipart/form-data (No specific file extension)\n";
+}
+
+std::string GET_response::getContentType(std::string file_path)
+{
+    (void) file_path;
+    size_t  file_location = file_path.rfind("/");
+    if (file_location == std::string::npos || file_location == file_path.length() - 1)
+        return ("text/html");
+    std::string file_name = file_path.substr(file_location + 1, file_path.length());
+    std::map<std::string, std::string>  mimes;
+    size_t dot_location = file_name.rfind(".");
+    if (dot_location == std::string::npos 
+        || dot_location == file_name.length() - 1)
+        return ("text/html");
+    std::string file_extension = file_name.substr(dot_location + 1, file_name.length() - 1);
+    get_mime(mimes);
+    if (mimes.find(file_extension) != mimes.end())
+    {
+        std::cout << "\n\n\nfile extension is " << file_extension << std::endl;
+        std::cout << "encoding is" << mimes[file_extension] << std::endl;
+        // sleep(3);
+        return (mimes[file_extension]);
+    }
+    return ("text/html");
 }

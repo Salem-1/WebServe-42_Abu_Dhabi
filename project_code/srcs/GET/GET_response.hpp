@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/18 14:37:17 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/29 17:40:11 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,10 @@ class GET_response
         bool            sanitized_path(std::string path);
         bool            fill_bad_path(std::map<std::string,
                                 std::string> &server_info);
-        void            filling_response_packet(std::string &full_file_to_string);
-        void     construct_dir_response(std::vector<std::string> &ls,
+        void            filling_response_packet(std::string &full_file_to_string, std::string file_path);
+        void            construct_dir_response(std::vector<std::string> &ls,
                                 std::string &full_file_to_string);
+        std::string     getContentType(std::string file_path);
         std::string     response_packet;
         ErrResponse     err;
         response_type   reponse_check;

@@ -1,7 +1,14 @@
-// Add dangerous and cool effects
 const container = document.querySelector('.container');
 const logo = document.querySelector('.logo');
 const body = document.querySelector('body');
+
+const audio = new Audio('https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_5MG.mp3');
+audio.loop = true;
+
+// Play sea sounds
+const playSeaSounds = () => {
+    audio.play();
+};
 
 // Shake effect on the container
 const shakeContainer = () => {
@@ -35,7 +42,7 @@ const displaySurpriseAlert = () => {
 
 // Create and animate spiders in the background
 const createSpiders = () => {
-    const numSpiders = 5;
+    const numSpiders = 1;
     for (let i = 0; i < numSpiders; i++) {
         const spider = document.createElement('div');
         spider.classList.add('spider');
@@ -45,4 +52,5 @@ const createSpiders = () => {
     }
 };
 
+playSeaSounds();
 createSpiders();
