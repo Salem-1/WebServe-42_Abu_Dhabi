@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:12 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:57:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:52:02 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ GET::~GET()
 
 }
 
-void    GET::prepareGetResponse(std::map<std::string, std::string> &server_info)
+void    GET::prepareGetResponse(stringmap &server_info)
 {
     (void)server_info;
     fillRequestLine(request);

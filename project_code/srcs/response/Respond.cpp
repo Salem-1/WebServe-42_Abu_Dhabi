@@ -6,10 +6,9 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:59:31 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 15:38:55 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 
 #include "Respond.hpp"
@@ -29,7 +28,7 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
 {
     
     //here should extract the port and hostname to give to the corresponding method
-    std::map<std::string, std::string> server_info = getServerInfo(request, servers, port);
+    stringmap server_info = getServerInfo(request, servers, port);
     
     visualize_string_map(server_info);
     fillResponse(request, full_request, server_info);
@@ -47,8 +46,7 @@ void    Respond::flushResponse()
 
 }
 
-
-void    Respond::fillResponse(packet_map &request, t_request &full_request, std::map<std::string, std::string> &server_info)
+void    Respond::fillResponse(packet_map &request, t_request &full_request, stringmap &server_info)
 {
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
         || checkPoisonedURL(request))
@@ -63,7 +61,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, std:
 		response_string = responseCGI(request, server_info, cgi_path);
     if (request.find("GET") != request.end())
         response_string = normalGETResponse(request, server_info);
-    else if (request.find("POST") != request.end() && full_request.request_is_valid)
+    else if (request.find("POST") != request.end())
     {
         Post apost(request, full_request, server_info);
 		apost.printPostHeader();
@@ -77,10 +75,13 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, std:
         response_string = DELETE_response.deleteResponseFiller(request, response, server_info);
     }
     else
-        fillStatuCode("400", "request method not supported");   
+	{
+		ErrResponse err;
+		response_string = err.code(server_info, "501");
+	}
 };
 
-std::string     Respond::normalGETResponse(packet_map &request, std::map<std::string, std::string> &server_info)
+std::string     Respond::normalGETResponse(packet_map &request, stringmap &server_info)
 {
     GET GET_fill(request, response);
     GET_fill.prepareGetResponse(server_info);
@@ -140,21 +141,27 @@ void    Respond::sendAll(connection_state &state)
     size_t  packet_len = response_string.length(); 
     std::cout << "inside send all" << std::endl;
     const char *a = response_string.c_str();
+    int send_ret = 0;
     // sending = true ;
     visualizeResponse();
     vis_str(response_string, "inside send all");
     if (packet_len - response_bytes_sent > BUFFER_SIZE)
-        response_bytes_sent += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
+        send_ret += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
     else
-        response_bytes_sent += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
-    if (response_bytes_sent <= 0)
+        send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
+    std::cout << send_ret << " bytes sent \n";
+    response_bytes_sent += send_ret;
+    if (send_ret <= 0)
     {
         perror("send failed");
         flushResponse();
         state = KILL_CONNECTION;
     }
     if (response_bytes_sent == packet_len)
+    {
+        state = KILL_CONNECTION;
         flushResponse();
+    }
 }
 
 int Respond::fillStatuCode(std::string status_code, std::string message)
@@ -165,7 +172,7 @@ int Respond::fillStatuCode(std::string status_code, std::string message)
     return (1);
 }
 
-std::map<std::string, std::string>  Respond::getServerInfo(packet_map &request,conf &servers, std::string port)
+stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string port)
 {
     std::vector<int>            nominated_servers;
     std::vector<std::string>    server_names;
