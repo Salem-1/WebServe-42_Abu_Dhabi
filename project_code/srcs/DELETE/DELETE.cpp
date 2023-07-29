@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:31:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:57:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:50:42 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ DELETE::~DELETE()
 
 }
 
-std::string    DELETE::deleteResponseFiller(packet_map &request, response_packet &response, std::map<std::string, std::string> &server_info)
+std::string    DELETE::deleteResponseFiller(packet_map &request, response_packet &response, stringmap &server_info)
 
 {
 
@@ -51,7 +51,7 @@ void    DELETE::fillRequestLine(packet_map &request, response_packet &response)
 
 }
 
-std::string     DELETE::fillDeleteResponse(response_packet &response,std::map<std::string, std::string>  &server_info)
+std::string     DELETE::fillDeleteResponse(response_packet &response,stringmap  &server_info)
 {
     if (response["Status-code"][0] != "200")
         return (err.code(server_info, response["Status-code"][0]));
@@ -62,7 +62,7 @@ std::string     DELETE::fillDeleteResponse(response_packet &response,std::map<st
 }
 
 
-std::string DELETE::fillOkResponse(response_packet &response, std::map<std::string, std::string> &server_info)
+std::string DELETE::fillOkResponse(response_packet &response, stringmap &server_info)
 {
     //all the heavy lifting is here inshalla
     std::string path = constructPath(response, server_info);
@@ -86,7 +86,7 @@ std::string DELETE::successfulDeletePacket()
     success_delete += "Server: Webserv 1.0\n";
     return (success_delete);
 }
-bool DELETE::sanitizedPath(std::string path, std::map<std::string, std::string> &server_info)
+bool DELETE::sanitizedPath(std::string path, stringmap &server_info)
 {
     std::vector<std::string> malicous_inputs;
     malicous_inputs.push_back("..");
@@ -109,7 +109,7 @@ bool DELETE::sanitizedPath(std::string path, std::map<std::string, std::string> 
     return (true);
 }
 
-std::string    DELETE::constructPath(response_packet &response , std::map<std::string, std::string> &server_info)
+std::string    DELETE::constructPath(response_packet &response , stringmap &server_info)
 {
 
     std::string path = response["Path"][1];

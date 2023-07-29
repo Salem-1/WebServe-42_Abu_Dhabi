@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:52:05 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:51:56 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ GET_response::GET_response(response_type &res): reponse_check(res)
 GET_response::~GET_response()
 {}
 
-std::string     GET_response::fillGetResponse(std::map<std::string, std::string> &server_info)
+std::string     GET_response::fillGetResponse(stringmap &server_info)
 {
     if (*(reponse_check["Status-code"].begin()) != "200")
         return (err.code(server_info, reponse_check["Status-code"][0]));
@@ -29,7 +29,7 @@ std::string     GET_response::fillGetResponse(std::map<std::string, std::string>
         fillOkResponse(server_info); 
     return (response_packet);
 }
-void        GET_response::fillOkResponse(std::map<std::string, std::string> &server_info)
+void        GET_response::fillOkResponse(stringmap &server_info)
 {
     response_packet = "";
     std::string file_path = constructPath(server_info);
@@ -96,7 +96,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string)
     
 }
 
-bool    GET_response::fillBadPath(std::map<std::string, std::string> &server_info)
+bool    GET_response::fillBadPath(stringmap &server_info)
 {
         fillStatuCode(reponse_check , "403", "file not found ya basha!");
         response_packet = err.code(server_info, reponse_check["Status-code"][0]);
@@ -104,7 +104,7 @@ bool    GET_response::fillBadPath(std::map<std::string, std::string> &server_inf
         return (true);
 
 }
-std::string    GET_response::constructPath(std::map<std::string, std::string> &server_info)
+std::string    GET_response::constructPath(stringmap &server_info)
 {
 
     std::string path = reponse_check["Path"][1];

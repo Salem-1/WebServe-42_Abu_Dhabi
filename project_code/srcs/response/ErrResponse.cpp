@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:53:42 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:52:13 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ ErrResponse::~ErrResponse()
 };
 
 std::string ErrResponse::code(
-        std::map<std::string, std::string> &server_info, std::string err)
+        stringmap &server_info, std::string err)
 {
     if (server_info.find(err) == server_info.end())
     {

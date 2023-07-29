@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:19 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 22:40:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 10:34:22 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@ class Config
     public:
         Config();
         ~Config();
-        void    fillPorts();
-        conf                        servers;
-        std::set<std::string>       ports;
-        std::vector<int>            sockets;
+        void	fillPorts();
+        conf					servers;
+        std::set<std::string>	ports;
+        std::vector<int>		sockets;
 };
 #endif

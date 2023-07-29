@@ -1,6 +1,6 @@
 #include "Post.hpp"
 
-Post::Post(packet_map &request_map, t_request &full_request, std::map<std::string, std::string> &server_info)
+Post::Post(packet_map &request_map, t_request &full_request, stringmap &server_info)
 {
 	this->_request_map = request_map;
 	this->_request = full_request;

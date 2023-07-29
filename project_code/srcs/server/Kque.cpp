@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:49:57 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/29 09:05:52 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,10 @@ void    Kque::handleRequestByClient(struct kevent event)
 
 void    Kque::addReadWriteEvent(int fd)
 {
-    EV_SET(&event[0], fd, EVFILT_READ ,  EV_ADD | EV_CLEAR, 0, 0, NULL);
+    EV_SET(&event[0], fd, EVFILT_READ ,  EV_ADD, 0, 0, NULL);
     if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
         kqueError("failed to add socket to event kque: ");
-    EV_SET(&event[1], fd, EVFILT_WRITE,  EV_ADD | EV_CLEAR, 0, 0, NULL);
+    EV_SET(&event[1], fd, EVFILT_WRITE,  EV_ADD, 0, 0, NULL);
     if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kqueError("failed to add socket to event kque: ");
 }
