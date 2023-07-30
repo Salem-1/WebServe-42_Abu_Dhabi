@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 20:17:22 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/30 06:26:56 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
 
 bool    GET_response::fillBadPath(stringmap &server_info)
 {
-        fillStatuCode(reponse_check , "403", "file not found ya basha!");
+        fillStatuCode(reponse_check , "404", "file not found ya basha!");
         response_packet = err.code(server_info, reponse_check["Status-code"][0]);
         vis_str(response_packet, "inside GET_response has large response not gonna visualize\n");
         return (true);

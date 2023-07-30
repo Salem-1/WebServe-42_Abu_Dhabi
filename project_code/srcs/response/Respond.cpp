@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 15:38:55 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/30 08:22:40 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
     
     //here should extract the port and hostname to give to the corresponding method
     stringmap server_info = getServerInfo(request, servers, port);
-    
     visualize_string_map(server_info);
+    // exit(0);
     fillResponse(request, full_request, server_info);
     sending = true;
     
@@ -157,7 +157,7 @@ void    Respond::sendAll(connection_state &state)
         flushResponse();
         state = KILL_CONNECTION;
     }
-    if (response_bytes_sent == packet_len)
+    if (response_bytes_sent >= packet_len)
     {
         state = KILL_CONNECTION;
         flushResponse();
@@ -182,12 +182,8 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
     for (unsigned long i = 0; i < servers.size(); i++)
     {
         std::cout << "config port = " << servers[i]["Port"] << std::endl ;
-        std::cout << "1" << std::endl;
         if (servers[i]["Port"] == port)
-        {
-            std::cout << "2" << std::endl;
             nominated_servers.push_back(i);
-        }
     }
     
     for (unsigned long i = 0; i < nominated_servers.size(); i++)
@@ -195,27 +191,29 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
         server_names =  split(servers[nominated_servers[i]]["server_name"], " ");
         for (unsigned long j = 0; j < server_names.size(); j++)
         {   
-            std::vector<std::string> tmp_vec;
             if (request.find("Host:") == request.end() || request["Host:"].size() != 1)  
             {
-                tmp_vec.push_back("400");
-                tmp_vec.push_back("No host");
-                response["Status-code"] = tmp_vec;
-                
-                return (servers[0]);
-            }
-            
+                fillStatuCode("400", "No host");   
+                return (servers[nominated_servers[0]]);
+            } 
             std::cout << "our hostname is " << request["Host:"][0] << std::endl;
             std::cout << "server hostname " << server_names[j] << std::endl;
-            std::cout << "trimmed host = " << request["Host:"][0].substr(0, server_names[j].length()) << std::endl;
-            if (server_names[j] == request["Host:"][0].substr(0, server_names[j].length()))
+            std::string requested_host;
+            if (request["Host:"][0].find(":") == std::string::npos || request["Host:"][0].find(":") == request["Host:"][0].length())
+                requested_host  = request["Host:"][0];
+            else
+                requested_host  = request["Host:"][0].substr(0, request["Host:"][0].find(":"));
+            std::cout << "requested trimmed host = " << requested_host << std::endl;
+            std::cout << "requested port  = " << port  << std::endl;
+            std::pair<std::string, std::string> host_port(requested_host, port); 
+            if (server_names[j] == requested_host)
             {
                 std::cout << "our server is " << nominated_servers[j] << std::endl;
                 return (servers[nominated_servers[i]]);
             }
         }
     }
-    return (servers[0]);
+    return (servers[nominated_servers[0]]);
 }
 
 std::string	Respond::isCGI(packet_map &request)
@@ -233,6 +231,7 @@ std::string	Respond::isCGI(packet_map &request)
 std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path)
 {
 	(void) request;
+    std::cout << "inside response CGI" << std::endl;
 	if (cgi_path.find("?") != std::string::npos)
 	{
 		std::string query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);

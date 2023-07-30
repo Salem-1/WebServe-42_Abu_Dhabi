@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parse_headers.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:57:17 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/30 06:47:20 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("sec-ch-ua-platform:");
     valid_headers.insert("sec-ch-ua:");
     valid_headers.insert("Purpose:");
+    valid_headers.insert("Sec-Purpose:");
 }
 
 void    Parser::visualizeRequestPacket()
