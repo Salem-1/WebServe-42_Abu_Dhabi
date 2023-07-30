@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/30 07:57:04 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/30 09:27:55 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,9 @@ class Respond
         int			fillStatuCode(std::string status_code, std::string message);
         stringmap	getServerInfo(packet_map &request,conf &servers, std::string port);
         std::string	normalGETResponse( packet_map &request, stringmap &server_info);
-        stringmap        &nearest_server(conf &servers,
-                        std::vector<int> &nominated_servers, std::pair<std::string, std::string> host_port);
+        bool        isSupportedMethod(std::string method, std::vector<std::string> &supported_methods);
+        void        fillSupportedMethods(
+                        std::vector<std::string> &supported_methods, stringmap &server_info);
 		int				client_socket;
         response_packet	response;
         std::string		response_string;

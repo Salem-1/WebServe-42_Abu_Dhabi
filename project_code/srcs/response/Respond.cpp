@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/30 08:22:40 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/30 09:32:09 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,11 +57,21 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     response["Status-code"].push_back("200");
 	std::string cgi_path = isCGI(request);
 	std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
-	if (cgi_path != "")
+    
+	std::vector<std::string> supported_methods;
+    fillSupportedMethods(supported_methods, server_info);
+    if (cgi_path != "")
 		response_string = responseCGI(request, server_info, cgi_path);
-    if (request.find("GET") != request.end())
+    //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
+    if (request.find("GET") != request.end()
+        && isSupportedMethod("GET", supported_methods))
+    {
+        //@ Ahmed MAHDI also can you put the CGI check here    
         response_string = normalGETResponse(request, server_info);
-    else if (request.find("POST") != request.end())
+    
+    }
+    else if (request.find("POST") != request.end()
+        && isSupportedMethod("POST", supported_methods))
     {
         Post apost(request, full_request, server_info);
 		apost.printPostHeader();
@@ -69,7 +79,8 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
 		apost.printReceivedRequestMap();
         // response_string = apost.get_response();
     }
-    else if (request.find("DELETE") != request.end())
+    else if (request.find("DELETE") != request.end()
+        && isSupportedMethod("DELETE", supported_methods))
     {
         DELETE DELETE_response;
         response_string = DELETE_response.deleteResponseFiller(request, response, server_info);
@@ -132,10 +143,6 @@ void    Respond::visualizeResponse()
     std::cout << BOLDRED << "}" << std::endl << RESET;
 }
 
-// this ugly syntax :&a[response_bytes_sent]
-// because I am not able to save const char *a as private asset as the conversion change for each packet
-//while it's constant, I will try to change it later inshalla, for now take the code below for granted
-//till make the new sending scaling work for now
 void    Respond::sendAll(connection_state &state)
 {
     size_t  packet_len = response_string.length(); 
@@ -241,4 +248,31 @@ std::string Respond::responseCGI(packet_map &request, stringmap &server_info, st
 	std::string full_cgi_path = server_info["root"] + cgi_path;
 	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
 	return "";
+}
+
+void    Respond::fillSupportedMethods(
+            std::vector<std::string> &supported_methods, stringmap &server_info)
+{
+    if (server_info.find("Methods") == server_info.end())
+        return ;
+    supported_methods = split(server_info["Methods"],  " ");
+    
+    //visualization
+    for (std::vector<std::string>::iterator it = supported_methods.begin();
+        it != supported_methods.end(); it++)
+        std::cout << *it << " is supported method" << std::endl;
+}
+
+bool    Respond::isSupportedMethod(std::string method, std::vector<std::string> &supported_methods)
+{
+    if(supported_methods.empty())
+        return (true);
+    for (std::vector<std::string>::iterator it = supported_methods.begin();
+            it != supported_methods.end(); ++it)
+    {
+        if (*it == method)
+            return (true);
+    }
+
+    return (false);
 }

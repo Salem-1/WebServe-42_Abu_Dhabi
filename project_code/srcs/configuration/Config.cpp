@@ -141,6 +141,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[3]["/styles index"] = servers[3]["root"] + "/styles/" + "styles.css";
     servers[3]["/js"] = servers[3]["root"] + "/js/";
     servers[3]["/js index"] = servers[3]["root"] + "/js/" + "script.js";
+    servers[3]["Methods"] = "POST DELETE";
         
 }
 
