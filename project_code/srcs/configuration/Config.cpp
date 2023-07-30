@@ -17,6 +17,7 @@ Config::~Config()
 
 }
 
+//"DELETE path" parameter for safety feature for our use  
 void    Config::fillPorts()
 {
     for (unsigned long i = 0; i < servers.size(); i++)
@@ -34,6 +35,7 @@ void    Config::fillPorts()
 
 void    python_tester_config(conf &servers)
 {
+
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     servers.push_back(std::map<std::string, std::string>());
@@ -110,7 +112,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     
    
     servers.push_back(std::map<std::string, std::string>());
-    servers[2]["DELETE path"] = "POST";
+    servers[2]["DELETE path"] = "/POST";
     servers[2]["server_name"] = "127.0.0.1 localhost";
     // servers[2]["server_name"] = "localhost";
     servers[2]["Port"] = "5555";
@@ -124,7 +126,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["/js"] = servers[2]["root"] + "/js/";
     servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
     servers[2]["404"] = servers[2]["root"] +  "/" + "not_found.html";
-    servers[2]["DELETE path"] = "POST";
+  
     
     servers.push_back(std::map<std::string, std::string>());
     servers[3]["DELETE path"] = "POST";

@@ -91,16 +91,16 @@ bool DELETE::sanitizedPath(std::string path, stringmap &server_info)
         }
     }
     if (path.find(server_info["DELETE path"]) == std::string::npos)
-        {
-            return (false);
-        }
+    {
+        return (false);
+    }
     return (true);
 }
 
 std::string    DELETE::constructPath(response_packet &response , stringmap &server_info)
 {
 
-    std::string path = response["Path"][1];
+    std::string path = server_info["DELETE path"] + response["Path"][1];
     std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET;
     if (path == "/")
         return (server_info[path]);
