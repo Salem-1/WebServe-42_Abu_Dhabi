@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/30 09:27:55 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/31 14:55:02 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,9 @@ class Respond
         bool			sending;
 		
 	private:
-		std::string					isCGI(packet_map &request);
-		std::string					responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
+		std::string	isCGI(packet_map &request);
+		std::string	responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
+		std::string	execute(stringmap &server_info, std::string path, std::string args);
         
     private:
         int		checkPoisonedURL(packet_map &request);

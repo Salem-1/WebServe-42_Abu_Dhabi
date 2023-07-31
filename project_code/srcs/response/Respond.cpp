@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 10:58:36 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/31 19:17:32 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,14 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	// std::string cgi_path = isCGI(request);
+	std::string cgi_path = isCGI(request);
 	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
     
 	std::vector<std::string> supported_methods;
     fillSupportedMethods(supported_methods, server_info);
-    // if (cgi_path != "")
-	// 	response_string = responseCGI(request, server_info, cgi_path);
-    //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
-    if (request.find("GET") != request.end()
+    if (cgi_path != "")
+		response_string = responseCGI(request, server_info, cgi_path);
+	else if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {
         //@ Ahmed MAHDI also can you put the CGI check here    
@@ -232,23 +231,74 @@ std::string	Respond::isCGI(packet_map &request)
 		it = request.find("POST");
 	if (it == request.end())
 		return ("");
-	if (it->second[0].find("cgi-bin") != std::string::npos)
+	if (it->second.size() > 0 && it->second[0].find("cgi-bin") != std::string::npos)
 		return (it->second[0]);
 	return ("");
 }
 
+std::string Respond::execute(stringmap &server_info, std::string path, std::string args)
+{
+	int fd[2];
+	(void) path;
+	(void) args;
+	(void) fd;
+
+	try 
+	{
+		if (pipe(fd) == -1)
+			throw(std::runtime_error("pipe faild"));
+		int id = fork();
+		if (id == -1)
+			throw(std::runtime_error("fork failed"));
+		if (id == 0)
+		{
+			std::cout << BOLDMAGENTA <<  "*********************\n " << RESET;
+			const char *temp_path = "~/Documents/git files/CppModule03/ex03/main";
+			char **args = (char **)malloc(sizeof(*args) * (2));
+			if (args == NULL)
+				return (NULL);
+			args[0] = NULL;
+			args[1] = NULL;
+			execve(temp_path, args, NULL);
+			free(args);
+			close(fd[0]);
+			close(fd[1]);
+			std::cout << BOLDMAGENTA <<  "*********************\n " << RESET;
+			exit(0);
+		}
+		close(fd[0]);
+		close(fd[1]);
+		int status;
+		while (waitpid(-1, &status, 0) > 0)
+			;
+		ErrResponse err;
+		return (err.code(server_info, "200"));
+	}
+	catch (std::exception &e)
+	{
+		std::cout << e.what() << std::endl;
+		ErrResponse err;
+		return (err.code(server_info, "501"));
+	}
+	
+	
+}
+
 std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path)
 {
+	std::string query;
 	(void) request;
     std::cout << "inside response CGI" << std::endl;
 	if (cgi_path.find("?") != std::string::npos)
 	{
-		std::string query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
+		query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
 		cgi_path = cgi_path.substr(0, cgi_path.find("?"));
 		// server_info["query"] = query;
 	}
 	std::string full_cgi_path = server_info["root"] + cgi_path;
 	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
+	std::cout << BOLDGREEN << "query = " << query << std::endl << RESET;
+	execute(server_info, full_cgi_path, query); 
 	return "";
 }
 
