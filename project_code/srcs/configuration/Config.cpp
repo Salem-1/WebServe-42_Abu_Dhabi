@@ -128,6 +128,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["404"] = servers[2]["root"] +  "/" + "not_found.html";
     servers[2]["Max-Body"] = "8000";
     servers[2]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos /ransomware 301 ";
+    servers[2]["autoindex"] = "off";
     
   
     

@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 11:57:36 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/31 14:38:29 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,14 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
     {
+        if (server_info.find("autoindex") != server_info.end())
+        {
+            if (server_info["autoindex"] == "off")
+            {
+                response_packet = err.code(server_info, "403");
+                return ;
+            }
+        }
         struct dirent *files;
         std::vector<std::string> ls;
         ls.push_back(file_path);
