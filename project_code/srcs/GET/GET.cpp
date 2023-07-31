@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:12 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 10:52:02 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:01:04 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void GET::fillRequestLine(packet_map &request)
     if ((request.find("POST") != request.end() || request.find("DELETE") != request.end())
         && fillStatuCode(response, "400", "Invalid multiple methods inside GET"))
         return ;
+	if (request["GET"].size() != 2)
+		if (fillStatuCode(response, "400", "Invalid number of items inside GET"))
+			return ;
     if ((request["GET"][0].length() + request["GET"][1].length()) > HEADER_MAX_LENGTH
             && fillStatuCode(response, "414", "URI Too Long"))
         return ;

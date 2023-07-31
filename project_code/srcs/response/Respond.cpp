@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/30 09:32:09 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/31 10:58:36 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	std::string cgi_path = isCGI(request);
-	std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
+	// std::string cgi_path = isCGI(request);
+	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
     
 	std::vector<std::string> supported_methods;
     fillSupportedMethods(supported_methods, server_info);
-    if (cgi_path != "")
-		response_string = responseCGI(request, server_info, cgi_path);
+    // if (cgi_path != "")
+	// 	response_string = responseCGI(request, server_info, cgi_path);
     //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
     if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
@@ -103,6 +103,8 @@ int Respond::checkPoisonedURL(packet_map &request)
 {
     if (request.find("GET") != request.end())
     {
+		if (request["GET"].size() != 2)
+			return (0);
         if (request["GET"][0].find(" ") != std::string::npos)
             return (1);
     }
