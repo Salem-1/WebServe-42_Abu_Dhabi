@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/30 06:26:56 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:57:36 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,54 @@ std::string     GET_response::fillGetResponse(stringmap &server_info)
         fillOkResponse(server_info); 
     return (response_packet);
 }
+bool    GET_response::redirectedPacket(stringmap &server_info)
+{
+    if (server_info.find("Redirections") == server_info.end() || server_info["Redirections"].empty())
+        return (false);
+    std::vector<std::string> redirections_strs = split(server_info["Redirections"], ",");
+    if (redirections_strs.empty())
+        return (false);
+    std::vector<std::string> tmp;
+    for (size_t i = 0; i < redirections_strs.size(); ++i)
+    {
+        tmp = split(redirections_strs[i], " ");
+        if (tmp.size() != 3)
+            return (false);
+        if (tmp[0] == reponse_check["Path"][1])
+        {
+            redirection["old_path"] = tmp[0];
+            redirection["new_path"] = tmp[1];
+            redirection["Status-code"] = tmp[2];
+            visualize_string_map(redirection);
+            return (true);
+        }
+    }
+    return (false);
+}
 
-void        GET_response::fillOkResponse(stringmap &server_info)
+void   GET_response::fillRedirectedPacket(void)
+{
+    response_packet = "HTTP/1.1 ";
+    response_packet += redirection["Status-code"] + " ";
+    response_packet +=  err.StatusCodes[redirection["Status-code"]] + " \r\n";
+    response_packet += "Server: webserve/1.0\r\n";
+    response_packet += "Location: " + redirection["new_path"] + "\r\n";
+    response_packet += "Date: ";
+    response_packet += err.getTimeBuffer();
+    response_packet += "Connection: close\r\n";
+    response_packet += "Content-Length: 0\r\n";
+    response_packet += "Content-Type: text/html; charset=UTF-8 \r\n\r\n";
+   
+}
+void    GET_response::fillOkResponse(stringmap &server_info)
 {
     response_packet = "";
+    if(redirectedPacket(server_info))
+    {
+        fillRedirectedPacket();
+        // exit(0);
+        return ;
+    }
     std::string file_path = constructPath(server_info);
     std::cout << BOLDMAGENTA << "requested file path = "
     		<< RESET << file_path << std::endl <<RESET;
@@ -108,6 +152,7 @@ std::string    GET_response::constructPath(stringmap &server_info)
 {
 
     std::string path = reponse_check["Path"][1];
+    std::cout << "Given path = " << path << std::endl;
     std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
     if (path == "/")
         return (server_info[path]);

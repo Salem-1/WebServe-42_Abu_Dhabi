@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 10:58:36 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:54:15 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     {
         //@ Ahmed MAHDI also can you put the CGI check here    
         response_string = normalGETResponse(request, server_info);
-    
+        std::cout << "redirection packet = " << response_string;
+
     }
     else if (request.find("POST") != request.end()
         && isSupportedMethod("POST", supported_methods))
