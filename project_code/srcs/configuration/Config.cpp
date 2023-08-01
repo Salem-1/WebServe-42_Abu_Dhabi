@@ -126,6 +126,8 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["/js"] = servers[2]["root"] + "/js/";
     servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
     servers[2]["404"] = servers[2]["root"] +  "/" + "not_found.html";
+	servers[2]["cgi-bin"] = pwd + "/intra";
+
   
     
     servers.push_back(std::map<std::string, std::string>());

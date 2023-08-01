@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 10:52:13 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/01 18:30:40 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,12 @@ void    ErrResponse::statusCodes()
     StatusCodes["504"] =  "Gateway Timeout";
 }
 
-std::string ErrResponse::getTimeBuffer() {
-    std::time_t current_time = std::time(NULL);
-    std::tm* time_info = std::gmtime(&current_time);
+std::string	getTimeBuffer() {
+	std::time_t current_time = std::time(NULL);
+	std::tm* time_info = std::gmtime(&current_time);
 
-    char time_buffer[80];
-    std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\r\n", time_info);
+	char time_buffer[80];
+	std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\r\n", time_info);
 
-    return std::string(time_buffer);
+	return std::string(time_buffer);
 }
