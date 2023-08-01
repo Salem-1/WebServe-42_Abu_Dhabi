@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 14:38:29 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/01 11:39:05 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
     response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
+    //For CGI this can be chunked if you @Ahmed MAhdi decided to do so 
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string; 
 }
@@ -274,3 +275,5 @@ std::string GET_response::getContentType(std::string file_path)
 
     return ("text/html");
 }
+
+

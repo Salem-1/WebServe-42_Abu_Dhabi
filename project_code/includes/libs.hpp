@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 18:52:13 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/01 09:50:58 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ void    visualize_servers(
 
 void    visualize_string_map(std::map<std::string, std::string>  &map);
 void    vis_str(std::string packet, std::string message);
+void    print_to_file(std::string path, std::string str);
 //---------------------------------------------
 
 

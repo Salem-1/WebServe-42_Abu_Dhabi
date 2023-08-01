@@ -102,11 +102,11 @@ bool Parser::earlyBadRequest(std::string packet)
 {
     if (packet.length() >= 1)
     {
-        if (packet[0] != 'G' || packet[0] != 'P' 
-            || packet[0] != 'D')
-            return (true);
+        if (packet[0] == 'G' || packet[0] == 'P' 
+            || packet[0] == 'D')
+            return (false);
     }
-    return (false);
+    return (true);
 }
 
 void    Parser::setBytereadAndReadsock(int bytes, int sock)
