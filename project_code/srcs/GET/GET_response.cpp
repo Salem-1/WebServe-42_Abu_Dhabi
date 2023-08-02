@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/01 11:39:05 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/02 09:29:13 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     }
     std::string file_path = constructPath(server_info);
     std::cout << BOLDMAGENTA << "requested file path = "
-    		<< RESET << file_path << std::endl <<RESET;
+    		<< RESET << file_path << std::endl << RESET;
     if (!sanitizedPath(file_path)&& fillBadPath(server_info))
         return ;
     std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
@@ -87,12 +87,21 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
     {
-        if (server_info.find("autoindex") != server_info.end())
+        if (reponse_check.find("dir") != reponse_check.end())
         {
-            if (server_info["autoindex"] == "off")
+            if (reponse_check["dir"].size() != 1)
             {
-                response_packet = err.code(server_info, "403");
+                response_packet = err.code(server_info, "400");
                 return ;
+            }
+            std::string dir_list_option = reponse_check["dir"][0] + " autoindex";
+            if (server_info.find(dir_list_option) != server_info.end())
+            {
+                if (server_info[dir_list_option] == "off")
+                {
+                    response_packet = err.code(server_info, "403");
+                    return ;
+                }
             }
         }
         struct dirent *files;

@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/02 08:22:05 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/02 09:28:05 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -320,6 +320,7 @@ void   Respond::fillSupportedMethods(
         dir = path;
     else
         dir = path.substr(0, path.find("?" - 1));
+    response["dir"].clear();  
     response["dir"].push_back(dir);
     std::string msg =   "dir = " +  dir + "             path = " + path;
     print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/out.txt", dir);
