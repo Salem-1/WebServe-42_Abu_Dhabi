@@ -105,6 +105,8 @@ void    visualize_servers(
 
 void    visualize_string_map(std::map<std::string, std::string>  &map);
 void    vis_str(std::string packet, std::string message);
+std::string	getTimeBuffer();
+void print_to_file(std::string, std::string);
 //---------------------------------------------
 
 
