@@ -216,14 +216,16 @@ void    list_dir_options(conf &servers)
     servers[0]["root"] = pwd + "/intra/website";
     servers[0]["index"] = "index.html";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/images"] = servers[0]["root"] + "/path_to_images/";
-    servers[0]["/images index"] = servers[0]["/images"] + "base_image.jpg";
-    servers[0]["/styles"] = servers[0]["root"] + "/styles/";
-    servers[0]["/styles index"] = servers[0]["root"] + "/styles/" + "styles.css";
-    servers[0]["/js"] = servers[0]["root"] + "/js/";
-    servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
     servers[0]["404"] = servers[0]["root"] +  "/" + "not_found.html";
+    
     servers[0]["/attacks methods"] = "GET POST";
+    servers[0]["/dir methods"] = "DELETE";
+    servers[0]["/POST methods"] = "POST";
+    servers[0]["/nightmares methods"] = "GET";
+    servers[0]["/sleep"] = servers[0]["root"] +  "/nightmares/";
+    servers[0]["/sleep index"] = servers[0]["/sleep"] + "index.html";
+    
+    
     servers[0]["Max-Body"] = "8000";
     servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos /ransomware 301";
 }
