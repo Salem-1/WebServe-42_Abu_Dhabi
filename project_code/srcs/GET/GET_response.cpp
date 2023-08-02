@@ -52,7 +52,7 @@ void   GET_response::fillRedirectedPacket(void)
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Location: " + redirection["new_path"] + "\r\n";
     response_packet += "Date: ";
-    response_packet += err.getTimeBuffer();
+    response_packet += getTimeBuffer();
     response_packet += "Connection: close\r\n";
     response_packet += "Content-Length: 0\r\n";
     response_packet += "Content-Type: text/html; charset=UTF-8 \r\n\r\n";
@@ -129,7 +129,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
     response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
-    response_packet += err.getTimeBuffer();
+    response_packet += getTimeBuffer();
     response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
