@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:16 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 10:54:03 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/01 18:30:04 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ class DELETE
         void		statusCodes();  
         std::string	constructPath(response_packet &response, stringmap &server_info);
         std::string	erroredResponse(std::string error_code, std::string error_message);
-        std::string	getTimeBuffer();
         std::string	successfulDeletePacket();
         
         stringmap		StatusCodes;

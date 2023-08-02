@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Respond.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 11:54:15 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 
 #include "Respond.hpp"
@@ -55,15 +45,14 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	// std::string cgi_path = isCGI(request);
+	std::string cgi_path = isCGI(request);
 	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
     
 	std::vector<std::string> supported_methods;
     fillSupportedMethods(supported_methods, server_info);
-    // if (cgi_path != "")
-	// 	response_string = responseCGI(request, server_info, cgi_path);
-    //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
-    if (request.find("GET") != request.end()
+    if (cgi_path != "")
+		response_string = responseCGI(request, server_info, cgi_path);
+	else if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {
         //@ Ahmed MAHDI also can you put the CGI check here    
@@ -224,33 +213,6 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
         }
     }
     return (servers[nominated_servers[0]]);
-}
-
-std::string	Respond::isCGI(packet_map &request)
-{
-	packet_map::iterator it = request.find("GET");
-	if (it == request.end())
-		it = request.find("POST");
-	if (it == request.end())
-		return ("");
-	if (it->second[0].find("cgi-bin") != std::string::npos)
-		return (it->second[0]);
-	return ("");
-}
-
-std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path)
-{
-	(void) request;
-    std::cout << "inside response CGI" << std::endl;
-	if (cgi_path.find("?") != std::string::npos)
-	{
-		std::string query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
-		cgi_path = cgi_path.substr(0, cgi_path.find("?"));
-		// server_info["query"] = query;
-	}
-	std::string full_cgi_path = server_info["root"] + cgi_path;
-	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
-	return "";
 }
 
 void    Respond::fillSupportedMethods(
