@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -9,6 +10,9 @@
 /*   Updated: 2023/08/02 09:28:05 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+=======
+
+>>>>>>> main
 
 
 #include "Respond.hpp"
@@ -55,16 +59,24 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	// std::string cgi_path = isCGI(request);
+	std::string cgi_path = isCGI(request);
 	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
     
 	std::vector<std::string> supported_methods;
+<<<<<<< HEAD
     // if (cgi_path != "")
 	// 	response_string = responseCGI(request, server_info, cgi_path);
     //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
     ErrResponse err;
     std::string msg;
     if (request.find("GET") != request.end())
+=======
+    fillSupportedMethods(supported_methods, server_info);
+    if (cgi_path != "")
+		response_string = responseCGI(request, server_info, cgi_path);
+	else if (request.find("GET") != request.end()
+        && isSupportedMethod("GET", supported_methods))
+>>>>>>> main
     {
         fillSupportedMethods(supported_methods, server_info, "GET" ,  request);
         if(!(isSupportedMethod("GET", supported_methods)))

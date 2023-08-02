@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Respond.hpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/01 08:13:49 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #ifndef RESPOND_HPP
 # define RESPOND_HPP
@@ -47,8 +37,9 @@ class Respond
         bool			sending;
 		// ErrResponse     err;
 	private:
-		std::string					isCGI(packet_map &request);
-		std::string					responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
+		std::string	isCGI(packet_map &request);
+		std::string	responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
+		std::string	execute(stringmap &server_info, std::string path, std::string args);
         
     private:
         int		checkPoisonedURL(packet_map &request);

@@ -1,5 +1,6 @@
 #include "DELETE.hpp"
 
+
 DELETE::DELETE()
 {
     std::cout << "DELETE under construction" << std::endl;
@@ -70,7 +71,7 @@ std::string DELETE::fillOkResponse(response_packet &response, stringmap &server_
 std::string DELETE::successfulDeletePacket()
 {
     std::string success_delete = "HTTP/1.1 204 No Content\n";
-    success_delete += "Date: " + err.getTimeBuffer() +"\n";
+    success_delete += "Date: " + getTimeBuffer() +"\n";
     success_delete += "Server: Webserv 1.0\n";
     return (success_delete);
 }
