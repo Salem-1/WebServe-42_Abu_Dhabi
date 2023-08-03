@@ -10,8 +10,8 @@ Config::Config()
     std::string pwd(getcwd(buff, sizeof(buff)));
 
     // intra_and_dummy_fill_till_config_parsing(servers);
-    // intra_config(servers);
-    list_dir_options(servers);
+    intra_config(servers);
+    // list_dir_options(servers);
 
     fillPorts();
 }
@@ -33,6 +33,8 @@ void   intra_config(conf &servers)
     servers[0]["Methods"] = "GET POST";
 
 }
+
+
 
 
 Config::~Config()
