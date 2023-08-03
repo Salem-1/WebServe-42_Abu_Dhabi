@@ -109,7 +109,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     }
     else
 	{
-		response_string = err.code(server_info, "501");
+		response_string = err.code(server_info, "405");
 	}
 };
 
