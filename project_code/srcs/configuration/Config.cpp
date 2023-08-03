@@ -10,8 +10,8 @@ Config::Config()
     std::string pwd(getcwd(buff, sizeof(buff)));
 
     // intra_and_dummy_fill_till_config_parsing(servers);
-    // intra_config(servers);
-    list_dir_options(servers);
+    intra_config(servers);
+    // list_dir_options(servers);
 
     fillPorts();
 }
@@ -27,11 +27,11 @@ void   intra_config(conf &servers)
     servers[0]["root"] = pwd + "/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
+    servers[0]["/ methods"] = "GET";
+    servers[0]["Max-Body"] = "100";
     servers[0]["/directory"] = servers[0]["root"];
-    servers[0]["/directory index"] = servers[0]["/"] ;
+    servers[0]["/directory index"] = servers[0]["index"] ;
     servers[0]["DELETE path"] = "POST";
-    servers[0]["Methods"] = "GET POST";
-
 }
 
 
