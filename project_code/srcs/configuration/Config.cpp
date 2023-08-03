@@ -17,25 +17,6 @@ Config::Config()
 }
 
 
-
-void   intra_config(conf &servers)
-{
-    char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
-    servers.push_back(std::map<std::string, std::string>());
-    servers[0]["server_name"] = "127.0.0.1";
-    servers[0]["Port"] = "3490";
-    servers[0]["root"] = pwd + "/intra/YoupiBanane";
-    servers[0]["index"] = "youpi.bad_extension";
-    servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/ methods"] = "GET";
-    servers[0]["Max-Body"] = "100";
-    servers[0]["/directory"] = servers[0]["root"];
-    servers[0]["/directory index"] = servers[0]["/"] ;
-    servers[0]["DELETE path"] = "POST";
-}
-
-
 Config::~Config()
 {
 
@@ -173,11 +154,12 @@ void   intra_config(conf &servers)
     servers[0]["root"] = pwd + "/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/directory"] = servers[0]["root"];
+    servers[0]["/ methods"] = "GET";
+    servers[0]["Max-Body"] = "100";
+    servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = servers[0]["/"] ;
+    // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
-    servers[0]["Methods"] = "GET POST";
-
 }
 
 

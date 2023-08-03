@@ -111,6 +111,7 @@ void    GET_response::fillOkResponse(stringmap &server_info)
         full_file_to_string = content_stream.str();
     }
     fillingResponsePacket(full_file_to_string, file_path);
+    // exit(0);
 }
 
 void    GET_response::constructDirResponse(std::vector<std::string> &ls,
@@ -184,7 +185,11 @@ std::string    GET_response::constructPath(stringmap &server_info)
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
     std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     if (server_info.find(dir) != server_info.end())
+    {
+        print_to_file("testers/our_tester/logs/dir_path.txt", server_info[dir]);
         return (server_info[dir] + rest_of_path);
+    }
+    print_to_file("testers/our_tester/logs/dir_path.txt", "didn't found special path, will just use");
     return (server_info["root"] + path);
 }
 
