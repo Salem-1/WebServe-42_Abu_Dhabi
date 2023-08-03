@@ -66,8 +66,9 @@ void Post::visualizeStringMap(packet_map &map)
 
 static int simpleBackend(std::string body, std::string &received_body)
 {
-	std::string filePath = "/Users/ymohamed/Desktop/WebServe_42_Abu_Dhabi/project_code/intra/website/post_backend/index.html";
-
+	char buff[4000];
+    std::string pwd(getcwd(buff, sizeof(buff)));
+	std::string filePath = pwd + "/intra/website/post_backend/index.html";
 	std::ifstream inFile(filePath.c_str());
     if (!inFile) {
         std::cerr << "Error: Could not open " << filePath << " for reading.\n";
@@ -91,7 +92,8 @@ static int simpleBackend(std::string body, std::string &received_body)
     // Modify the content by inserting the body after the specified comment
     std::stringstream modifiedContent;
     modifiedContent << content.substr(0, pos + searchString.length());
-    modifiedContent << "\n\t\t\t<p>" << body << "</p>";
+	if (body.length() > 0 && body[0] != '\n' && body[0] != '\r')
+    	modifiedContent << "\n\t\t\t<p>" << body << "</p>";
     modifiedContent << content.substr(pos + searchString.length());
 
     std::ofstream outFile(filePath.c_str());
@@ -115,6 +117,12 @@ void Post::sendToBackend()
 	if (this->_request.body.find("comment=") != std::string::npos)
 	{
 		std::string comment = this->_request.body.substr(this->_request.body.find("comment=") + 8);
+		// Remove special characters from the beginning of the comment
+		while (comment[0] == ' ' || comment[0] == '\n' || comment[0] == '\r')
+			comment.erase(0, 1);
+		// Remove special characters from the end of the comment
+		while (comment[comment.length() - 1] == ' ' || comment[comment.length() - 1] == '\n' || comment[comment.length() - 1] == '\r')
+			comment.erase(comment.length() - 1, 1);
 		for (size_t i = 0; i < comment.length(); i++)
 		{
 			//parsing serilized url
@@ -127,6 +135,8 @@ void Post::sendToBackend()
 				comment[i] = chr;
 				comment.erase(i + 1, 2);
 			}
+			if (comment[i] == '\n' || comment[i] == '\r')
+				comment[i] = ' ';
 		}
 		status  = simpleBackend(comment, received_body);
 	}
