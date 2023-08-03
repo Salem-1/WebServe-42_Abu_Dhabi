@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 11:45:29 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/03 11:04:48 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 // # include "../../includes/webserve.hpp"
 # include "../response/ErrResponse.hpp"
 
+
+void    get_mime(std::map<std::string, std::string> &mimes);
 class GET_response
 {
     public:
@@ -33,9 +35,10 @@ class GET_response
 		std::string     getContentType(std::string file_path);
         bool            redirectedPacket(stringmap &server_info);
         void            fillRedirectedPacket(void);
+        int             fill_redirection_vector(std::vector<std::string> tmp);
 		std::string		response_packet;
         ErrResponse		err;
-        std::map<std::string, std::string>     redirection;
+        stringmap       redirection;
         response_type	reponse_check;
 };
-# endif
+# endif 
