@@ -66,8 +66,9 @@ void Post::visualizeStringMap(packet_map &map)
 
 static int simpleBackend(std::string body, std::string &received_body)
 {
-	std::string filePath = "/Users/ymohamed/Desktop/WebServe_42_Abu_Dhabi/project_code/intra/website/post_backend/index.html";
-
+	char buff[4000];
+    std::string pwd(getcwd(buff, sizeof(buff)));
+	std::string filePath = pwd + "/intra/website/post_backend/index.html";
 	std::ifstream inFile(filePath.c_str());
     if (!inFile) {
         std::cerr << "Error: Could not open " << filePath << " for reading.\n";
