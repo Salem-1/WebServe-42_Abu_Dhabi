@@ -10,8 +10,8 @@ Config::Config()
     std::string pwd(getcwd(buff, sizeof(buff)));
 
     // intra_and_dummy_fill_till_config_parsing(servers);
-    // intra_config(servers);
-    list_dir_options(servers);
+    intra_config(servers);
+    // list_dir_options(servers);
 
     fillPorts();
 }
@@ -97,7 +97,8 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
    
     servers.push_back(std::map<std::string, std::string>());
     servers[1]["DELETE path"] = "POST";
-    servers[1]["server_name"] = "127.0.0.1";
+    servers[1]["server_name"] = "127.0.0.1 localhost";
+    // servers[1]["server_name"] = "localhost";
     servers[1]["Port"] = "4444";
     servers[1]["root"] = pwd + "/intra/YoupiBanane";
     servers[1]["index"] = "youpi.bad_extension";
