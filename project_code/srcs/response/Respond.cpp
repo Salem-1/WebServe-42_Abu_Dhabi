@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Respond.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 15:38:55 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/01 23:53:21 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
     stringmap server_info = getServerInfo(request, servers, port);
     
     visualize_string_map(server_info);
+	// size_t max_body;
+	// if (server_info.find("MaxBodySize") != server_info.end())
+	// 	max_body = atoi(server_info["MaxBodySize"].c_str());
+	// else
+	// 	max_body = MAX_BODY_SIZE;
     fillResponse(request, full_request, server_info);
     sending = true;
     
@@ -64,10 +69,13 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     else if (request.find("POST") != request.end())
     {
         Post apost(request, full_request, server_info);
-		apost.printPostHeader();
-		apost.printPostBody();
-		apost.printReceivedRequestMap();
+		// apost.printPostHeader();
+		// apost.printPostBody();
+		apost.sendToBackend();
+		response_string = apost.get_response();
+		// apost.printReceivedRequestMapsour();
         // response_string = apost.get_response();
+		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
     }
     else if (request.find("DELETE") != request.end())
     {

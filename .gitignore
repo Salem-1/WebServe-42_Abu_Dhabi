@@ -21,4 +21,5 @@ project_code/testers/webserv_tester
 replit*
 *.o
 web_serve
-
+venv
+sandbox
