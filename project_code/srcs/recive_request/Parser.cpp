@@ -71,10 +71,12 @@ void    Parser::parse(char *new_buffer)
 			if (body_start_pos == std::string::npos)
 				body_start_pos = packet.find("\n\n") + 2;
 			if (body_start_pos)
+			{
 				full_request.header = packet.substr(0, body_start_pos);
-			fillHeaderRequest(full_request.header);
-			full_request.request_is_valid = checkHeaders();
-			fullheader = true;
+				fillHeaderRequest(full_request.header);
+				full_request.request_is_valid = checkHeaders();
+				fullheader = true;
+			}
 		}
 	}
 	if (Parser::fullheader == true && Parser::fullbody == false)
