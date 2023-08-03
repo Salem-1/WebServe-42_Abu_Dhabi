@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 19:45:29 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/03 23:25:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,46 +57,6 @@ std::string ErrResponse::constructCustomErrPacket(std::string err, std::string &
     response_packet += full_file_to_string;
     return (response_packet);
 }
-/*
-std::string ErrResponse::erroredResponse(std::string err)
-{
-    response_packet = "HTTP/1.1 " + err
-        + " " + StatusCodes[err] + "\r\n";
-    response_packet += "Server: webserve/1.0\r\n";
-    response_packet += "Date: ";
-    response_packet += getTimeBuffer();
-    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
-    response_packet += "Content-Length: 1050\r\n\r\n";
-    response_packet += "<!DOCTYPE html>\r\n";
-    response_packet += "<html>\r\n";
-    response_packet += "<head>\r\n";
-    response_packet += "    <title>";
-    response_packet += err ;
-    response_packet += " " + StatusCodes[err]+ " </title>\r\n";
-    response_packet += "</head>\r\n";
-    response_packet += "<body>\r\n";
-    response_packet += "    <h1>error under construction " + err + " " + StatusCodes[err] + "</h1>\r\n";
-    response_packet += "</body>\r\n";
-    response_packet += "</html>\r\n";
-    response_packet += "<p>\r\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
-    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
-    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\r\n";
-    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\r\n";
-    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\r\n";
-    response_packet += "</p>\n";
-
-    return (response_packet);
-}
-*/
 
 std::string ErrResponse::erroredResponse(std::string err)
 {
@@ -119,7 +79,7 @@ std::string ErrResponse::erroredResponse(std::string err)
     response_packet += "</body>\r\n";
     response_packet += "</html>\r\n";
     response_packet += "<p>\r\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <br>\r\n";
+    response_packet += " -------- &&& &&  &amp; &amp; <>\r\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
     response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
@@ -136,6 +96,7 @@ std::string ErrResponse::erroredResponse(std::string err)
 
     return (response_packet);
 }
+
 
 
 void    ErrResponse::statusCodes()

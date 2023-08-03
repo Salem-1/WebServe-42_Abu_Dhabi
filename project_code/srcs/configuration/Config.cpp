@@ -153,7 +153,7 @@ void   intra_config(conf &servers)
     servers[0]["Port"] = "3490";
     servers[0]["root"] = pwd + "/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
-    servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
+    servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     servers[0]["/ methods"] = "GET";
     servers[0]["Max-Body"] = "100";
     servers[0]["/directory"] = servers[0]["root"] + "/";

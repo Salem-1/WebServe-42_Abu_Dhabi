@@ -50,56 +50,61 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     if(redirectedPacket(server_info))
     {
         fillRedirectedPacket();
-        // exit(0);
         return ;
     }
     std::string file_path = constructPath(server_info);
+
     std::cout << BOLDMAGENTA << "requested file path = "
     		<< RESET << file_path << std::endl << RESET;
+        
     if (!sanitizedPath(file_path)&& fillBadPath(server_info))
         return ;
+    
     std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
+
     DIR *dir;
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
     {
-        if (reponse_check.find("dir") != reponse_check.end())
+        std::string dir_list_option = reponse_check["dir"][0] + " autoindex";
+        if (reponse_check["dir"].size() != 1)
         {
-            if (reponse_check["dir"].size() != 1)
+            response_packet = err.code(server_info, "400");
+            return ;
+        }
+        if (server_info.find(dir_list_option) != server_info.end())
+        {
+            if (server_info[dir_list_option] == "on")
             {
-                response_packet = err.code(server_info, "400");
+                struct dirent *files;
+                std::vector<std::string> ls;
+                ls.push_back(file_path);
+                while ((files = readdir(dir)) != NULL)
+                    ls.push_back(files->d_name);
+                constructDirResponse(ls, full_file_to_string);
                 return ;
             }
-            std::string dir_list_option = reponse_check["dir"][0] + " autoindex";
-            if (server_info.find(dir_list_option) != server_info.end())
+            else
             {
-                if (server_info[dir_list_option] == "on")
-                {
-                    struct dirent *files;
-                    std::vector<std::string> ls;
-                    ls.push_back(file_path);
-                    while ((files = readdir(dir)) != NULL)
-                        ls.push_back(files->d_name);
-                    constructDirResponse(ls, full_file_to_string);
-                    return ;
-                }
-                else
-                {
-                    response_packet = err.code(server_info, "403");
-                    return ;
-                }
+                response_packet = err.code(server_info, "403");
+                return ;
+            }
+        }
+        else
+        {
+            if (server_info.find(reponse_check["dir"][0] + " index") != server_info.end())
+            {
+                file_path += "/" + server_info[reponse_check["dir"][0] + " index"];
+                std::cout << YELLOW << "modified file  path = " << file_path << std::endl << RESET;
             }
         }
     }
-    else
-    {
-        std::ifstream infile(file_path.c_str());
-        if (infile.fail() && fillBadPath(server_info))
-            return ;
-        std::stringstream content_stream;
-        content_stream  << infile.rdbuf();
-        full_file_to_string = content_stream.str();
-    }
+    std::ifstream infile(file_path.c_str());
+    if (infile.fail() && fillBadPath(server_info))
+        return ;
+    std::stringstream content_stream;
+    content_stream  << infile.rdbuf();
+    full_file_to_string = content_stream.str();
     fillingResponsePacket(full_file_to_string, file_path);
     // exit(0);
 }
@@ -117,20 +122,23 @@ std::string    GET_response::constructPath(stringmap &server_info)
 {
 
     std::string path = reponse_check["Path"][1];
-    std::cout << "Given path = " << path << std::endl;
-    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
+    std::cout << MAGENTA << "requested path = " << path << std::endl << RESET ;
+
     if (path == "/")
         return (server_info[path]);
     if (std::count(path.begin(), path.end(), '/') < 2)
     {
         if (server_info.find(path) != server_info.end())
-            return (server_info[path + " index"]);
-        else
-            return (server_info["root"] + path);
+        {
+            if (server_info.find(path + " index") != server_info.end())
+                return (server_info[path] +server_info[path + " index"]);
+        }
+        // else
+        //     return (server_info["root"] + path);
     }
     std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
     std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
-    // /images/ case
+    // exit(0);
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
         std::cout << "yes it's only dir" << std::endl;
@@ -139,13 +147,14 @@ std::string    GET_response::constructPath(stringmap &server_info)
     }
     // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
+
     std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
+    
     if (server_info.find(dir) != server_info.end())
     {
         print_to_file("testers/our_tester/logs/dir_path.txt", server_info[dir]);
         return (server_info[dir] + rest_of_path);
     }
-    print_to_file("testers/our_tester/logs/dir_path.txt", "didn't found special path, will just use");
     return (server_info["root"] + path);
 }
 
