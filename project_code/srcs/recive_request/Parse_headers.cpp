@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 07:43:13 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/03 07:57:08 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,6 +123,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("sec-ch-ua:");
     valid_headers.insert("Purpose:");
     valid_headers.insert("Sec-Purpose:");
+    valid_headers.insert("Transfer-Encoding:");
 }
 
 void    Parser::visualizeRequestPacket()

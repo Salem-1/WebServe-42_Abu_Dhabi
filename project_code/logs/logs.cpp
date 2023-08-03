@@ -188,3 +188,13 @@ void    vis_str(std::string packet, std::string message)
         else
             std::cout << MAGENTA  << message << RESET;
 }
+
+void    print_to_file(std::string path, std::string str)
+{
+    std::ofstream outFile(path, std::ios::app);
+    if (!outFile.is_open()) {
+        std::cout << "Error opening the file!" << std::endl;
+    }
+    outFile << str << std::endl;
+    outFile.close(); 
+}

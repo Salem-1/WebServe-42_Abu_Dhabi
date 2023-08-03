@@ -48,20 +48,44 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
 	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
     
 	std::vector<std::string> supported_methods;
-    fillSupportedMethods(supported_methods, server_info);
+    // if (cgi_path != "")
+	// 	response_string = responseCGI(request, server_info, cgi_path);
+    //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
+    ErrResponse err;
+    std::string msg;
+
     if (cgi_path != "")
 		response_string = responseCGI(request, server_info, cgi_path);
 	else if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {
+        fillSupportedMethods(supported_methods, server_info, "GET" ,  request);
+        if(!(isSupportedMethod("GET", supported_methods)))
+        {
+            msg =  ":( GET is not supported method for "  + response["dir"][0];
+            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
+            response_string = err.code(server_info, "405");
+            return ;
+        }   
+            msg =  ":) GET is Allowed method for "  + response["dir"][0];
+            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
         //@ Ahmed MAHDI also can you put the CGI check here    
         response_string = normalGETResponse(request, server_info);
         std::cout << "redirection packet = " << response_string;
 
     }
-    else if (request.find("POST") != request.end()
-        && isSupportedMethod("POST", supported_methods))
+    else if (request.find("POST") != request.end())
     {
+        fillSupportedMethods(supported_methods, server_info, "POST" ,  request);
+        if(!(isSupportedMethod("POST", supported_methods)))
+                 {
+            msg =  ":( POST is not supported method for "  + response["dir"][0];
+            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
+            response_string = err.code(server_info, "405");
+            return ;
+        } 
+            msg =  ":) POST is Allowed method for "  + response["dir"][0];
+            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
         Post apost(request, full_request, server_info);
 		// apost.printPostHeader();
 		// apost.printPostBody();
@@ -71,15 +95,22 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         // response_string = apost.get_response();
 		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
     }
-    else if (request.find("DELETE") != request.end()
-        && isSupportedMethod("DELETE", supported_methods))
+    else if (request.find("DELETE") != request.end())
     {
+        fillSupportedMethods(supported_methods, server_info, "DELETE" ,  request);
+        if(!(isSupportedMethod("DELETE", supported_methods)))
+                 {
+            msg =  ":( DELETE is not supported method for "  + response["dir"][0];
+            response_string = err.code(server_info, "405");
+            return ;
+        } 
+            msg =  ":) DELETE is Allowed method for "  + response["dir"][0];
+            response_string = err.code(server_info, "405");
         DELETE DELETE_response;
         response_string = DELETE_response.deleteResponseFiller(request, response, server_info);
     }
     else
 	{
-		ErrResponse err;
 		response_string = err.code(server_info, "501");
 	}
 };
@@ -217,18 +248,6 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
     return (servers[nominated_servers[0]]);
 }
 
-void    Respond::fillSupportedMethods(
-            std::vector<std::string> &supported_methods, stringmap &server_info)
-{
-    if (server_info.find("Methods") == server_info.end())
-        return ;
-    supported_methods = split(server_info["Methods"],  " ");
-    
-    //visualization
-    for (std::vector<std::string>::iterator it = supported_methods.begin();
-        it != supported_methods.end(); it++)
-        std::cout << *it << " is supported method" << std::endl;
-}
 
 bool    Respond::isSupportedMethod(std::string method, std::vector<std::string> &supported_methods)
 {
@@ -242,4 +261,49 @@ bool    Respond::isSupportedMethod(std::string method, std::vector<std::string> 
     }
 
     return (false);
+}
+
+void   Respond::fillSupportedMethods(
+                    std::vector<std::string> &supported_methods, stringmap &server_info
+                    , std::string method, packet_map& request)
+{
+    supported_methods.clear();
+    fillPath(request, response, method);
+    if (response["Status-code"][0] != "200")
+        return ;
+    for (size_t i = 0; i < response["Path"].size() ; ++i)
+        std::cout << "response['Path'][" << i << "] = " << response["Path"][i] << std::endl;
+    std::string path = response["Path"][1];
+
+    std::cout << "Given path = " << path << std::endl;
+    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
+    
+    std::string dir;
+    if (path == "/")
+        dir = path;
+    else if (std::count(path.begin(), path.end(), '/') > 1)
+        dir = path.substr(0, path.find("/", path.find("/") + 1));
+    else if (path.find(".") != std::string::npos)
+        dir = "/";
+    else if (path.find("?") == std::string::npos)
+        dir = path;
+    else
+        dir = path.substr(0, path.find("?" - 1));
+    response["dir"].clear();  
+    response["dir"].push_back(dir);
+    std::string msg =   "dir = " +  dir + "             path = " + path;
+    print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/out.txt", dir);
+    std::string allowed_methods = dir + " methods";
+    if (server_info.find(allowed_methods) != server_info.end())
+    {
+        if (server_info[allowed_methods].empty())
+            supported_methods.push_back("nothing");
+        else
+            supported_methods = split(server_info[allowed_methods], " ");
+        return ;
+    }
+    supported_methods.push_back("GET");
+    supported_methods.push_back("POST");
+    supported_methods.push_back("DELETE");
+    // supported_methods.push_back("PUT");
 }

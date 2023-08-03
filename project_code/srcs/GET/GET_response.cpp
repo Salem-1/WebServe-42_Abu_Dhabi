@@ -69,7 +69,7 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     }
     std::string file_path = constructPath(server_info);
     std::cout << BOLDMAGENTA << "requested file path = "
-    		<< RESET << file_path << std::endl <<RESET;
+    		<< RESET << file_path << std::endl << RESET;
     if (!sanitizedPath(file_path)&& fillBadPath(server_info))
         return ;
     std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
@@ -77,12 +77,21 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
     {
-        if (server_info.find("autoindex") != server_info.end())
+        if (reponse_check.find("dir") != reponse_check.end())
         {
-            if (server_info["autoindex"] == "off")
+            if (reponse_check["dir"].size() != 1)
             {
-                response_packet = err.code(server_info, "403");
+                response_packet = err.code(server_info, "400");
                 return ;
+            }
+            std::string dir_list_option = reponse_check["dir"][0] + " autoindex";
+            if (server_info.find(dir_list_option) != server_info.end())
+            {
+                if (server_info[dir_list_option] == "off")
+                {
+                    response_packet = err.code(server_info, "403");
+                    return ;
+                }
             }
         }
         struct dirent *files;
@@ -133,6 +142,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
     response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
+    //For CGI this can be chunked if you @Ahmed MAhdi decided to do so 
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string; 
 }
@@ -264,3 +274,5 @@ std::string GET_response::getContentType(std::string file_path)
 
     return ("text/html");
 }
+
+
