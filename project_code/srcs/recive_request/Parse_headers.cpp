@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/02 16:00:23 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/03 16:45:41 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int    Parser::checkHeaders()
     std::cout << "visualizing inside Get request" << std::endl;
     visualizeRequestPacket();
    
-    if (!validPacketHeaders())
+    if (!validPacketHeaders() || full_request.header.length() > HEADER_MAX_LENGTH)
     {
         status.push_back("400");
         status.push_back("Bad Request");

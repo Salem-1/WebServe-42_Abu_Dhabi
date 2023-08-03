@@ -2,12 +2,14 @@
 
 void    intra_and_dummy_fill_till_config_parsing(conf &server);
 void    python_tester_config(conf &server);
+void   intra_config(conf &servers);
 Config::Config()
 {
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     // python_tester_config(servers);
-    intra_and_dummy_fill_till_config_parsing(servers);
+    // intra_and_dummy_fill_till_config_parsing(servers);
+	intra_config(servers);
 
     fillPorts();
 }
@@ -147,7 +149,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
         
 }
 
-void    intra_tester_config(conf &servers)
+void   intra_config(conf &servers)
 {
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
@@ -157,11 +159,10 @@ void    intra_tester_config(conf &servers)
     servers[0]["root"] = pwd + "/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/images"] = servers[0]["root"] + "/path_to_images/";
-    servers[0]["/images index"] = servers[0]["/images"] + "base_image.jpg";
-    servers[0]["/styles"] = servers[0]["root"] + "/styles/";
-    servers[0]["/styles index"] = servers[0]["root"] + "/styles/" + "styles.css";
-    servers[0]["/js"] = servers[0]["root"] + "/js/";
-    servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
+    servers[0]["/ methods"] = "GET";
+    servers[0]["Max-Body"] = "100";
+    servers[0]["/directory"] = servers[0]["root"] + "/";
+    servers[0]["/directory index"] = servers[0]["/"] ;
+    // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
 }

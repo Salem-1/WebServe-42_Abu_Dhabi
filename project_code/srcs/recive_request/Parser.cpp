@@ -61,7 +61,7 @@ void    Parser::parse(char *new_buffer)
     vis_str(new_buffer, "new_buffer inside parser");
     vis_str(packet, "packet inside parser");
     
-    if (fullheader == false && packet.length() <= HEADER_MAX_LENGTH)
+    if (fullheader == false)
 	{
 		if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
 			|| earlyBadRequest(packet))
@@ -85,9 +85,8 @@ void    Parser::parse(char *new_buffer)
 			std::istringstream iss(request["content-length:"][0]);
 			iss >> full_request.body_content_length;
 		}
-		else if (Parser::request.find("Transfer-Encoding:") != request.end() 
-							&& Parser::request.find("Transfer-Encoding:")->first == "chunked")
-			Parser::ischunked = true;
+		else if (Parser::request.find("Transfer-Encoding:") != request.end())
+			Parser::ischunked = Parser::request.find("Transfer-Encoding:")->first == "chunked";
 		if ((!full_request.body_content_length && !Parser::ischunked ) 
 							|| full_request.body_content_length > MAX_BODY_SIZE)
 		{
@@ -96,10 +95,15 @@ void    Parser::parse(char *new_buffer)
 			packet = "";
 			read_again = 0;
 		}
-		else
-			Parser::fillBodyRequest(new_buffer); // what happens if length is not full
+		//   else
+		// {
+		// 	std::cout << "in-complete packet let's read again\n";
+		// 	read_again = 1;
+		// }
+		Parser::fillBodyRequest(new_buffer); // what happens if length is not full
+		read_again = 0;
     }
-    else if (packet.length() > HEADER_MAX_LENGTH)
+    if (full_request.header.length() > HEADER_MAX_LENGTH)
     {
         std::cout << "Reject packet at parser" << std::endl;
         //rejecting packet and close socket
@@ -107,11 +111,7 @@ void    Parser::parse(char *new_buffer)
         bytes_read = 0;
         return ;
     }
-    else
-    {
-        std::cout << "in-complete packet let's read again\n";
-        read_again = 1;
-    }
+  
 }
 bool Parser::earlyBadRequest(std::string packet)
 {
@@ -204,6 +204,8 @@ void	Parser::fillBodyRequest(std::string buffer)
 			}
 			else
 			{
+				// if (buffer.len != chunklen + 2)
+				// 	Parser.read_again = 0; // return err response
 				Parser::full_request.body += buffer.substr(0, chunklen);
 				ischunkbody = false;
 			}
