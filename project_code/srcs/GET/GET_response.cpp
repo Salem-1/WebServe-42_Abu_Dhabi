@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   GET_response.cpp                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 16:33:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 18:54:24 by ayassin          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "GET_response.hpp"
 
@@ -29,10 +19,54 @@ std::string     GET_response::fillGetResponse(stringmap &server_info)
         fillOkResponse(server_info); 
     return (response_packet);
 }
+bool    GET_response::redirectedPacket(stringmap &server_info)
+{
+    if (server_info.find("Redirections") == server_info.end() || server_info["Redirections"].empty())
+        return (false);
+    std::vector<std::string> redirections_strs = split(server_info["Redirections"], ",");
+    if (redirections_strs.empty())
+        return (false);
+    std::vector<std::string> tmp;
+    for (size_t i = 0; i < redirections_strs.size(); ++i)
+    {
+        tmp = split(redirections_strs[i], " ");
+        if (tmp.size() != 3)
+            return (false);
+        if (tmp[0] == reponse_check["Path"][1])
+        {
+            redirection["old_path"] = tmp[0];
+            redirection["new_path"] = tmp[1];
+            redirection["Status-code"] = tmp[2];
+            visualize_string_map(redirection);
+            return (true);
+        }
+    }
+    return (false);
+}
 
-void        GET_response::fillOkResponse(stringmap &server_info)
+void   GET_response::fillRedirectedPacket(void)
+{
+    response_packet = "HTTP/1.1 ";
+    response_packet += redirection["Status-code"] + " ";
+    response_packet +=  err.StatusCodes[redirection["Status-code"]] + " \r\n";
+    response_packet += "Server: webserve/1.0\r\n";
+    response_packet += "Location: " + redirection["new_path"] + "\r\n";
+    response_packet += "Date: ";
+    response_packet += getTimeBuffer();
+    response_packet += "Connection: close\r\n";
+    response_packet += "Content-Length: 0\r\n";
+    response_packet += "Content-Type: text/html; charset=UTF-8 \r\n\r\n";
+   
+}
+void    GET_response::fillOkResponse(stringmap &server_info)
 {
     response_packet = "";
+    if(redirectedPacket(server_info))
+    {
+        fillRedirectedPacket();
+        // exit(0);
+        return ;
+    }
     std::string file_path = constructPath(server_info);
     std::cout << BOLDMAGENTA << "requested file path = "
     		<< RESET << file_path << std::endl <<RESET;
@@ -43,6 +77,14 @@ void        GET_response::fillOkResponse(stringmap &server_info)
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
     {
+        if (server_info.find("autoindex") != server_info.end())
+        {
+            if (server_info["autoindex"] == "off")
+            {
+                response_packet = err.code(server_info, "403");
+                return ;
+            }
+        }
         struct dirent *files;
         std::vector<std::string> ls;
         ls.push_back(file_path);
@@ -87,7 +129,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
     response_packet = "HTTP/1.1 200 OK \r\n";
     response_packet += "Server: webserve/1.0\r\n";
     response_packet += "Date: ";
-    response_packet += err.getTimeBuffer();
+    response_packet += getTimeBuffer();
     response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
@@ -98,7 +140,7 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
 
 bool    GET_response::fillBadPath(stringmap &server_info)
 {
-        fillStatuCode(reponse_check , "403", "file not found ya basha!");
+        fillStatuCode(reponse_check , "404", "file not found ya basha!");
         response_packet = err.code(server_info, reponse_check["Status-code"][0]);
         vis_str(response_packet, "inside GET_response has large response not gonna visualize\n");
         return (true);
@@ -108,6 +150,7 @@ std::string    GET_response::constructPath(stringmap &server_info)
 {
 
     std::string path = reponse_check["Path"][1];
+    std::cout << "Given path = " << path << std::endl;
     std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
     if (path == "/")
         return (server_info[path]);
@@ -158,7 +201,8 @@ bool GET_response::sanitizedPath(std::string path)
 void    get_mime(std::map<std::string, std::string> &mimes)
 {
     std::string mimes_str = "text/plain txt\n";
-    mimes_str += "text/html html, htm\n";
+    mimes_str += "text/html html\n";
+    mimes_str += "text/html htm\n";
     mimes_str += "text/css css\n";
     mimes_str += "text/javascript js\n";
     mimes_str += "application/json json\n";
@@ -200,7 +244,6 @@ void    get_mime(std::map<std::string, std::string> &mimes)
 
 std::string GET_response::getContentType(std::string file_path)
 {
-    (void) file_path;
     size_t  file_location = file_path.rfind("/");
     if (file_location == std::string::npos || file_location == file_path.length() - 1)
         return ("text/html");
@@ -212,12 +255,12 @@ std::string GET_response::getContentType(std::string file_path)
         return ("text/html");
     std::string file_extension = file_name.substr(dot_location + 1, file_name.length() - 1);
     get_mime(mimes);
+        std::cout << "\n\n\nfile extension is " << file_extension << std::endl;
     if (mimes.find(file_extension) != mimes.end())
     {
-        std::cout << "\n\n\nfile extension is " << file_extension << std::endl;
-        std::cout << "encoding is" << mimes[file_extension] << std::endl;
-        // sleep(3);
+        std::cout << "encoding is " << mimes[file_extension] << std::endl;
         return (mimes[file_extension]);
     }
+
     return ("text/html");
 }

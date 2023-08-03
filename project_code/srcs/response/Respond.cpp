@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Respond.cpp                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:35:48 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/01 23:53:21 by ymohamed         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 
 #include "Respond.hpp"
@@ -29,13 +18,8 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
     
     //here should extract the port and hostname to give to the corresponding method
     stringmap server_info = getServerInfo(request, servers, port);
-    
     visualize_string_map(server_info);
-	// size_t max_body;
-	// if (server_info.find("MaxBodySize") != server_info.end())
-	// 	max_body = atoi(server_info["MaxBodySize"].c_str());
-	// else
-	// 	max_body = MAX_BODY_SIZE;
+    // exit(0);
     fillResponse(request, full_request, server_info);
     sending = true;
     
@@ -61,12 +45,22 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     }
     response["Status-code"].push_back("200");
 	std::string cgi_path = isCGI(request);
-	std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
-	if (cgi_path != "")
+	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
+    
+	std::vector<std::string> supported_methods;
+    fillSupportedMethods(supported_methods, server_info);
+    if (cgi_path != "")
 		response_string = responseCGI(request, server_info, cgi_path);
-    if (request.find("GET") != request.end())
+	else if (request.find("GET") != request.end()
+        && isSupportedMethod("GET", supported_methods))
+    {
+        //@ Ahmed MAHDI also can you put the CGI check here    
         response_string = normalGETResponse(request, server_info);
-    else if (request.find("POST") != request.end())
+        std::cout << "redirection packet = " << response_string;
+
+    }
+    else if (request.find("POST") != request.end()
+        && isSupportedMethod("POST", supported_methods))
     {
         Post apost(request, full_request, server_info);
 		// apost.printPostHeader();
@@ -77,7 +71,8 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         // response_string = apost.get_response();
 		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
     }
-    else if (request.find("DELETE") != request.end())
+    else if (request.find("DELETE") != request.end()
+        && isSupportedMethod("DELETE", supported_methods))
     {
         DELETE DELETE_response;
         response_string = DELETE_response.deleteResponseFiller(request, response, server_info);
@@ -100,6 +95,8 @@ int Respond::checkPoisonedURL(packet_map &request)
 {
     if (request.find("GET") != request.end())
     {
+		if (request["GET"].size() != 2)
+			return (0);
         if (request["GET"][0].find(" ") != std::string::npos)
             return (1);
     }
@@ -140,10 +137,6 @@ void    Respond::visualizeResponse()
     std::cout << BOLDRED << "}" << std::endl << RESET;
 }
 
-// this ugly syntax :&a[response_bytes_sent]
-// because I am not able to save const char *a as private asset as the conversion change for each packet
-//while it's constant, I will try to change it later inshalla, for now take the code below for granted
-//till make the new sending scaling work for now
 void    Respond::sendAll(connection_state &state)
 {
     size_t  packet_len = response_string.length(); 
@@ -165,7 +158,7 @@ void    Respond::sendAll(connection_state &state)
         flushResponse();
         state = KILL_CONNECTION;
     }
-    if (response_bytes_sent == packet_len)
+    if (response_bytes_sent >= packet_len)
     {
         state = KILL_CONNECTION;
         flushResponse();
@@ -190,12 +183,8 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
     for (unsigned long i = 0; i < servers.size(); i++)
     {
         std::cout << "config port = " << servers[i]["Port"] << std::endl ;
-        std::cout << "1" << std::endl;
         if (servers[i]["Port"] == port)
-        {
-            std::cout << "2" << std::endl;
             nominated_servers.push_back(i);
-        }
     }
     
     for (unsigned long i = 0; i < nominated_servers.size(); i++)
@@ -203,51 +192,54 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
         server_names =  split(servers[nominated_servers[i]]["server_name"], " ");
         for (unsigned long j = 0; j < server_names.size(); j++)
         {   
-            std::vector<std::string> tmp_vec;
             if (request.find("Host:") == request.end() || request["Host:"].size() != 1)  
             {
-                tmp_vec.push_back("400");
-                tmp_vec.push_back("No host");
-                response["Status-code"] = tmp_vec;
-                
-                return (servers[0]);
-            }
-            
+                fillStatuCode("400", "No host");   
+                return (servers[nominated_servers[0]]);
+            } 
             std::cout << "our hostname is " << request["Host:"][0] << std::endl;
             std::cout << "server hostname " << server_names[j] << std::endl;
-            std::cout << "trimmed host = " << request["Host:"][0].substr(0, server_names[j].length()) << std::endl;
-            if (server_names[j] == request["Host:"][0].substr(0, server_names[j].length()))
+            std::string requested_host;
+            if (request["Host:"][0].find(":") == std::string::npos || request["Host:"][0].find(":") == request["Host:"][0].length())
+                requested_host  = request["Host:"][0];
+            else
+                requested_host  = request["Host:"][0].substr(0, request["Host:"][0].find(":"));
+            std::cout << "requested trimmed host = " << requested_host << std::endl;
+            std::cout << "requested port  = " << port  << std::endl;
+            std::pair<std::string, std::string> host_port(requested_host, port); 
+            if (server_names[j] == requested_host)
             {
                 std::cout << "our server is " << nominated_servers[j] << std::endl;
                 return (servers[nominated_servers[i]]);
             }
         }
     }
-    return (servers[0]);
+    return (servers[nominated_servers[0]]);
 }
 
-std::string	Respond::isCGI(packet_map &request)
+void    Respond::fillSupportedMethods(
+            std::vector<std::string> &supported_methods, stringmap &server_info)
 {
-	packet_map::iterator it = request.find("GET");
-	if (it == request.end())
-		it = request.find("POST");
-	if (it == request.end())
-		return ("");
-	if (it->second[0].find("cgi-bin") != std::string::npos)
-		return (it->second[0]);
-	return ("");
+    if (server_info.find("Methods") == server_info.end())
+        return ;
+    supported_methods = split(server_info["Methods"],  " ");
+    
+    //visualization
+    for (std::vector<std::string>::iterator it = supported_methods.begin();
+        it != supported_methods.end(); it++)
+        std::cout << *it << " is supported method" << std::endl;
 }
 
-std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path)
+bool    Respond::isSupportedMethod(std::string method, std::vector<std::string> &supported_methods)
 {
-	(void) request;
-	if (cgi_path.find("?") != std::string::npos)
-	{
-		std::string query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
-		cgi_path = cgi_path.substr(0, cgi_path.find("?"));
-		// server_info["query"] = query;
-	}
-	std::string full_cgi_path = server_info["root"] + cgi_path;
-	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
-	return "";
+    if(supported_methods.empty())
+        return (true);
+    for (std::vector<std::string>::iterator it = supported_methods.begin();
+            it != supported_methods.end(); ++it)
+    {
+        if (*it == method)
+            return (true);
+    }
+
+    return (false);
 }

@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:50 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 11:02:39 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/31 14:55:02 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ class Respond
         int			fillStatuCode(std::string status_code, std::string message);
         stringmap	getServerInfo(packet_map &request,conf &servers, std::string port);
         std::string	normalGETResponse( packet_map &request, stringmap &server_info);
-        
+        bool        isSupportedMethod(std::string method, std::vector<std::string> &supported_methods);
+        void        fillSupportedMethods(
+                        std::vector<std::string> &supported_methods, stringmap &server_info);
 		int				client_socket;
         response_packet	response;
         std::string		response_string;
@@ -44,8 +46,9 @@ class Respond
         bool			sending;
 		
 	private:
-		std::string					isCGI(packet_map &request);
-		std::string					responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
+		std::string	isCGI(packet_map &request);
+		std::string	responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
+		std::string	execute(stringmap &server_info, std::string path, std::string args);
         
     private:
         int		checkPoisonedURL(packet_map &request);

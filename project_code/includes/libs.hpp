@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 18:52:13 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/01 18:07:47 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,13 +110,13 @@ enum connection_state
     KEEP_ALIVE = 1
 };
 
-std::vector<std::string> split(std::string str, std::string delimeter);
-void printAddrInfo( struct addrinfo *ai);
-void    visualize_servers(
-    std::vector<std::map<std::string, std::string> > servers);
-
-void    visualize_string_map(std::map<std::string, std::string>  &map);
-void    vis_str(std::string packet, std::string message);
+std::string					getTimeBuffer();
+std::vector<std::string>	split(std::string str, std::string delimeter);
+void						printAddrInfo( struct addrinfo *ai);
+void						visualize_servers(
+					std::vector<std::map<std::string, std::string> > servers);
+void						visualize_string_map(std::map<std::string, std::string>  &map);
+void						vis_str(std::string packet, std::string message);
 //---------------------------------------------
 
 

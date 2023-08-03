@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:57:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/07/31 11:02:13 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@ void    fillPath(packet_map &request,response_packet &response, std::string meth
 {
     //decide on absouloute or origin option path 
     //400 if wrong
+	if (request[method].size() != 2)
+		if (fillStatuCode(response, "400", "Invalid number of items inside Method"))
+			return ;
     if ((request[method][0].find("/") == std::string::npos ||
             request[method][0][0] != '/')
         && (fillStatuCode(response, "400", "bad origin path format")))
