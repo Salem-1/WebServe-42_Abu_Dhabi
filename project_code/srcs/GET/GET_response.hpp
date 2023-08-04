@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 11:04:48 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/04 04:27:07 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,10 @@ class GET_response
         bool            redirectedPacket(stringmap &server_info);
         void            fillRedirectedPacket(void);
         int             fill_redirection_vector(std::vector<std::string> tmp);
-		std::string		response_packet;
+        bool            readFileToString(stringmap &server_info, 
+                                        std::string &file_path, 
+                                        std::string &full_file_to_string);
+        std::string		response_packet;
         ErrResponse		err;
         stringmap       redirection;
         response_type	reponse_check;

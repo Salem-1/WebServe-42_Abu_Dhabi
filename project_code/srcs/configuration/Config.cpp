@@ -203,6 +203,7 @@ void    list_dir_options(conf &servers)
     servers[0]["/sleep index"] = servers[0]["/sleep"] + "index.html";
     servers[0]["/nightmares autoindex"] = "on";
     servers[0]["/attacks autoindex"] = "off";
+    servers[0]["/secret autoindex"] = "off";
     
     
     servers[0]["Max-Body"] = "8000";

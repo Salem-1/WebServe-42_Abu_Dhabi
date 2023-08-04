@@ -43,8 +43,8 @@ typedef std::map<std::string, std::vector<std::string> >	packet_map;
 typedef std::map<std::string, std::vector<std::string> >	response_packet;
 typedef std::map<std::string, std::vector<std::string> >	response_type;
 
-# define BACKLOG 256
-# define MAX_EVENTS 256
+# define BACKLOG 500
+# define MAX_EVENTS 500
 # define BUFFER_SIZE 260000
 # define PERSISTANCE 75
 # define TIME_PER_SEC 10000

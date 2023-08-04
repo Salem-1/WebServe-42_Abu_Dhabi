@@ -82,7 +82,6 @@ void    GET_response::fillOkResponse(stringmap &server_info)
                 while ((files = readdir(dir)) != NULL)
                     ls.push_back(files->d_name);
                 constructDirResponse(ls, full_file_to_string);
-                return ;
             }
             else
             {
@@ -96,20 +95,33 @@ void    GET_response::fillOkResponse(stringmap &server_info)
             {
                 file_path += "/" + server_info[reponse_check["dir"][0] + " index"];
                 std::cout << YELLOW << "modified file  path = " << file_path << std::endl << RESET;
+                if (!readFileToString(server_info, file_path, full_file_to_string))
+                    return;
             }
         }
     }
-    std::ifstream infile(file_path.c_str());
-    if (infile.fail() && fillBadPath(server_info))
-        return ;
-    std::stringstream content_stream;
-    content_stream  << infile.rdbuf();
-    full_file_to_string = content_stream.str();
+    else
+    {
+        if (!readFileToString(server_info, file_path, full_file_to_string))
+            return;
+    }
     fillingResponsePacket(full_file_to_string, file_path);
-    // exit(0);
+
 }
 
 
+bool    GET_response::readFileToString(stringmap &server_info, 
+                                        std::string &file_path, 
+                                        std::string &full_file_to_string)
+{
+    std::ifstream infile(file_path.c_str());
+    if (infile.fail() && fillBadPath(server_info))
+        return (false);
+    std::stringstream content_stream;
+    content_stream  << infile.rdbuf();
+    full_file_to_string = content_stream.str();
+    return (true);
+}
 bool    GET_response::fillBadPath(stringmap &server_info)
 {
         fillStatuCode(reponse_check , "404", "file not found ya basha!");
