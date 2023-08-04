@@ -21,17 +21,11 @@ int main()
         std::cout << "port " << *it << std::endl;
         Listner binded_sock(*it);
         servers.sockets.push_back(binded_sock.sockfd);
-        usleep(500);
     }
     std::cout << "server waiting for connection....\n" << std::endl;
     Kque socket_manager(servers.sockets);
     socket_manager.watchFds(servers.servers);
-    //open sockets in array of sockets
-    //give the array of sockets to the kque, 
-    //make all in loops in side kque, which is the add initial socket ot the kq as events as I expect
-    //give teh Config to all clients
-    //inside the request parse for server name
-    //celebrate
+    return (0);
 }
 
 

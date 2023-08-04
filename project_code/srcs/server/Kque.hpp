@@ -21,9 +21,12 @@ class Kque
         void		handleRequestByClient(struct kevent event);
         std::string	socketInfo(int sockfd);
         bool		tmpFdInServerSocket(int tmp_fd);
-		bool		inactiveClients(int tmp_fd);
+		bool		inActiveClients(int tmp_fd);
+        bool        removeClient(int client_socket);
+        void		killTimeoutedClients(void);
+        bool        closeServer(void);
+
     private:
-        void		killTimeoutedClients();
 		
         std::map<int, Client>	clients;
         std::set<int>			active_clients;
