@@ -10,8 +10,8 @@ Config::Config()
     std::string pwd(getcwd(buff, sizeof(buff)));
 
     // intra_and_dummy_fill_till_config_parsing(servers);
-    intra_config(servers);
-    // list_dir_options(servers);
+    // intra_config(servers);
+    list_dir_options(servers);
 
     fillPorts();
 }
@@ -187,7 +187,7 @@ void    list_dir_options(conf &servers)
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     servers.push_back(std::map<std::string, std::string>());
-    servers[0]["DELETE path"] = "/POST";
+    servers[0]["DELETE path"] = "";
     servers[0]["server_name"] = "127.0.0.1 localhost";
     servers[0]["Port"] = "5555";
     servers[0]["root"] = pwd + "/intra/website";
