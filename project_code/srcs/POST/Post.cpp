@@ -153,3 +153,42 @@ std::string Post::get_response() const
 {
 	return (this->_response);
 }
+
+void Post::handleUpload()
+{
+    // Parse the request header to get the content boundary
+    std::string contentBoundary = "----" + this->_request.header.substr(this->_request.header.find("boundary=") + 9);
+
+	std::cout << BOLDYELLOW << "got here" << RESET << std::endl;
+	exit(0);
+    // Find the start and end positions of the file data in the request body
+    size_t start = this->_request.body.find(contentBoundary) + contentBoundary.length() + 2;
+    size_t end = this->_request.body.find(contentBoundary, start) - 4;
+
+    // Extract the file data from the request body
+    std::string fileData = this->_request.body.substr(start, end - start);
+
+    // Get the filename from the request header
+    size_t filenameStart = this->_request.body.find("filename=\"") + 10;
+    size_t filenameEnd = this->_request.body.find("\"", filenameStart);
+    std::string filename = this->_request.body.substr(filenameStart, filenameEnd - filenameStart);
+
+    // Handle the file as needed
+    // For example, you can save it to disk or process the data further
+    std::cout << "Received file: " << filename << std::endl;
+    std::cout << "File content:" << std::endl;
+    std::cout << fileData << std::endl;
+}
+
+void Post::handlePost()
+{
+	if (this->_request_map.find("Content-Type:") == this->_request_map.end() 
+		|| this->_request_map["Content-Type:"].empty())
+		return ;
+	if (this->_request_map["Content-Type:"][0] == "application/x-www-form-urlencoded")
+		Post::sendToBackend();
+	else if (this->_request_map["Content-Type:"][0] == "multipart/form-data;")
+		Post::handleUpload();
+	else
+		return ;
+}

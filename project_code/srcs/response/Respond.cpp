@@ -89,10 +89,8 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         Post apost(request, full_request, server_info);
 		// apost.printPostHeader();
 		// apost.printPostBody();
-		apost.sendToBackend();
+		apost.handlePost();
 		response_string = apost.get_response();
-		// apost.printReceivedRequestMapsour();
-        // response_string = apost.get_response();
 		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
     }
     else if (request.find("DELETE") != request.end())
