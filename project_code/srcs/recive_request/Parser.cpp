@@ -49,7 +49,7 @@ void    Parser::flushParsing()
 
 void    Parser::parse(char *new_buffer)
 {
-    flushParsing();
+    // flushParsing();
     if (!bytes_read)  
     {
         read_again = 0;
@@ -63,8 +63,8 @@ void    Parser::parse(char *new_buffer)
     
     if (fullheader == false)
 	{
-		if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
-			|| earlyBadRequest(packet))
+		if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10))
+			// || earlyBadRequest(packet))
 		{
 			std::cout << "\nraw packet is\n-----------\n" << packet << "\n --------" << std::endl;
 			body_start_pos = packet.find("\r\n\r\n") + 4;
@@ -97,15 +97,14 @@ void    Parser::parse(char *new_buffer)
 			packet = "";
 			read_again = 0;
 		}
-		//   else
-		// {
-		// 	std::cout << "in-complete packet let's read again\n";
-		// 	read_again = 1;
-		// }
+		  else
+		{
+			std::cout << "in-complete packet let's read again\n";
+			read_again = 1;
+		}
 		Parser::fillBodyRequest(new_buffer); // what happens if length is not full
-		read_again = 0;
     }
-    if (full_request.header.length() > HEADER_MAX_LENGTH)
+    if (full_request.header.length() > HEADER_MAX_LENGTH )
     {
         std::cout << "Reject packet at parser" << std::endl;
         //rejecting packet and close socket
@@ -113,6 +112,8 @@ void    Parser::parse(char *new_buffer)
         bytes_read = 0;
         return ;
     }
+	if (!fullheader || !fullbody)
+		read_again = 1;
   
 }
 bool Parser::earlyBadRequest(std::string packet)
@@ -180,16 +181,16 @@ int	Parser::chunkLength(std::string buffer)
 void	Parser::fillBodyRequest(std::string buffer)
 {
 	// body chuncked request is not handled yet
-	if (Parser::packet.length() > MAX_BODY_SIZE + HEADER_MAX_LENGTH)
-	{
-		std::cout << "body is too large\n";
-		Parser::full_request.body = "";
-		Parser::full_request.body_content_length = 0;
-		Parser::packet = "";
-		Parser::read_again = 0;
-		return ;
-	}
-	else if (Parser::packet.length() < Parser::full_request.body_content_length + Parser::body_start_pos)
+	// if (Parser::packet.length() > MAX_BODY_SIZE + HEADER_MAX_LENGTH)
+	// {
+	// 	std::cout << "body is too large\n";
+	// 	Parser::full_request.body = "";
+	// 	Parser::full_request.body_content_length = 0;
+	// 	Parser::packet = "";
+	// 	Parser::read_again = 0;
+	// 	return ;
+	// }
+	if (Parser::packet.length() < Parser::full_request.body_content_length + Parser::body_start_pos)
 	{
 		Parser::read_again = 1;
 		if (Parser::ischunked)
@@ -206,8 +207,8 @@ void	Parser::fillBodyRequest(std::string buffer)
 			}
 			else
 			{
-				// if (buffer.len != chunklen + 2)
-				// 	Parser.read_again = 0; // return err response
+				if (buffer.length() != chunklen + 2)
+					Parser::read_again = 0; // return err response
 				Parser::full_request.body += buffer.substr(0, chunklen);
 				ischunkbody = false;
 			}

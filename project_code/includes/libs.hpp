@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:15 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 21:14:33 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/05 14:15:13 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ typedef std::map<std::string, std::vector<std::string> >	response_type;
 
 # define BACKLOG 256
 # define MAX_EVENTS 256
-# define BUFFER_SIZE 260000
+# define BUFFER_SIZE 10
 # define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
