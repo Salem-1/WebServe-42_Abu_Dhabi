@@ -88,7 +88,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
         Post apost(request, full_request, server_info);
 		// apost.printPostHeader();
-		// apost.printPostBody();
+		// TODO: Get pdf files get to this point
+		apost.printPostBody();
+		exit(0);
 		apost.handlePost();
 		response_string = apost.get_response();
 		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
