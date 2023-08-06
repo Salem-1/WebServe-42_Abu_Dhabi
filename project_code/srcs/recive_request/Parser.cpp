@@ -49,14 +49,13 @@ void    Parser::flushParsing()
 
 void    Parser::parse(char *new_buffer)
 {
-    // flushParsing();
+    flushParsing();
     if (!bytes_read)  
     {
         read_again = 0;
         return ;
     }
-    std::string str(new_buffer);
-    packet += str;
+    packet += new_buffer;
     
     vis_str(new_buffer, "new_buffer inside parser");
     vis_str(packet, "packet inside parser");
@@ -112,9 +111,7 @@ void    Parser::parse(char *new_buffer)
         bytes_read = 0;
         return ;
     }
-	if (!fullheader || !fullbody)
-		read_again = 1;
-  
+	read_again = 0;
 }
 bool Parser::earlyBadRequest(std::string packet)
 {
@@ -200,7 +197,10 @@ void	Parser::fillBodyRequest(std::string buffer)
 
 				int len = chunkLength(buffer);
 				if (len <= 0)
+				{
+					fullbody = 1;
 					Parser::read_again = 0; // return err response
+				}
 				chunklen = chunkLength(buffer);
 				full_request.body_content_length += chunklen;
 				ischunkbody = true;
@@ -220,5 +220,66 @@ void	Parser::fillBodyRequest(std::string buffer)
 		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos);
 		Parser::packet = "";
 		Parser::read_again = 0;
+		fullbody = 1;
 	}
 }
+
+/*
+void    Parser::parse(char *new_buffer)
+{
+    flushParsing();
+    if (!bytes_read)  
+    {
+        read_again = 0;
+        return ;
+    }
+    std::string str(new_buffer);
+    packet += str;
+    
+    vis_str(new_buffer, "new_buffer inside parser");
+    vis_str(packet, "packet inside parser");
+    
+    //this will parse the headers
+    if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+        || earlyBadRequest(packet))
+    {
+        std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
+		body_start_pos = packet.find("\r\n\r\n") + 4;
+		if (body_start_pos == std::string::npos)
+			body_start_pos = packet.find("\n\n") + 2;
+		if (body_start_pos)
+			full_request.header = packet.substr(0, body_start_pos);
+        fillHeaderRequest(full_request.header);
+		full_request.request_is_valid = checkHeaders();
+		if (Parser::request.find("Content-Length:") != request.end() && full_request.request_is_valid)
+		{
+			std::cout << YELLOW <<"body content length is " << request["Content-Length:"][0] << std::endl << RESET;
+			std::istringstream iss(request["Content-Length:"][0]);
+			iss >> full_request.body_content_length;
+		}
+		if (!full_request.body_content_length || full_request.body_content_length > MAX_BODY_SIZE)
+		{
+			if (full_request.body_content_length > MAX_BODY_SIZE)
+				std::cout << "body is too large\n";
+			packet = "";
+			read_again = 0;
+		}
+		else
+			Parser::fillBodyRequest(new_buffer);
+    }
+    else if (packet.length() > HEADER_MAX_LENGTH)
+    {
+        std::cout << "Reject packet at parser" << std::endl;
+        //rejecting packet and close socket
+        read_again = 0;
+        bytes_read = 0;
+        return ;
+    }
+    else
+    {
+        std::cout << "in-complete packet let's read again\n";
+        read_again = 1;
+    }
+}
+
+*/
