@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Parser.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
+/*   Updated: 2023/08/06 12:07:42 by ayassin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "Parser.hpp"
 
@@ -82,8 +93,8 @@ void    Parser::parse(char *new_buffer)
 	{
 		if (Parser::request.find("content-length:") != request.end() && full_request.request_is_valid)
 		{
-			std::cout << YELLOW <<"body content length is " << request["content-length:"][0] << std::endl << RESET;
-			std::istringstream iss(request["content-length:"][0]);
+			std::cout << YELLOW <<"body content length is " << request["Content-Length:"][0] << std::endl << RESET;
+			std::istringstream iss(request["Content-Length:"][0]);
 			iss >> full_request.body_content_length;
 		}
 		else if (Parser::request.find("Transfer-Encoding:") != request.end())
@@ -117,11 +128,11 @@ bool Parser::earlyBadRequest(std::string packet)
 {
     if (packet.length() >= 1)
     {
-        if (packet[0] != 'G' || packet[0] != 'P' 
-            || packet[0] != 'D')
-            return (true);
+        if (packet[0] == 'G' || packet[0] == 'P' 
+            || packet[0] == 'D')
+            return (false);
     }
-    return (false);
+    return (true);
 }
 
 void    Parser::setBytereadAndReadsock(int bytes, int sock)
@@ -178,16 +189,16 @@ int	Parser::chunkLength(std::string buffer)
 void	Parser::fillBodyRequest(std::string buffer)
 {
 	// body chuncked request is not handled yet
-	// if (Parser::packet.length() > MAX_BODY_SIZE + HEADER_MAX_LENGTH)
-	// {
-	// 	std::cout << "body is too large\n";
-	// 	Parser::full_request.body = "";
-	// 	Parser::full_request.body_content_length = 0;
-	// 	Parser::packet = "";
-	// 	Parser::read_again = 0;
-	// 	return ;
-	// }
-	if (Parser::packet.length() < Parser::full_request.body_content_length + Parser::body_start_pos)
+	if (Parser::packet.length() > MAX_BODY_SIZE + body_start_pos)
+	{
+		std::cout << "body is too large\n";
+		Parser::full_request.body = "";
+		Parser::full_request.body_content_length = 0;
+		Parser::packet = "";
+		Parser::read_again = 0;
+		return ;
+	}
+	else if (Parser::packet.length() < Parser::full_request.body_content_length + Parser::body_start_pos)
 	{
 		Parser::read_again = 1;
 		if (Parser::ischunked)
