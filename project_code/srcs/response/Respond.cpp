@@ -111,7 +111,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     }
     else
 	{
-		response_string = err.code(server_info, "501");
+		response_string = err.code(server_info, "405");
 	}
 };
 
@@ -144,29 +144,6 @@ int Respond::checkPoisonedURL(packet_map &request)
     return (0);
 }
 
-
-void    Respond::visualizeResponse()
-{
-    std::cout << BOLDRED << "\nVisualizing reponse API\n" << std::endl;
-    std::cout << "{" << std::endl << RESET;
-    for (response_packet::iterator it = response.begin(); it != response.end(); it++)
-    {
-        if ((it->first).length() < 10000)
-            std::cout << BOLDBLUE << "  \"" << it->first << "\": [" << RESET;
-        else
-            std::cout << "\"" << "large packet not gonna visualize" << "\", ";
-
-         for (std::vector<std::string>::iterator vit = it->second.begin(); vit != it->second.end(); ++vit)
-        {
-            if ((*vit).length() < 10000)
-                std::cout << "\"" << *vit << "\", ";
-            else
-                std::cout << "\"" << "large packet not gonna visualize" << "\", ";
-        }
-        std::cout << BOLDBLUE << "]" << std::endl << RESET;
-    }
-    std::cout << BOLDRED << "}" << std::endl << RESET;
-}
 
 void    Respond::sendAll(connection_state &state)
 {
@@ -206,10 +183,9 @@ int Respond::fillStatuCode(std::string status_code, std::string message)
 
 stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string port)
 {
-    std::vector<int>            nominated_servers;
-    std::vector<std::string>    server_names;
+    unsigned long               n = servers.size();
+
     std::cout << BOLDGREEN << "port  = " << port << std::endl;
-    unsigned long n = servers.size();
     std::cout << "we have " << n << "servers\n" << RESET;
     for (unsigned long i = 0; i < servers.size(); i++)
     {
@@ -217,7 +193,6 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
         if (servers[i]["Port"] == port)
             nominated_servers.push_back(i);
     }
-    
     for (unsigned long i = 0; i < nominated_servers.size(); i++)
     {
         server_names =  split(servers[nominated_servers[i]]["server_name"], " ");
@@ -228,17 +203,7 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
                 fillStatuCode("400", "No host");   
                 return (servers[nominated_servers[0]]);
             } 
-            std::cout << "our hostname is " << request["Host:"][0] << std::endl;
-            std::cout << "server hostname " << server_names[j] << std::endl;
-            std::string requested_host;
-            if (request["Host:"][0].find(":") == std::string::npos || request["Host:"][0].find(":") == request["Host:"][0].length())
-                requested_host  = request["Host:"][0];
-            else
-                requested_host  = request["Host:"][0].substr(0, request["Host:"][0].find(":"));
-            std::cout << "requested trimmed host = " << requested_host << std::endl;
-            std::cout << "requested port  = " << port  << std::endl;
-            std::pair<std::string, std::string> host_port(requested_host, port); 
-            if (server_names[j] == requested_host)
+            if (server_names[j] == fillRequestedHostName(request, port, j))
             {
                 std::cout << "our server is " << nominated_servers[j] << std::endl;
                 return (servers[nominated_servers[i]]);
@@ -248,6 +213,20 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
     return (servers[nominated_servers[0]]);
 }
 
+std::string     Respond::fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j)
+{
+    std::string requested_host;
+    std::cout << "our hostname is " << request["Host:"][0] << std::endl;
+    std::cout << "server hostname " << server_names[j] << std::endl;
+    if (request["Host:"][0].find(":") == std::string::npos || request["Host:"][0].find(":") == request["Host:"][0].length())
+        requested_host  = request["Host:"][0];
+    else
+        requested_host  = request["Host:"][0].substr(0, request["Host:"][0].find(":"));
+    std::cout << "requested trimmed host = " << requested_host << std::endl;
+    std::cout << "requested port  = " << port  << std::endl;
+    std::pair<std::string, std::string> host_port(requested_host, port); 
+    return (requested_host);
+}
 
 bool    Respond::isSupportedMethod(std::string method, std::vector<std::string> &supported_methods)
 {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/01 18:30:40 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/03 23:25:27 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ std::string ErrResponse::constructCustomErrPacket(std::string err, std::string &
     response_packet += full_file_to_string;
     return (response_packet);
 }
+
 std::string ErrResponse::erroredResponse(std::string err)
 {
     response_packet = "HTTP/1.1 " + err
@@ -78,7 +79,7 @@ std::string ErrResponse::erroredResponse(std::string err)
     response_packet += "</body>\r\n";
     response_packet += "</html>\r\n";
     response_packet += "<p>\r\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <br>\r\n";
+    response_packet += " -------- &&& &&  &amp; &amp; <>\r\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
     response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
     response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
@@ -95,6 +96,8 @@ std::string ErrResponse::erroredResponse(std::string err)
 
     return (response_packet);
 }
+
+
 
 void    ErrResponse::statusCodes()
 {

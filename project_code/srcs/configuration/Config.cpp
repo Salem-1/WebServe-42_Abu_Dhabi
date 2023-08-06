@@ -9,32 +9,12 @@ Config::Config()
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
 
-    intra_and_dummy_fill_till_config_parsing(servers);
-    // intra_config(servers);
+    // intra_and_dummy_fill_till_config_parsing(servers);
+    intra_config(servers);
     // list_dir_options(servers);
 
     fillPorts();
 }
-
-
-void   intra_config(conf &servers)
-{
-    char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
-    servers.push_back(std::map<std::string, std::string>());
-    servers[0]["server_name"] = "127.0.0.1";
-    servers[0]["Port"] = "3490";
-    servers[0]["root"] = pwd + "/intra/YoupiBanane";
-    servers[0]["index"] = "youpi.bad_extension";
-    servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/directory"] = servers[0]["root"];
-    servers[0]["/directory index"] = servers[0]["/"] ;
-    servers[0]["DELETE path"] = "POST";
-    servers[0]["Methods"] = "GET POST";
-
-}
-
-
 
 
 Config::~Config()
@@ -165,7 +145,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
         
 }
 
-void    intra_tester_config(conf &servers)
+void   intra_config(conf &servers)
 {
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
@@ -174,13 +154,12 @@ void    intra_tester_config(conf &servers)
     servers[0]["Port"] = "3490";
     servers[0]["root"] = pwd + "/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
-    servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/images"] = servers[0]["root"] + "/path_to_images/";
-    servers[0]["/images index"] = servers[0]["/images"] + "base_image.jpg";
-    servers[0]["/styles"] = servers[0]["root"] + "/styles/";
-    servers[0]["/styles index"] = servers[0]["root"] + "/styles/" + "styles.css";
-    servers[0]["/js"] = servers[0]["root"] + "/js/";
-    servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
+    servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
+    servers[0]["/ methods"] = "GET";
+    servers[0]["Max-Body"] = "100";
+    servers[0]["/directory"] = servers[0]["root"] + "/";
+    servers[0]["/directory index"] = "youpi.bad_extension" ;
+    // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
 }
 
@@ -208,7 +187,7 @@ void    list_dir_options(conf &servers)
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     servers.push_back(std::map<std::string, std::string>());
-    servers[0]["DELETE path"] = "/POST";
+    servers[0]["DELETE path"] = "";
     servers[0]["server_name"] = "127.0.0.1 localhost";
     servers[0]["Port"] = "5555";
     servers[0]["root"] = pwd + "/intra/website";
@@ -224,8 +203,9 @@ void    list_dir_options(conf &servers)
     servers[0]["/sleep index"] = servers[0]["/sleep"] + "index.html";
     servers[0]["/nightmares autoindex"] = "on";
     servers[0]["/attacks autoindex"] = "off";
+    servers[0]["/secret autoindex"] = "off";
     
     
     servers[0]["Max-Body"] = "8000";
-    servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos /ransomware 301";
+    servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos attacks/ddos.html 301";
 }

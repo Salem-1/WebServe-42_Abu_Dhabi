@@ -43,14 +43,14 @@ typedef std::map<std::string, std::vector<std::string> >	packet_map;
 typedef std::map<std::string, std::vector<std::string> >	response_packet;
 typedef std::map<std::string, std::vector<std::string> >	response_type;
 
-# define BACKLOG 256
-# define MAX_EVENTS 256
+# define BACKLOG 500
+# define MAX_EVENTS 500
 # define BUFFER_SIZE 260000
 # define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
-# define MAX_BODY_SIZE 10485760 // 10 MB Will be part of the configuration file
+# define MAX_BODY_SIZE 100 // 10 MB Will be part of the configuration file
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
