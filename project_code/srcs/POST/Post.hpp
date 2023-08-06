@@ -11,13 +11,16 @@ private:
 	stringmap	_server_info;
 	std::string	_response;
 
+	void		sendToBackend();
+	void		handleUpload();
+
 public:
 	Post(packet_map &request_map, t_request &full_request, stringmap &server_info);
 	~Post();
 	void		printPostHeader();
 	void		printPostBody();
 	void		printReceivedRequestMap();
-	void		sendToBackend();
+	void		handlePost();
 	std::string	get_response() const;
 	static void	visualizeStringMap(packet_map &map);
 };

@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 23:27:01 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/05 07:02:48 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,13 @@ void    Parser::parse(char *new_buffer)
     
     vis_str(new_buffer, "new_buffer inside parser");
     vis_str(packet, "packet inside parser");
+	
+	// to repeat reading after head is filled and the body is not complete
+	if (full_request.body_content_length)
+	{
+		fillBodyRequest();
+		return ;
+	}
     
     //this will parse the headers
     if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
