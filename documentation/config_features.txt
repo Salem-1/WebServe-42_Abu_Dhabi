@@ -1,14 +1,14 @@
 1-Must have port and host section (DONE)
 2-first Host/Port is the defualt for this Host/Port (DONE)
 3-Setup server name or not (DONE)
-4-Setup default error page (done)
-5-Limit client body size 
+4-Setup default error page (DONE)
+5-Limit client body size (DONE)
 6-Define list of accepted HTTP methods (DONE)
-7-HTTP redirection  (???????)
+7-HTTP redirection  (done)
 8-define directory path (DONE)
 
-9-Turn on/off directory listing 
-10-Set default file answer if request is directory
+9-Turn on/off directory listing (DONE)
+10-Set default file answer if request is directory (DONE)
 
 12-Upload file and decide where to save them
 11-CGI extension
