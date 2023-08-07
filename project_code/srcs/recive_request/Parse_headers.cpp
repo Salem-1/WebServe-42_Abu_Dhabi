@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Parse_headers.cpp                                  :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:38:06 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 07:57:08 by ymohamed         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "Parser.hpp"
 
@@ -18,7 +7,7 @@ int    Parser::checkHeaders()
     std::cout << "visualizing inside Get request" << std::endl;
     visualizeRequestPacket();
    
-    if (!validPacketHeaders())
+    if (!validPacketHeaders() || full_request.header.length() > HEADER_MAX_LENGTH)
     {
         status.push_back("400");
         status.push_back("Bad Request");
@@ -123,7 +112,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("sec-ch-ua:");
     valid_headers.insert("Purpose:");
     valid_headers.insert("Sec-Purpose:");
-    valid_headers.insert("Transfer-Encoding:");
+	valid_headers.insert("Transfer-Encoding:");
 }
 
 void    Parser::visualizeRequestPacket()

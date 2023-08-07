@@ -154,8 +154,8 @@ void    Respond::sendAll(connection_state &state)
     // sending = true ;
     visualizeResponse();
     vis_str(response_string, "inside send all");
-    if (packet_len - response_bytes_sent > BUFFER_SIZE)
-        send_ret += send(client_socket, &a[response_bytes_sent], BUFFER_SIZE, 0);
+    if (packet_len - response_bytes_sent > SEND_BUFFER_SIZE)
+        send_ret += send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
     else
         send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
     std::cout << send_ret << " bytes sent \n";
@@ -271,7 +271,7 @@ void   Respond::fillSupportedMethods(
     response["dir"].clear();  
     response["dir"].push_back(dir);
     std::string msg =   "dir = " +  dir + "             path = " + path;
-    print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/out.txt", dir);
+    print_to_file("/Users/ayassin/projects/cursus/webserve/project_code/testers/our_tester/logs/out.txt", dir);
     std::string allowed_methods = dir + " methods";
     if (server_info.find(allowed_methods) != server_info.end())
     {
