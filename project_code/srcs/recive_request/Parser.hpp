@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/02 22:30:22 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/07 20:56:50 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ class Parser
 		int						read_sock;
 		std::string				reponse_packet;
 		int						packet_counter;
-		int						i;
 		size_t					body_start_pos;
 		packet_map				request;
 		t_request				full_request;
@@ -57,7 +56,6 @@ class Parser
 		std::set<std::string>	valid_headers;
 		std::string				filled_response;
 		bool                    is_post;
-		std::string             body;
 		bool					fullheader;
 	private:
 		bool					fullbody;

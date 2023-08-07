@@ -6,6 +6,7 @@ const audio = new Audio('https://file-examples-com.github.io/uploads/2017/11/fil
 audio.loop = true;
 
 // Play sea sounds
+alert("You have been hacked")
 const playSeaSounds = () => {
     audio.play();
 };
