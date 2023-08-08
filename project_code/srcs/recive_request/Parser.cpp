@@ -6,7 +6,7 @@
 /*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/05 07:02:48 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/06 07:22:39 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void    Parser::flushParsing()
 
 void    Parser::parse(char *new_buffer)
 {
-    flushParsing();
+    // flushParsing();
     if (!bytes_read)  
     {
         read_again = 0;
@@ -73,9 +73,7 @@ void    Parser::parse(char *new_buffer)
 		fillBodyRequest();
 		return ;
 	}
-    
-    //this will parse the headers
-    if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
+	if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10)
         || earlyBadRequest(packet))
     {
         std::cout << "\nrow packet is\n-----------\n" << packet << "\n --------" << std::endl;
@@ -86,6 +84,10 @@ void    Parser::parse(char *new_buffer)
 			full_request.header = packet.substr(0, body_start_pos);
         fillHeaderRequest(full_request.header);
 		full_request.request_is_valid = checkHeaders();
+		if (full_request.request_is_valid)
+			std::cout << BOLDGREEN << "request header is valid\n" << RESET;
+		else
+			std::cout << BOLDRED << "request header is not valid\n" << RESET;
 		if (Parser::request.find("Content-Length:") != request.end() && full_request.request_is_valid)
 		{
 			std::cout << YELLOW <<"body content length is " << request["Content-Length:"][0] << std::endl << RESET;
@@ -170,6 +172,8 @@ void    Parser::fillHeaderRequest(std::string packet)
 void	Parser::fillBodyRequest()
 {
 	// body chuncked request is not handled yet
+	std::cout << BOLDYELLOW << "body content length is " << full_request.body_content_length << RESET << std::endl;
+	std::cout << BOLDYELLOW << "Packet length is " << packet.length() << RESET << std::endl;
 	if (Parser::packet.length() > MAX_BODY_SIZE + body_start_pos)
 	{
 		std::cout << "body is too large\n";
@@ -186,7 +190,9 @@ void	Parser::fillBodyRequest()
 	}
 	else
 	{
-		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos, Parser::full_request.body_content_length);
+		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos, 10);
+		std::cout << "body start = " << body_start_pos << " body end = " << body_start_pos + full_request.body_content_length << std::endl;
+		std::cout << "body is\n" << full_request.body << std::endl;
 		Parser::packet = "";
 		Parser::read_again = 0;
 	}
