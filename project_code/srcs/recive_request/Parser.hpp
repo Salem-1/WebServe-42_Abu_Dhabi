@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/07 20:56:50 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/08 18:10:29 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ class Parser
 		packet_map				request;
 		t_request				full_request;
 		response_packet			response;
-		std::set<std::string>	valid_headers;
+		std::set<std::string , ciLessLibC>	valid_headers;
 		std::string				filled_response;
 		bool                    is_post;
 		bool					fullheader;

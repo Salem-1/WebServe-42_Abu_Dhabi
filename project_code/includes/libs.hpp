@@ -37,11 +37,17 @@
 // # include<thread>
 // # include <chrono>
 
-typedef std::vector<std::map<std::string, std::string> >	conf; 
-typedef std::map<std::string, std::string>					stringmap;
-typedef std::map<std::string, std::vector<std::string> >	packet_map;
-typedef std::map<std::string, std::vector<std::string> >	response_packet;
-typedef std::map<std::string, std::vector<std::string> >	response_type;
+struct ciLessLibC : public std::binary_function<std::string, std::string, bool> {
+    bool operator()(const std::string &lhs, const std::string &rhs) const {
+        return strcasecmp(lhs.c_str(), rhs.c_str()) < 0 ;
+    }
+};
+
+typedef std::vector<std::map<std::string, std::string> >			conf; 
+typedef std::map<std::string, std::string>							stringmap;
+typedef std::map<std::string, std::vector<std::string>, ciLessLibC>	packet_map;
+typedef std::map<std::string, std::vector<std::string> >			response_packet;
+typedef std::map<std::string, std::vector<std::string> >			response_type;
 
 # define BACKLOG 500
 # define MAX_EVENTS 500
