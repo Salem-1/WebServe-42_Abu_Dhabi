@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/04 05:46:07 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/08 18:17:37 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,10 +166,10 @@ void    Kque::deleteFdEvent(int fd)
 {
     EV_SET(&event[0], fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
     if (kevent(kq, &event[0], 1, NULL, 0, NULL) < 0)
-        kqueError("failed to remove socket from event kque: ");
+        kqueError("failed to remove read  event kque: ");
     EV_SET(&event[1], fd, EVFILT_WRITE , EV_DELETE, 0, 0, NULL);
     if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
-        kqueError("failed to remove socket from event kque: ");
+        kqueError("failed to remove write  event kque: ");
     close(fd);
     // sleep(1);
 }
@@ -191,10 +191,16 @@ bool    Kque::removeClient(int client_socket)
 
 bool    Kque::closeServer(void)
 {
-    for (size_t i = 0; i < active_clients.size(); i++)
-        removeClient(i);
-    for (size_t i = 0; i < server_sockets.size(); i++)
-        close(i);
+    for (std::set<int>::iterator it = active_clients.begin();
+         it != active_clients.end(); it++)
+    {
+        removeClient(*it);
+    }
+    for (std::vector<int>::iterator it = server_sockets.begin();
+         it != server_sockets.end(); it++)
+    {
+        deleteFdEvent(*it);
+    }
     return (true);
 }
 std::string  Kque::socketInfo(int sockfd)
