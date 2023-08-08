@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/04 05:46:07 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/07 08:51:11 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ bool    Kque::closeServer(void)
     for (size_t i = 0; i < active_clients.size(); i++)
         removeClient(i);
     for (size_t i = 0; i < server_sockets.size(); i++)
-        close(i);
+        deleteFdEvent(i);
     return (true);
 }
 std::string  Kque::socketInfo(int sockfd)
