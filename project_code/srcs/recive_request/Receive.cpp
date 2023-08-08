@@ -63,7 +63,7 @@ void    Receive::readPacket(char *buffer)
     }
 }
 // ?? it is already public
-std::map<std::string, std::vector<std::string> >       &Receive::get_request_packet()
+packet_map       &Receive::get_request_packet()
 {
     return (parser.request);
 }

@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/07 20:50:28 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/08 19:34:35 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,32 +73,32 @@ void    Parser::parse(char *new_buffer)
     
     if (fullheader == false)
 	{
-		if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ) && packet.length() > 10))
-			// || earlyBadRequest(packet))
+		if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ))
+			|| earlyBadRequest(packet))
 		{
 			std::cout << "\nraw packet is\n-----------\n" << packet << "\n --------" << std::endl;
 			body_start_pos = packet.find("\r\n\r\n") + 4;
-			if (body_start_pos == std::string::npos)
+			if (body_start_pos == std::string::npos + 4)
 				body_start_pos = packet.find("\n\n") + 2;
-			if (body_start_pos)
+			if (body_start_pos != std::string::npos + 2)
 			{
 				full_request.header = packet.substr(0, body_start_pos);
 				fillHeaderRequest(full_request.header);
-				full_request.request_is_valid = checkHeaders();
 				fullheader = true;
 			}
+			full_request.request_is_valid = checkHeaders();
 		}
 	}
-	if (Parser::fullheader == true && Parser::fullbody == false)
+	if (Parser::fullheader == true && Parser::fullbody == false && full_request.request_is_valid)
 	{
-		if (Parser::request.find("content-length:") != request.end() && full_request.request_is_valid)
+		packet_map::iterator it = Parser::request.find("content-length:");
+		if (it != request.end() && full_request.request_is_valid)
 		{
-			// std::cout << YELLOW <<"body content length is " << request["content-length:"][0] << std::endl << RESET;
-			std::istringstream iss(request["content-length:"][0]);
+			std::istringstream iss(it->second[0]);
 			iss >> full_request.body_content_length;
 		}
 		else if (Parser::request.find("Transfer-Encoding:") != request.end())
-			Parser::ischunked = Parser::request.find("Transfer-Encoding:")->first == "chunked";
+			Parser::ischunked = Parser::request.find("Transfer-Encoding:")->second[0] == "chunked";
 		if ((!full_request.body_content_length && !Parser::ischunked ) 
 							|| full_request.body_content_length > MAX_BODY_SIZE)
 		{
@@ -115,7 +115,7 @@ void    Parser::parse(char *new_buffer)
 			Parser::fillBodyRequest(new_buffer); // what happens if length is not full
 		}
     }
-    if (full_request.header.length() > HEADER_MAX_LENGTH )
+    if (full_request.header.length() > HEADER_MAX_LENGTH || full_request.request_is_valid == 0)
     {
         std::cout << "Reject packet at parser" << std::endl;
         //rejecting packet and close socket
@@ -132,6 +132,7 @@ void    Parser::parse(char *new_buffer)
 	else
 		read_again = 1;
 }
+
 bool Parser::earlyBadRequest(std::string packet)
 {
     if (packet.length() >= 1)

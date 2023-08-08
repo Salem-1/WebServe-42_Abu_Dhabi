@@ -6,8 +6,9 @@ int    Parser::checkHeaders()
     std::vector<std::string> status;
     std::cout << "visualizing inside Get request" << std::endl;
     visualizeRequestPacket();
-   
-    if (!validPacketHeaders() || full_request.header.length() > HEADER_MAX_LENGTH)
+
+    if (earlyBadRequest(full_request.header) ||!validPacketHeaders() || 
+		full_request.header.length() > HEADER_MAX_LENGTH || full_request.header.length() == 0)
     {
         status.push_back("400");
         status.push_back("Bad Request");
@@ -19,35 +20,31 @@ int    Parser::checkHeaders()
     {
         status.push_back("200");
         status.push_back("Ok");
-        request["Status-code:"] = status;
+        request["Status-code"] = status;
     }
     return (1);
 }
 
 int Parser::validPacketHeaders()
 {
-    bool    valid = false;
-    std::set<std::string>::iterator vit = valid_headers.begin();
+	std::string firstword = packet.substr(0,packet.find(' '));
+
+	std::string allowed[] = {"POST" , "DELETE", "PUT", "GET"};
+	int validsize = sizeof(allowed)/ sizeof(std::string), i = 0;
+	for(; i < validsize; ++i)
+	{
+		if (firstword == allowed[i])
+			break;
+	}
+	if (i == validsize)
+		return 0;
     for (packet_map::iterator it= request.begin(); it != request.end(); ++it)
     {
-        for (vit = valid_headers.begin(); vit != valid_headers.end(); ++vit)
-        {
-            if (*vit == it->first)
-            {
-                valid = true;
-                break ;
-            }
-        }
-        if (valid)
-        {
-            valid = false;
-            continue ;
-        }
-        else
-        {
-            std::cout << BOLDGREEN << "Header <" << it->first << "> not a valid header" << RESET <<std::endl;
+        if (valid_headers.find(it->first) == valid_headers.end())
+		{
+			std::cout << BOLDGREEN << "Header <" << it->first << "> not a valid header" << RESET <<std::endl;
             return (0);
-        }
+		}
     }
     return (1);
 }
