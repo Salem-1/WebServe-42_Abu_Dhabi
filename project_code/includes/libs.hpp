@@ -45,7 +45,8 @@ typedef std::map<std::string, std::vector<std::string> >	response_type;
 
 # define BACKLOG 500
 # define MAX_EVENTS 500
-# define BUFFER_SIZE 260000
+# define READ_BUFFER_SIZE 260000
+# define SEND_BUFFER_SIZE 260000
 # define PERSISTANCE 75
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
