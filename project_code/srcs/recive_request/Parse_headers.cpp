@@ -6,12 +6,11 @@ int    Parser::checkHeaders()
     std::vector<std::string> status;
     std::cout << "visualizing inside Get request" << std::endl;
     visualizeRequestPacket();
-   
     if (!validPacketHeaders() || full_request.header.length() > HEADER_MAX_LENGTH)
     {
         status.push_back("400");
-        status.push_back("Bad Request");
-        request["Status-code"] = status;
+        status.push_back("Ugly request");
+        request["Status-code:"] = status;
         std::cout << "invalid packet" <<  std::endl;
         return (0);
     }
@@ -46,6 +45,7 @@ int Parser::validPacketHeaders()
         else
         {
             std::cout << BOLDGREEN << "Header <" << it->first << "> not a valid header" << RESET <<std::endl;
+        
             return (0);
         }
     }
@@ -58,6 +58,7 @@ void  Parser::fillValidHeaders()
 {
     valid_headers.insert("GET");
 	valid_headers.insert("POST");
+	valid_headers.insert("PUT");
 	valid_headers.insert("DELETE");
     valid_headers.insert("Standard headers:");
     valid_headers.insert("accept-encoding:");

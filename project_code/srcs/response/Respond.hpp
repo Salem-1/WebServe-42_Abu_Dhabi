@@ -41,7 +41,7 @@ class Respond
 		int				client_socket;
         response_packet	response;
         std::string		response_string;
-        pthread_t		sendThread;
+        // pthread_t		sendThread;
         bool			sending;
 		// ErrResponse     err;
 

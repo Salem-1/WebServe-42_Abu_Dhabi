@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/07 20:50:28 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/09 07:40:11 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ void    Parser::parse(char *new_buffer)
 			if (body_start_pos)
 			{
 				full_request.header = packet.substr(0, body_start_pos);
+				std::cout << "requesting filling header packet" << std::endl;
+				sleep (1);
 				fillHeaderRequest(full_request.header);
 				full_request.request_is_valid = checkHeaders();
 				fullheader = true;
@@ -125,8 +127,9 @@ void    Parser::parse(char *new_buffer)
     }
 	if (fullheader && fullbody)
 	{
-		fillHeaderRequest(full_request.header);
-		full_request.request_is_valid = checkHeaders();
+		std::cout << "fill header requested again " << std::endl;
+		// fillHeaderRequest(full_request.header);
+		// full_request.request_is_valid = checkHeaders();
 		read_again = 0;
 	}
 	else
@@ -154,31 +157,33 @@ void    Parser::fillHeaderRequest(std::string packet)
     std::vector<std::string> tmp_vec;
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
-
-    for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
+	std::cout << "header = " << packet << std::endl;
+    visualizeRequestPacket();
+	for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
         tmp_vec = split(*it, " ");
         if (tmp_vec.size() < 1)
         {
             tmp_vec.push_back("400");
-            tmp_vec.push_back("Bad request");
-            request["Status-code"] = tmp_vec;
+            tmp_vec.push_back("header has no val ");
+            request["Status-code:"] = tmp_vec;
             return ;
         }
         header = tmp_vec[0];
         tmp_vec.erase(tmp_vec.begin());
+			std::cout << "header = " << header << std::endl;
+			std::cout << "setepping"  << std::endl;
         //check for repetetion  in headers
         if (request.find(header) == request.end())
             request[header] = tmp_vec;
         else
         {
-            if (header == "Host:")
-            {
-                tmp_vec.push_back("400");
-                tmp_vec.push_back("Bad request");
-                request["Status-code"] = tmp_vec;
-                return ;
-            }
+			tmp_vec.clear();
+            tmp_vec.push_back("400");
+            tmp_vec.push_back("repeated header");
+			std::cout << "repeated header = " << header << std::endl;
+            request["Status-code:"] = tmp_vec;
+            return ;
         }
     }
 }

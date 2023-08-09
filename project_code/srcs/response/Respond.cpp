@@ -37,10 +37,14 @@ void    Respond::flushResponse()
 
 void    Respond::fillResponse(packet_map &request, t_request &full_request, stringmap &server_info)
 {
+    ErrResponse err;
+    // std::cout << request["Status-code:"][0] << std::endl;
+    // exit (0);
     if ((response.find("Content-Length:") != response.end() && response.find("Transfer-Encoding:") != response.end())
-        || checkPoisonedURL(request))
+        || checkPoisonedURL(request) || request["Status-code:"][0] != "200")
     {
         fillStatuCode("400", "request method not supported");
+        response_string = err.code(server_info, "400");
         return ;
     }
     response["Status-code"].push_back("200");
@@ -51,7 +55,6 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     // if (cgi_path != "")
 	// 	response_string = responseCGI(request, server_info, cgi_path);
     //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
-    ErrResponse err;
     std::string msg;
 
     if (cgi_path != "")
@@ -193,6 +196,8 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
         if (servers[i]["Port"] == port)
             nominated_servers.push_back(i);
     }
+    if (request.find("Host:") == request.end())
+        return (servers[nominated_servers[0]]);
     for (unsigned long i = 0; i < nominated_servers.size(); i++)
     {
         server_names =  split(servers[nominated_servers[i]]["server_name"], " ");
@@ -202,7 +207,7 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
             {
                 fillStatuCode("400", "No host");   
                 return (servers[nominated_servers[0]]);
-            } 
+            }
             if (server_names[j] == fillRequestedHostName(request, port, j))
             {
                 std::cout << "our server is " << nominated_servers[j] << std::endl;
