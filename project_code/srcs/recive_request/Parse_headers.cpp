@@ -69,8 +69,8 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("Authorization:");
     valid_headers.insert("Cache-Control:");
     valid_headers.insert("Connection:");
-    valid_headers.insert("Content-Length:");
-    valid_headers.insert("content-length:");
+    // valid_headers.insert("Content-Length:");
+    // valid_headers.insert("content-length:");
     valid_headers.insert("Content-Type:");
     valid_headers.insert("Cookie:");
     valid_headers.insert("Date:");
