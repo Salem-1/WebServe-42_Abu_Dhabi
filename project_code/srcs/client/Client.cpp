@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 22:46:14 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/09 20:32:28 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,28 @@ void Client::handleRequest(struct kevent event)
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
     {
-        responder.sending = false;
-        receiver.receiveAll();
-        
-        // std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
-        if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
-        {
-            vis_str(receiver.parser.packet, "Start packet parsing");
-            responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
-        }
+		try
+		{
+			responder.sending = false;
+			receiver.receiveAll();
+			
+			// std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+			if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
+			{
+				vis_str(receiver.parser.packet, "Start packet parsing");
+				responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
+			}
+		}
+		catch(const std::exception& e)
+		{
+			receiver.parser.read_again = 0;
+			ErrResponse err;
+			stringmap server_info = responder.getServerInfo(receiver.parser.request, servers, getPort(client_socket));
+			err.code(server_info, e.what());
+			receiver.state = KILL_CONNECTION;
+			std::cerr << BOLDRED<<  e.what() << '\n' << RESET;
+		}
+		
     }
     
     // else 

@@ -145,7 +145,7 @@ void Post::sendToBackend()
 	this->_response = "HTTP/1.1 200 OK\r\n"
 					"Content-Type: text/html\r\n"
 					"Content-Length: " + std::to_string(received_body.length()) 
-					+ "\nConnection: keep-alive\r\n\r\n" + received_body;
+					+ "\r\nConnection: keep-alive\r\n\r\n" + received_body;
 }
 
 std::string Post::get_response() const

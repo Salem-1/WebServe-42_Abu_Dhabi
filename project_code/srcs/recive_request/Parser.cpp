@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/09 10:31:28 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/09 19:33:16 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ void    Parser::flushParsing()
 
 void    Parser::parse(char *new_buffer)
 {
-    flushParsing();
+	if (fullheader == false)
+    	flushParsing();
     if (!bytes_read)  
     {
         read_again = 0;
@@ -87,6 +88,11 @@ void    Parser::parse(char *new_buffer)
 				fullheader = true;
 			}
 			full_request.request_is_valid = checkHeaders();
+			if (Parser::request.find("Transfer-Encoding:") != request.end())
+			{
+				read_again = 1;
+				return ;
+			}
 		}
 	}
 	if (Parser::fullheader == true && Parser::fullbody == false && full_request.request_is_valid)
