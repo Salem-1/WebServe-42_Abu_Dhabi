@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/10 06:07:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/10 14:20:50 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void Client::handleRequest(struct kevent event)
 			receiver.parser.read_again = 0;
 			ErrResponse err;
 			stringmap server_info = responder.getServerInfo(receiver.parser.request, servers, getPort(client_socket));
-			err.code(server_info, e.what());
+			responder.response_string = err.code(server_info, e.what());
 			// receiver.state = KILL_CONNECTION;
             responder.sending = true;
 			std::cerr << BOLDRED<<  e.what() << '\n' << RESET;
