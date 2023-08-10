@@ -10,18 +10,13 @@ int    Parser::checkHeaders()
     if (earlyBadRequest(full_request.header) ||!validPacketHeaders() || 
 		full_request.header.length() > HEADER_MAX_LENGTH || full_request.header.length() == 0)
     {
-        status.push_back("400");
-        status.push_back("Bad Request");
-        request["Status-code"] = status;
         std::cout << "invalid packet" <<  std::endl;
-        return (0);
+		throw(std::runtime_error("404"));
     }
-    else
-    {
-        status.push_back("200");
-        status.push_back("Ok");
-        request["Status-code"] = status;
-    }
+	status.push_back("200");
+	status.push_back("Ok");
+	request["Status-code"] = status;
+    
     return (1);
 }
 
