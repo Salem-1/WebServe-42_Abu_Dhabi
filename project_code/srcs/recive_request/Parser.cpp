@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/10 15:37:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/10 20:00:44 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,10 @@ void    Parser::parse(char *new_buffer)
 				fullheader = true;
 			}
 			full_request.request_is_valid = checkHeaders();
-			if (Parser::request.find("Transfer-Encoding:") != request.end() 
-				&& Parser::request.find("Transfer-Encoding:")->second[0] == "chunked")
+			if (Parser::request.find("GET") != request.end() 
+				||  Parser::request.find("DELETE") != request.end())
 			{
-				read_again = 1;
+				read_again = 0;
 				return ;
 			}
 		}
@@ -110,10 +110,7 @@ void    Parser::parse(char *new_buffer)
 							|| full_request.body_content_length > MAX_BODY_SIZE)
 		{
 			if (full_request.body_content_length > MAX_BODY_SIZE)
-				std::cout << "body is too large\n";
-			// packet = "";
-			// if (!full_request.body_content_length)
-			// 	throw(std::runtime_error("405"));
+				throw(std::runtime_error("400"));
 			read_again = 0;
 			fullbody = 1;
 		}
@@ -142,11 +139,11 @@ bool Parser::earlyBadRequest(std::string packet)
 {
     if (packet.length() >= 1)
     {
-        if (packet[0] == 'G' || packet[0] == 'P' 
-            || packet[0] == 'D')
-            return (false);
+		char a = packet[0];
+        if (a == 'G' || a == 'P' || a == 'D' || a == 'H')
+            return false;
     }
-    return (true);
+    throw(std::runtime_error("400"));;
 }
 
 void    Parser::setBytereadAndReadsock(int bytes, int sock)
@@ -165,27 +162,14 @@ void    Parser::fillHeaderRequest(std::string packet)
     {
         tmp_vec = split(*it, " ");
         if (tmp_vec.size() < 1)
-        {
-            tmp_vec.push_back("400");
-            tmp_vec.push_back("Bad request");
-            request["Status-code"] = tmp_vec;
-            return ;
-        }
+			throw(std::runtime_error("400"));
         header = tmp_vec[0];
         tmp_vec.erase(tmp_vec.begin());
         //check for repetetion  in headers
         if (request.find(header) == request.end())
             request[header] = tmp_vec;
         else
-        {
-            if (header == "Host:")
-            {
-                tmp_vec.push_back("400");
-                tmp_vec.push_back("Bad request");
-                request["Status-code"] = tmp_vec;
-                return ;
-            }
-        }
+			throw(std::runtime_error("400"));
     }
 }
 
@@ -205,6 +189,7 @@ void	Parser::fillBodyRequest(std::string buffer)
 {
 	if (Parser::ischunked)
 	{
+		// if (parser)
 		if (ischunkbody == false)
 		{
 			int len = chunkLength(buffer);

@@ -10,7 +10,9 @@ def send_packet(path):
     packet = f"""GET {path} HTTP/1.1\r
     Host: 127.0.0.1:3490\r
     User-Agent: curl/7.87.0\r
-    Accept: */*\r\n\r\n"""
+    Accept: */*\r\n\r\n
+    I love green pants
+    0/r/n"""
     target_host = "127.0.0.1"
     target_port = 5555
 
@@ -79,6 +81,10 @@ def send_chunked_packet(path, comment):
 
 # Call the function to send the packet
 
-send_chunked_packet("/", sys.argv[1]);
+# send_chunked_packet("/", sys.argv[1]);
+if(len(sys.argv) == 1):
+    send_packet("/")
+else:
+    send_chunked_packet("/", "green")
 # send_packet("/hello");
 # send_packet("/attacks/out");

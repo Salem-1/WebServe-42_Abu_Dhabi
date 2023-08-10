@@ -11,7 +11,7 @@ int    Parser::checkHeaders()
 		full_request.header.length() > HEADER_MAX_LENGTH || full_request.header.length() == 0)
     {
         std::cout << "invalid packet" <<  std::endl;
-		throw(std::runtime_error("404"));
+		throw(std::runtime_error("400"));
     }
 	status.push_back("200");
 	status.push_back("Ok");
@@ -24,7 +24,7 @@ int Parser::validPacketHeaders()
 {
 	std::string firstword = packet.substr(0,packet.find(' '));
 
-	std::string allowed[] = {"POST" , "DELETE", "PUT", "GET"};
+	std::string allowed[] = {"POST" , "DELETE", "PUT", "GET", "HEAD"};
 	int validsize = sizeof(allowed)/ sizeof(std::string), i = 0;
 	for(; i < validsize; ++i)
 	{
@@ -33,6 +33,8 @@ int Parser::validPacketHeaders()
 	}
 	if (i == validsize)
 		return 0;
+	else if (i == 4)
+		throw(std::runtime_error("405"));
     for (packet_map::iterator it= request.begin(); it != request.end(); ++it)
     {
         if (valid_headers.find(it->first) == valid_headers.end())
