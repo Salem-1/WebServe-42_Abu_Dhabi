@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/10 15:37:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/10 18:50:58 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,13 @@ void    Parser::parse(char *new_buffer)
     
     vis_str(new_buffer, "new_buffer inside parser");
     vis_str(packet, "packet inside parser");
+	
+	// to repeat reading after head is filled and the body is not complete
+	if (full_request.body_content_length)
+	{
+		fillBodyRequest();
+		return ;
+	}
     
     if (fullheader == false)
 	{
