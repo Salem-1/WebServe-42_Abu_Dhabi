@@ -1,15 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Parser.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/11 19:55:41 by ahsalem          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
+#include "Parser.hpp"
 
 
 Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0), is_post(false)
@@ -72,11 +62,6 @@ void    Parser::parse(char *new_buffer)
     vis_str(packet, "packet inside parser");
 	
 	// to repeat reading after head is filled and the body is not complete
-	if (full_request.body_content_length)
-	{
-		fillBodyRequest();
-		return ;
-	}
     
     if (fullheader == false)
 	{

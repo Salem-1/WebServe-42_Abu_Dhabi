@@ -90,7 +90,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
 		// apost.printPostHeader();
 		// TODO: Get pdf files get to this point
 		apost.printPostBody();
-		exit(0);
+		// exit(0);
 		apost.handlePost();
 		response_string = apost.get_response();
 		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
