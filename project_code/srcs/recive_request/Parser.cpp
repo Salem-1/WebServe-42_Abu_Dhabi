@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/11 21:25:37 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/12 00:09:34 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ void    Parser::parse(char *new_buffer)
 		{
 			std::cout << "in-complete packet let's read again\n";
 			read_again = 1;
-			Parser::fillBodyRequest(new_buffer);
+			Parser::fillBodyRequest();
 		}
     }
     if (full_request.header.length() > HEADER_MAX_LENGTH || full_request.request_is_valid == 0)
@@ -185,34 +185,37 @@ int	Parser::chunkLength(std::string buffer)
 	return -1;
 }
 
-std::vector<std::string> Parser::splitChunks(const std::string &s, const std::string &delimiter)
+std::string Parser::parseChunks(const std::string &s, const std::string &delimiter)
 {
-	std::vector<std::string> result;
+	std::string result;
 	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
 	std::string token;
-	int value;
+	size_t value;
 
 	for (size_t i = 0; (pos_end = s.find(delimiter, pos_start)) != std::string::npos; ++i)
 	{
 		token = s.substr(pos_start, pos_end - pos_start);
 		if (i % 2 == 0)
 		{
-  			sscanf(token.c_str(), "%x", &value);
+			if (token.length() > 8 || token.length() < 3)
+				throw(std::runtime_error("400"));
+			// what if extar chars are present
+  			sscanf(token.c_str(), "%lx", &value);
   			std::cout << value << std::endl;
 		}
 		else
 		{
-			
-			result.push_back(token);
+			if (token.length() != value + 2)
+				throw(std::runtime_error("400"));
+			result += token.substr(0, value);
 		}
 		pos_start = pos_end + delim_len;
 	}
 
-	result.push_back(s.substr(pos_start));
 	return result;
 }
 
-void	Parser::fillBodyRequest(std::string buffer)
+void	Parser::fillBodyRequest()
 {
 	if (Parser::ischunked)
 	{
@@ -220,30 +223,33 @@ void	Parser::fillBodyRequest(std::string buffer)
 			read_again = 1;
 		else
 		{
-			std::vector<std::string> chunkes = split(packet, "/r/n");
-			(void) chunkes;
-		}
-		if (ischunkbody == false)
-		{
-			int len = chunkLength(buffer);
-			if (len <= 0)
-			{
-				ischunkbody = false;
-				fullbody = 1;
-				Parser::read_again = 0; // return err response
-			}
-			chunklen = chunkLength(buffer);
 			full_request.body_content_length += chunklen;
-			ischunkbody = true;
-		}
-		else
-		{
-			if (buffer.length() != chunklen + 2)
-				Parser::read_again = 0; // return err response
-			Parser::full_request.body += buffer.substr(0, chunklen);
-			ischunkbody = false;
+			full_request.body = parseChunks(packet, "\r\n");
+			read_again = 0;
+			fullbody = 1;
 		}
 		return ;
+		// if (ischunkbody == false)
+		// {
+		// 	int len = chunkLength(buffer);
+		// 	if (len <= 0)
+		// 	{
+		// 		ischunkbody = false;
+		// 		fullbody = 1;
+		// 		Parser::read_again = 0; // return err response
+		// 	}
+		// 	chunklen = chunkLength(buffer);
+		// 	full_request.body_content_length += chunklen;
+		// 	ischunkbody = true;
+		// }
+		// else
+		// {
+		// 	if (buffer.length() != chunklen + 2)
+		// 		Parser::read_again = 0; // return err response
+		// 	Parser::full_request.body += buffer.substr(0, chunklen);
+		// 	ischunkbody = false;
+		// }
+		// return ;
 	}
 	Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos);
 	if (Parser::full_request.body.length() < Parser::full_request.body_content_length)
