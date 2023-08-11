@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/08 18:10:29 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/11 19:39:40 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ class Parser
         int						fillStatuCode(std::string status_code, std::string message);
         void					flushParsing();
 		int						chunkLength(std::string buffer);
+		std::vector<std::string>	splitChunks(const std::string &s, const std::string &delimiter);
     public:
 		int						read_again;
 		std::string				packet;

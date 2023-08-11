@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/10 20:00:44 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/11 21:25:37 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,11 +185,44 @@ int	Parser::chunkLength(std::string buffer)
 	return -1;
 }
 
+std::vector<std::string> Parser::splitChunks(const std::string &s, const std::string &delimiter)
+{
+	std::vector<std::string> result;
+	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+	std::string token;
+	int value;
+
+	for (size_t i = 0; (pos_end = s.find(delimiter, pos_start)) != std::string::npos; ++i)
+	{
+		token = s.substr(pos_start, pos_end - pos_start);
+		if (i % 2 == 0)
+		{
+  			sscanf(token.c_str(), "%x", &value);
+  			std::cout << value << std::endl;
+		}
+		else
+		{
+			
+			result.push_back(token);
+		}
+		pos_start = pos_end + delim_len;
+	}
+
+	result.push_back(s.substr(pos_start));
+	return result;
+}
+
 void	Parser::fillBodyRequest(std::string buffer)
 {
 	if (Parser::ischunked)
 	{
-		// if (parser)
+		if (packet.rfind("\r\n0\r\n\r\n") == packet.length() - 7)
+			read_again = 1;
+		else
+		{
+			std::vector<std::string> chunkes = split(packet, "/r/n");
+			(void) chunkes;
+		}
 		if (ischunkbody == false)
 		{
 			int len = chunkLength(buffer);
