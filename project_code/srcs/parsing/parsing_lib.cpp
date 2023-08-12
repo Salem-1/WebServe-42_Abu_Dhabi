@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 15:24:04 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/12 17:01:51 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ int fillStatuCode(response_packet &response, std::string status_code, std::strin
     response["Status-code"].clear();
     response["Status-code"].push_back(status_code);
     response["Status-code"].push_back(message);
-    throw(std::runtime_error(status_code));
     return (1);
 }
 
@@ -75,23 +74,4 @@ void    fillPath(packet_map &request,response_packet &response, std::string meth
             response["Path"].push_back(*it);
         }
     }
-}
-
-bool sanitizedPath(std::string path)
-{
-    std::vector<std::string> malicous_inputs;
-    malicous_inputs.push_back("..");
-    malicous_inputs.push_back("*");
-    malicous_inputs.push_back("!");
-    malicous_inputs.push_back("~");
-    malicous_inputs.push_back("//");
-    for (std::vector<std::string>::iterator it = malicous_inputs.begin();  it != malicous_inputs.end(); ++it)
-    {
-        if (path.find(*it) != std::string::npos)
-        {
-            std::cout << "malicous part in path = <" << *it << ">" << std::endl;
-            return (false);
-        }
-    }
-    return (true);
 }
