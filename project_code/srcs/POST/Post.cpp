@@ -198,3 +198,9 @@ void Post::handlePost()
 	else
 		return ;
 }
+
+/*
+HTTP/1.1 201 Created
+Date: Mon, 09 Aug 2023 12:34:56 GMT
+Server: ExampleServer/1.0
+*/
