@@ -75,19 +75,17 @@ void    Parser::parse(char *new_buffer)
         read_again = 0;
         return ;
     }
-    packet += new_buffer;
+	// std::string testing(new_buffer, bytes_read);
+    packet.append(new_buffer, bytes_read);
     
     vis_str(new_buffer, "new_buffer inside parser");
     vis_str(packet, "packet inside parser");
-	
-	// to repeat reading after head is filled and the body is not complete
-    
+	    
     if (fullheader == false)
 	{
 		if (((packet.find("\r\n\r\n") != std::string::npos || packet.find("\n\n") != std::string::npos ))
 			|| earlyBadRequest(packet))
 		{
-			std::cout << "\nraw packet is\n-----------\n" << packet << "\n --------" << std::endl;
 			body_start_pos = packet.find("\r\n\r\n") + 4;
 			if (body_start_pos == std::string::npos + 4)
 				body_start_pos = packet.find("\n\n") + 2;
@@ -126,7 +124,6 @@ void    Parser::parse(char *new_buffer)
 		}
 		  else
 		{
-			std::cout << "in-complete packet let's read again\n";
 			read_again = 1;
 			Parser::fillBodyRequest();
 		}
@@ -134,9 +131,7 @@ void    Parser::parse(char *new_buffer)
     if (full_request.header.length() > HEADER_MAX_LENGTH || full_request.request_is_valid == 0)
     {
         std::cout << "Reject packet at parser" << std::endl;
-        //rejecting packet and close socket
-        read_again = 0;
-        bytes_read = 0;
+		throw(std::runtime_error("400")); //rejecting packet and close socket
         return ;
     }
 	if ((fullheader && fullbody) || full_request.request_is_valid == 0)
@@ -175,7 +170,6 @@ void    Parser::fillHeaderRequest(std::string packet)
 			throw(std::runtime_error("400"));
         header = tmp_vec[0];
         tmp_vec.erase(tmp_vec.begin());
-        //check for repetetion  in headers
         if (request.find(header) == request.end())
             request[header] = tmp_vec;
         else
@@ -238,31 +232,11 @@ void	Parser::fillBodyRequest()
 		{
 			full_request.body_content_length += chunklen;
 			full_request.body = parseChunks(packet.substr(Parser::body_start_pos), "\r\n");
+			std::cout << BOLDYELLOW << full_request.body << std::endl << RESET;
 			read_again = 0;
 			fullbody = 1;
 		}
 		return ;
-		// if (ischunkbody == false)
-		// {
-		// 	int len = chunkLength(buffer);
-		// 	if (len <= 0)
-		// 	{
-		// 		ischunkbody = false;
-		// 		fullbody = 1;
-		// 		Parser::read_again = 0; // return err response
-		// 	}
-		// 	chunklen = chunkLength(buffer);
-		// 	full_request.body_content_length += chunklen;
-		// 	ischunkbody = true;
-		// }
-		// else
-		// {
-		// 	if (buffer.length() != chunklen + 2)
-		// 		Parser::read_again = 0; // return err response
-		// 	Parser::full_request.body += buffer.substr(0, chunklen);
-		// 	ischunkbody = false;
-		// }
-		// return ;
 	}
 	Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos);
 	if (Parser::full_request.body.length() < Parser::full_request.body_content_length)
