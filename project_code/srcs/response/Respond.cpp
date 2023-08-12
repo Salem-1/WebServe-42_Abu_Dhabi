@@ -80,7 +80,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         } 
             msg =  ":) POST is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
-        Post apost(request, full_request, server_info);
+        Post apost(request, full_request, server_info, response);
 		// apost.printPostHeader();
 		// TODO: Get pdf files get to this point
 		apost.printPostBody();

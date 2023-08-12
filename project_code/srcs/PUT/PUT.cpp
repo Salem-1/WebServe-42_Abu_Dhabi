@@ -62,7 +62,7 @@ bool    PUT::putBody(std::string path)
     std::cout <<  YELLOW << "PUT path = " << path << RESET << std::endl;
     std::ofstream outfile(path.c_str(), std::ios::out | std::ios::trunc);
     if (outfile.fail())
-        return (false);
+        throw(std::runtime_error("500"));
     outfile << _request.body;
     outfile.close();
     fillOkResponse();
@@ -70,13 +70,14 @@ bool    PUT::putBody(std::string path)
     return (true);
 }
 
-void    PUT::fillOkResponse()
+std::string    PUT::fillOkResponse()
 {
-    this->_response = "HTTP/1.1 200 OK\r\n"
+    this->_response = "HTTP/1.1 201 Created\r\n"
 	            "Server: webserve/1.0\r\n"
                 "Date: "
                 + getTimeBuffer()
 		        + "\r\n";
+    return (this->_response);
 
 }
 
@@ -137,6 +138,7 @@ bool PUT::sanitizedPath(std::string path)
         if (path.find(*it) != std::string::npos)
         {
             std::cout << "malicous part in path = <" << *it << ">" << std::endl;
+            throw(std::runtime_error("400"));
             return (false);
         }
     }
