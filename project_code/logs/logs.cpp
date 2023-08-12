@@ -191,7 +191,7 @@ void    vis_str(std::string packet, std::string message)
 
 void    print_to_file(std::string path, std::string str)
 {
-    std::ofstream outFile(path, std::ios::app);
+    std::ofstream outFile(path.c_str(), std::ios::app);
     if (!outFile.is_open()) {
         std::cout << "Error opening the file!" << std::endl;
     }
