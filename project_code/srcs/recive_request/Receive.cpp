@@ -67,3 +67,9 @@ packet_map       &Receive::get_request_packet()
 {
     return (parser.request);
 }
+
+void    Receive::flushReceive()
+{
+    // Parser		parser;
+    parser.purgeParsing();
+};

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserve.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:03 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 14:23:03 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/12 07:13:16 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "libs.hpp"
 # include "../srcs/configuration/Config.hpp"
 # include "../srcs/POST/Post.hpp"
+# include "../srcs/PUT/PUT.hpp"
 
 #include "request/Request.hpp"
 #include "request/RequestHandler.hpp"

@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:12 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/31 11:01:04 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/03 09:08:20 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@ void    GET::prepareGetResponse(stringmap &server_info)
 // the two functions below belong to get
 void GET::fillRequestLine(packet_map &request)
 {
-    if ((request.find("POST") != request.end() || request.find("DELETE") != request.end())
-        && fillStatuCode(response, "400", "Invalid multiple methods inside GET"))
-        return ;
+	if ((request.find("POST") != request.end() || request.find("DELETE") != request.end())
+				&& fillStatuCode(response, "400", "Invalid multiple methods inside GET"))
+		return ;
 	if (request["GET"].size() != 2)
 		if (fillStatuCode(response, "400", "Invalid number of items inside GET"))
 			return ;

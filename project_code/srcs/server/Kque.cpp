@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/08 18:17:37 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/11 08:45:22 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ void    Kque::watchFds(conf &servers)
     {
         active_fds = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
         if (active_fds == -1)
-            ;
-            // kqueError("Kevent loop failed: ");
+            kqueError("Kevent loop failed: ");
         for (int i = 0; i < active_fds; i++)
         {
             if (!server_running)
@@ -156,7 +155,7 @@ int    Kque::accepting(int  fd)
 {
 
     int accepted_connection = accept(fd, (struct sockaddr*)&client_address,
-                                 &client_address_len);
+                                 (socklen_t*)&client_address_len);
     if (accepted_connection < 0)
         perror("accept failed");
     return (accepted_connection);
@@ -207,7 +206,7 @@ std::string  Kque::socketInfo(int sockfd)
 {
     struct sockaddr_in addr;
     socklen_t addr_len = sizeof(addr);
-    if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1)
+    if (getsockname(sockfd, (struct sockaddr*)&addr, (socklen_t*)&addr_len) == -1)
     {
         perror("getsockname");
         throw(std::runtime_error("getsockname error"));
