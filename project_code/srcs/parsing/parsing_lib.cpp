@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 08:02:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/12 15:24:04 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ int fillStatuCode(response_packet &response, std::string status_code, std::strin
     response["Status-code"].clear();
     response["Status-code"].push_back(status_code);
     response["Status-code"].push_back(message);
+    throw(std::runtime_error(status_code));
     return (1);
 }
 
