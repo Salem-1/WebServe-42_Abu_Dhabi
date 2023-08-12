@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/01 08:15:19 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/12 08:02:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,4 +74,23 @@ void    fillPath(packet_map &request,response_packet &response, std::string meth
             response["Path"].push_back(*it);
         }
     }
+}
+
+bool sanitizedPath(std::string path)
+{
+    std::vector<std::string> malicous_inputs;
+    malicous_inputs.push_back("..");
+    malicous_inputs.push_back("*");
+    malicous_inputs.push_back("!");
+    malicous_inputs.push_back("~");
+    malicous_inputs.push_back("//");
+    for (std::vector<std::string>::iterator it = malicous_inputs.begin();  it != malicous_inputs.end(); ++it)
+    {
+        if (path.find(*it) != std::string::npos)
+        {
+            std::cout << "malicous part in path = <" << *it << ">" << std::endl;
+            return (false);
+        }
+    }
+    return (true);
 }

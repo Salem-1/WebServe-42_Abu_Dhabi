@@ -129,6 +129,7 @@ bool    GET_response::fillBadPath(stringmap &server_info)
         return (true);
 
 }
+
 std::string    GET_response::constructPath(stringmap &server_info)
 {
 

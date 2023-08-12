@@ -36,6 +36,24 @@ Parser::~Parser()
 
 }
 
+void	Parser::purgeParsing()
+{
+	Parser::full_request.body_content_length = 0;
+	Parser::full_request.request_is_valid = 1;
+	Parser::full_request.header = "";
+	Parser::full_request.body = "";
+	Parser::body_start_pos = 0;
+	fullbody = false;
+	fullheader = false;
+	ischunked = false;
+	ischunkbody = false;
+	is_post = false;
+	chunklen = 0;
+	flushParsing();
+    fillValidHeaders();
+
+}
+
 void    Parser::flushParsing()
 {
         read_again = 0;

@@ -61,6 +61,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             response_string = err.code(server_info, "405");
             return ;
         }   
+        
             msg =  ":) GET is Allowed method for "  + response["dir"][0];
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
         //@ Ahmed MAHDI also can you put the CGI check here    
@@ -88,6 +89,24 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
 		apost.handlePost();
 		response_string = apost.get_response();
 		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
+    }
+    else if (request.find("PUT") != request.end())
+    {
+        fillSupportedMethods(supported_methods, server_info, "PUT" ,  request);
+        if(!(isSupportedMethod("PUT", supported_methods)))
+                 {
+            msg =  ":( PUT is not supported method for "  + response["dir"][0];
+            std::cout << msg<< std::endl;
+            response_string = err.code(server_info, "405");
+            return ;
+        } 
+            msg =  ":) PUT is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
+            std::cout << msg<< std::endl;
+        PUT put(request, full_request, server_info, response);
+		put.printPUTBody();
+		put.handlePUT();
+		response_string = put._response;
+		std::cout << BOLDYELLOW << "responding to PUT: " << response_string<<  std::endl << RESET;
     }
     else if (request.find("DELETE") != request.end())
     {
@@ -152,7 +171,7 @@ void    Respond::sendAll(connection_state &state)
         send_ret += send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
     else
         send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
-    std::cout << send_ret << " bytes sent \n";
+    std::cout << send_ret << " bytes sent , packet len = " << packet_len << "\n";
     response_bytes_sent += send_ret;
     if (send_ret <= 0)
     {
@@ -264,19 +283,22 @@ void   Respond::fillSupportedMethods(
         dir = path.substr(0, path.find("?" - 1));
     response["dir"].clear();  
     response["dir"].push_back(dir);
-    std::string msg =   "dir = " +  dir + "             path = " + path;
-    print_to_file("/Users/ayassin/projects/cursus/webserve/project_code/testers/our_tester/logs/out.txt", dir);
+    std::cout <<   "dir = " <<  dir << "             path = " << path << std::endl;
     std::string allowed_methods = dir + " methods";
+    std::cout << YELLOW << "serched item = \"" << allowed_methods <<  "\""<<RESET << std::endl;
     if (server_info.find(allowed_methods) != server_info.end())
     {
+        std::cout <<  GREEN << "allowed method = " << server_info[allowed_methods] <<  RESET <<std::endl;
         if (server_info[allowed_methods].empty())
             supported_methods.push_back("nothing");
         else
             supported_methods = split(server_info[allowed_methods], " ");
         return ;
     }
+    else
+        std::cout << "didn't find allowed method" << std::endl;
     supported_methods.push_back("GET");
     supported_methods.push_back("POST");
     supported_methods.push_back("DELETE");
-    // supported_methods.push_back("PUT");
+    supported_methods.push_back("PUT");
 }
