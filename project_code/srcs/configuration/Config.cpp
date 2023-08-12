@@ -30,7 +30,7 @@ void    Config::fillPorts()
         {
             std::cout << "inserting " << servers[i]["Port"] << std::endl;
             ports.insert(servers[i]["Port"]);
-            std::cout << "inserted " << *(ports.begin()) << std::endl;
+            std::cout << "inserted " << servers[i]["Port"] << std::endl;
         }
         else
             throw(std::invalid_argument("Error in reading configuration file, missing port number in a server"));

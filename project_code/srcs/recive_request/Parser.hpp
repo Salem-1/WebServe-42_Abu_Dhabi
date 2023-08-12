@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parser.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 08:58:58 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/12 17:08:07 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ class Parser
         void					visualizeRequestPacket();
         int						checkHeaders();
         void					fillGetRequest(std::string packet);
-		    void 					fillBodyRequest(std::string buffer);
-        void					flushParsing();
-        void	        purgeParsing();
+		void					fillBodyRequest();
+		void					flushParsing();
+		void					purgeParsing();
     private:
         bool                    earlyBadRequest(std::string packet);
         void					fillResponse();  
@@ -42,6 +42,7 @@ class Parser
         void					visualizeResponse();
         int						fillStatuCode(std::string status_code, std::string message);
 		int						chunkLength(std::string buffer);
+		std::string				parseChunks(const std::string &s, const std::string &delimiter);
     public:
 		int						read_again;
 		std::string				packet;
