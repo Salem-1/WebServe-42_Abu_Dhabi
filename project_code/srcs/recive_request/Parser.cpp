@@ -97,6 +97,8 @@ void    Parser::parse(char *new_buffer)
 				fullheader = true;
 			}
 			full_request.request_is_valid = checkHeaders();
+			if (full_request.header.find("HTTP/1.1") == std::string::npos)
+				throw(std::runtime_error("505"));
 			if (Parser::request.find("GET") != request.end() 
 				||  Parser::request.find("DELETE") != request.end())
 			{
