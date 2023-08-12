@@ -28,22 +28,20 @@ Post::~Post()
 
 void	Post::printPostHeader()
 {
-	std::cout << YELLOW << "\nPOST request header is: " << std::endl;
-	std::cout << this->_request.header << std::endl;
-	std::cout << RESET;
+	std::cout << BOLDYELLOW << "\nPOST request header is: " << std::endl << RESET;
+	std::cout << BOLDYELLOW << this->_request.header << std::endl << RESET;
 }
 
 void	Post::printPostBody()
 {
-	std::cout << "\nPOST request body is: " << std::endl;
-	std::cout << this->_request.body << std::endl;
+	std::cout << BOLDYELLOW << "\nPOST request body is: " << std::endl << RESET;
+	std::cout << BOLDYELLOW << this->_request.body << std::endl << RESET;
 }
 
 void Post::printReceivedRequestMap()
 {
-	std::cout << YELLOW << "\nPOST request header map is: " << std::endl;
+	std::cout << YELLOW << "\nPOST request header map is: " << std::endl << RESET;
 	visualizeStringMap(this->_request_map);
-	std::cout << RESET;
 }
 
 void Post::visualizeStringMap(packet_map &map)
@@ -153,4 +151,51 @@ void Post::sendToBackend()
 std::string Post::get_response() const
 {
 	return (this->_response);
+}
+
+void Post::handleUpload()
+{
+    // Parse the request header to get the content boundary
+    std::string boundary = this->_request.header.substr(this->_request.header.find("boundary=") + 9);
+	boundary = boundary.substr(0, boundary.find("\n"));
+
+    // Find the start and end positions of the file data in the request body
+  	size_t start = this->_request.body.find(boundary) + boundary.length() + 2;
+
+
+    // Extract the file content from the body
+    std::string fileContent = this->_request.body.substr(start);
+	fileContent = fileContent.substr(fileContent.find("\n") + 1);
+	fileContent = fileContent.substr(fileContent.find("\n") + 1);
+	fileContent = fileContent.substr(fileContent.find("\n") + 1);
+	fileContent = fileContent.substr(0, fileContent.length() - boundary.length() - 7);
+
+    // Extract the filename from the body
+	// TODO: check if filename is empty and pot proper names ans set the path to save the file
+    size_t filenameStart = this->_request.body.find("filename=\"", start) + 10;
+    size_t filenameEnd = this->_request.body.find("\"", filenameStart);
+    std::string filename = this->_request.body.substr(filenameStart, filenameEnd - filenameStart);
+
+    // Save the file content to a file
+    std::ofstream outputFile(filename.c_str(), std::ios::binary);
+    if (outputFile) {
+        outputFile.write(fileContent.c_str(), fileContent.size());
+        outputFile.close();
+        std::cout << "File content saved to: " << filename << std::endl;
+    } else {
+        std::cerr << "Error saving file." << std::endl;
+    }
+}
+
+void Post::handlePost()
+{
+	if (this->_request_map.find("Content-Type:") == this->_request_map.end() 
+		|| this->_request_map["Content-Type:"].empty())
+		return ;
+	if (this->_request_map["Content-Type:"][0] == "application/x-www-form-urlencoded")
+		Post::sendToBackend();
+	else if (this->_request_map["Content-Type:"][0] == "multipart/form-data;")
+		Post::handleUpload();
+	else
+		return ;
 }

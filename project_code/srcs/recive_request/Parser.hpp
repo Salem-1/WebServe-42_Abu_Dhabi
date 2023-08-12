@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 00:08:42 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/12 17:08:07 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ class Parser
         void					visualizeRequestPacket();
         int						checkHeaders();
         void					fillGetRequest(std::string packet);
-		void 					fillBodyRequest();
-    
+		void					fillBodyRequest();
+		void					flushParsing();
+		void					purgeParsing();
     private:
         bool                    earlyBadRequest(std::string packet);
         void					fillResponse();  
@@ -40,7 +41,6 @@ class Parser
         void					fillPath();
         void					visualizeResponse();
         int						fillStatuCode(std::string status_code, std::string message);
-        void					flushParsing();
 		int						chunkLength(std::string buffer);
 		std::string				parseChunks(const std::string &s, const std::string &delimiter);
     public:

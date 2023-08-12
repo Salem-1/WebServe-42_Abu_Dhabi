@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/10 14:20:50 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/12 09:01:57 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,16 @@ void Client::handleRequest(struct kevent event)
     start_time = clock();
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
-    // std::cout << "responder.sending  = "   << responder.sending << std::endl; 
-    // if (event.filter == EVFILT_WRITE)
-    //     std::cout << "socket open for write " << std::endl; 
-    // if (event.filter == EVFILT_READ)
-    //     std::cout << "socket open for READ " << std::endl; 
 
     if (event.filter == EVFILT_WRITE && responder.sending 
         && receiver.state == KEEP_ALIVE)
+    {
         responder.sendAll(receiver.state);
+        if (!responder.sending)
+        {
+            receiver.flushReceive();
+        }
+    }
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
     {

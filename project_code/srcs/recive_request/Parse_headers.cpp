@@ -52,6 +52,7 @@ void  Parser::fillValidHeaders()
 {
     valid_headers.insert("GET");
 	valid_headers.insert("POST");
+	valid_headers.insert("PUT");
 	valid_headers.insert("DELETE");
     valid_headers.insert("Standard headers:");
     valid_headers.insert("accept-encoding:");
@@ -95,7 +96,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("Dnt:");
     valid_headers.insert("X-Requested-With:");
     valid_headers.insert("X-CSRF-Token:");
-    valid_headers.insert("Sec-Fetch-Dest:");
+    valid_headers.insert("Postman-Token:");
     valid_headers.insert("Sec-Fetch-Dest:");
     valid_headers.insert("Sec-Fetch-Mode:");
     valid_headers.insert("Sec-Fetch-Site:");

@@ -1,14 +1,4 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Parser.cpp                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 16:45:34 by ayassin          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
 
 #include "Parser.hpp"
 
@@ -47,6 +37,24 @@ Parser::~Parser()
 
 }
 
+void	Parser::purgeParsing()
+{
+	Parser::full_request.body_content_length = 0;
+	Parser::full_request.request_is_valid = 1;
+	Parser::full_request.header = "";
+	Parser::full_request.body = "";
+	Parser::body_start_pos = 0;
+	fullbody = false;
+	fullheader = false;
+	ischunked = false;
+	ischunkbody = false;
+	is_post = false;
+	chunklen = 0;
+	flushParsing();
+    fillValidHeaders();
+
+}
+
 void    Parser::flushParsing()
 {
         read_again = 0;
@@ -71,6 +79,8 @@ void    Parser::parse(char *new_buffer)
     
     vis_str(new_buffer, "new_buffer inside parser");
     vis_str(packet, "packet inside parser");
+	
+	// to repeat reading after head is filled and the body is not complete
     
     if (fullheader == false)
 	{
