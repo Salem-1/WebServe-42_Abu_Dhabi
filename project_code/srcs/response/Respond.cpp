@@ -19,7 +19,6 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
     //here should extract the port and hostname to give to the corresponding method
     stringmap server_info = getServerInfo(request, servers, port);
     visualize_string_map(server_info);
-    // exit(0);
     fillResponse(request, full_request, server_info);
     sending = true;
     
@@ -44,13 +43,8 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	std::string cgi_path = isCGI(request);
-	// std::cout << BOLDGREEN << "cgi path = " << cgi_path << std::endl << RESET;
-    
+	std::string cgi_path = isCGI(request);    
 	std::vector<std::string> supported_methods;
-    // if (cgi_path != "")
-	// 	response_string = responseCGI(request, server_info, cgi_path);
-    //@AHMED MAHDI, check if you need to make this if -> else if, as this can return normal GET request even after filling the reponse with CGI
     ErrResponse err;
     std::string msg;
 
