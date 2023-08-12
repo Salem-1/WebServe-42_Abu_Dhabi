@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:41:21 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 00:09:34 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/12 16:45:34 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ std::string Parser::parseChunks(const std::string &s, const std::string &delimit
 		token = s.substr(pos_start, pos_end - pos_start);
 		if (i % 2 == 0)
 		{
-			if (token.length() > 8 || token.length() < 3)
+			if (token.length() > 8 || token.length() < 1)
 				throw(std::runtime_error("400"));
 			// what if extar chars are present
   			sscanf(token.c_str(), "%lx", &value);
@@ -205,9 +205,10 @@ std::string Parser::parseChunks(const std::string &s, const std::string &delimit
 		}
 		else
 		{
-			if (token.length() != value + 2)
+			if (token.length() != value)
 				throw(std::runtime_error("400"));
 			result += token.substr(0, value);
+			// result += token.substr(0, value) + "/r/n";
 		}
 		pos_start = pos_end + delim_len;
 	}
@@ -219,12 +220,14 @@ void	Parser::fillBodyRequest()
 {
 	if (Parser::ischunked)
 	{
-		if (packet.rfind("\r\n0\r\n\r\n") == packet.length() - 7)
+		int pos = packet.rfind("\r\n0\r\n\r\n");
+		(void) pos;
+		if (packet.rfind("\r\n0\r\n\r\n") == std::string::npos)
 			read_again = 1;
 		else
 		{
 			full_request.body_content_length += chunklen;
-			full_request.body = parseChunks(packet, "\r\n");
+			full_request.body = parseChunks(packet.substr(Parser::body_start_pos), "\r\n");
 			read_again = 0;
 			fullbody = 1;
 		}

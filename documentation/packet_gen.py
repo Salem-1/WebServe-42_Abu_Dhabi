@@ -12,7 +12,7 @@ def send_packet(path):
     User-Agent: curl/7.87.0\r
     Accept: */*\r\n\r\n
     I love green pants
-    0/r/n"""
+    0\r\n"""
     target_host = "127.0.0.1"
     target_port = 5555
 
@@ -46,9 +46,9 @@ def send_chunked_packet(path, comment):
     Accept: */*\r
     Transfer-Encoding: chunked\r\n\r\n"""
     
-    length = len("comment=" + comment)
+    length = hex(len("comment=" + comment))
     packet = [str ,
-    f"""{length}\r\n""", f"""comment={comment}\r\n""", """0/r/n""" ]
+    f"""{length}\r\n""", f"""comment={comment}\r\n""", """0\r\n\r\n""" ]
     target_host = "127.0.0.1"
     target_port = 5555
     
@@ -65,7 +65,7 @@ def send_chunked_packet(path, comment):
         for pack in packet:
             client_socket.sendall(pack.encode())
             # input('A\n')
-            time.sleep(1)
+            # time.sleep(1)
 
         # Receive the response (you can do something with the response if needed)
         response = client_socket.recv(4096)
