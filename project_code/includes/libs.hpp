@@ -43,12 +43,12 @@ struct ciLessLibC : public std::binary_function<std::string, std::string, bool> 
     }
 };
 
-typedef std::vector<std::map<std::string, std::string> >			conf; 
-typedef std::map<std::string, std::string>							stringmap;
-typedef std::map<std::string, std::vector<std::string>, ciLessLibC>	packet_map;
-typedef std::map<std::string, std::vector<std::string> >			response_packet;
-typedef std::map<std::string, std::vector<std::string> >			response_type;
-
+typedef std::vector<std::pair<std::string, std::vector<std::string> > > tokenized_conf;
+typedef std::map<std::string, std::vector<std::string>, ciLessLibC>	    packet_map;
+typedef std::vector<std::map<std::string, std::string> >			    conf; 
+typedef std::map<std::string, std::string>							    stringmap;
+typedef std::map<std::string, std::vector<std::string> >			    response_packet;
+typedef std::map<std::string, std::vector<std::string> >			    response_type;
 # define BACKLOG 500
 # define MAX_EVENTS 500
 # define READ_BUFFER_SIZE 260000
