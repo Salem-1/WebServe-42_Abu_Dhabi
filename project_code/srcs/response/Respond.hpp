@@ -33,8 +33,8 @@ class Respond
                             , std::string method, packet_map& request);
 	private:
 		std::string	    isCGI(packet_map &request);
-		std::string	    responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
-		std::string	    execute(stringmap &server_info, std::string path, std::string args);
+		std::string	    responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, ErrResponse &err);
+		std::string	    execute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err);
         int		        checkPoisonedURL(packet_map &request);
         std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
     public:

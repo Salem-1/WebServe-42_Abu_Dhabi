@@ -5,7 +5,7 @@
 Respond::Respond()
 {};
 
-Respond::Respond(int    client_socket) :client_socket(client_socket),  sending(false), response_bytes_sent(0)
+Respond::Respond(int client_socket) :client_socket(client_socket),  sending(false), response_bytes_sent(0)
 {
 }
 
@@ -49,7 +49,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     std::string msg;
 
     if (cgi_path != "")
-		response_string = responseCGI(request, server_info, cgi_path);
+		response_string = responseCGI(request, server_info, cgi_path, err);
 	else if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {

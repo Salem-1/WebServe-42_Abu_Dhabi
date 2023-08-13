@@ -27,12 +27,33 @@ std::string	fillingResponsePacket(std::string &full_file_to_string)
 	return (response_packet);
 }
 
-std::string Respond::execute(stringmap &server_info, std::string path, std::string args)
+void	childExecute(int *fd, std::string &path)
+{
+	while ((dup2(fd[1], STDOUT_FILENO) == -1) && (errno == EINTR)) {}
+			close(fd[1]);
+			close(fd[0]);
+			// std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
+			const char *temp_path = path.c_str();
+			// std::cerr << temp_path << std::endl;
+			char **args = (char **)malloc(sizeof(*args) * (2));
+			if (args == NULL)
+				throw(std::runtime_error("505"));
+			args[0] = NULL;
+			args[1] = NULL;
+			if (execve(temp_path, args, NULL) ==  -1)
+				std::cerr << "It freakin faild to execute " << temp_path << std::endl;
+			free(args);
+			close(fd[0]);
+			close(fd[1]);
+			std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
+			exit(127);
+}
+
+std::string Respond::execute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err)
 {
 	int fd[2];
-	(void) path;
+	int status = 0;
 	(void) args;
-	(void) fd;
 
 	try 
 	{
@@ -42,26 +63,7 @@ std::string Respond::execute(stringmap &server_info, std::string path, std::stri
 		if (id == -1)
 			throw(std::runtime_error("fork failed"));
 		if (id == 0)
-		{
-			while ((dup2(fd[1], STDOUT_FILENO) == -1) && (errno == EINTR)) {}
-			close(fd[1]);
-			close(fd[0]);
-			// std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
-			const char *temp_path = path.c_str();
-			// std::cerr << temp_path << std::endl;
-			char **args = (char **)malloc(sizeof(*args) * (2));
-			if (args == NULL)
-				return (NULL);
-			args[0] = NULL;
-			args[1] = NULL;
-			if (execve(temp_path, args, NULL) ==  -1)
-				std::cerr << "It freakin faild to execute " << temp_path << std::endl;
-			free(args);
-			close(fd[0]);
-			close(fd[1]);
-			std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
-			exit(0);
-		}
+			childExecute(fd, path);
 		close(fd[1]);
 		std::string output;
 		while (1) {
@@ -81,25 +83,28 @@ std::string Respond::execute(stringmap &server_info, std::string path, std::stri
 			}
 		}
 		close(fd[0]);
-		int status;
 		while (waitpid(-1, &status, 0) > 0) {}
+		if (WEXITSTATUS(status))
+		{
+			if (WEXITSTATUS(status) == 127)
+				return (err.code(server_info, "404"));
+
+		}
 		vis_str(output, "inside CGI response");
 		// std::cout << BOLDBLACK << output << RESET << std::endl;
 		return (fillingResponsePacket(output));
-		ErrResponse err;
 		return (err.code(server_info, "200"));
 	}
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		ErrResponse err;
 		return (err.code(server_info, "501"));
 	}
 	
 	
 }
 
-std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path)
+std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, ErrResponse &err)
 {
 	std::string query;
 	(void) request;
@@ -113,5 +118,5 @@ std::string Respond::responseCGI(packet_map &request, stringmap &server_info, st
 	std::string full_cgi_path = server_info["cgi-bin"] + cgi_path;
 	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
 	std::cout << BOLDGREEN << "query = " << query << std::endl << RESET;
-	return (execute(server_info, full_cgi_path, query)); 
+	return (execute(server_info, full_cgi_path, query, err)); 
 }
