@@ -10,8 +10,21 @@ void handle_pipes(int sig)
     }
 }
 
-int main()
+int main(int argc, char **argv)
 {
+	if (argc > 2)
+	{
+		std::cerr << "Error: too many arguments" << std::endl;
+		exit(1);
+	}
+
+	if (argc == 2)
+	{
+		ConfigHandler config(argv[1]);
+		config.readConfigFile();
+		exit(0);
+	}
+
     Config  servers;
     signal(SIGPIPE, &handle_pipes);
 

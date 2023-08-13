@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
+#    By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/12 07:30:17 by ahsalem          ###   ########.fr        #
+#    Updated: 2023/08/13 16:05:46 by ymohamed         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ _SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
 		logs.cpp Receive.cpp Parse_headers.cpp \
 		Parser_utils.cpp GET.cpp GET_response.cpp DELETE.cpp DELETE_res.cpp \
 		Respond.cpp Config.cpp logger.cpp parsing_lib.cpp ErrResponse.cpp main.cpp Post.cpp \
-		CgiResponse.cpp GET_response_strings.cpp response_utils.cpp PUT.cpp
+		CgiResponse.cpp GET_response_strings.cpp response_utils.cpp PUT.cpp ConfigHandler.cpp \
 
 # 
 SRC = 
