@@ -10,18 +10,13 @@ int    Parser::checkHeaders()
     if (earlyBadRequest(full_request.header) ||!validPacketHeaders() || 
 		full_request.header.length() > HEADER_MAX_LENGTH || full_request.header.length() == 0)
     {
-        status.push_back("400");
-        status.push_back("Bad Request");
-        request["Status-code"] = status;
         std::cout << "invalid packet" <<  std::endl;
-        return (0);
+		throw(std::runtime_error("400"));
     }
-    else
-    {
-        status.push_back("200");
-        status.push_back("Ok");
-        request["Status-code"] = status;
-    }
+	status.push_back("200");
+	status.push_back("Ok");
+	request["Status-code"] = status;
+    
     return (1);
 }
 
@@ -29,7 +24,7 @@ int Parser::validPacketHeaders()
 {
 	std::string firstword = packet.substr(0,packet.find(' '));
 
-	std::string allowed[] = {"POST" , "DELETE", "PUT", "GET"};
+	std::string allowed[] = {"POST" , "DELETE", "PUT", "GET", "HEAD"};
 	int validsize = sizeof(allowed)/ sizeof(std::string), i = 0;
 	for(; i < validsize; ++i)
 	{
@@ -38,6 +33,8 @@ int Parser::validPacketHeaders()
 	}
 	if (i == validsize)
 		return 0;
+	else if (i == 4)
+		throw(std::runtime_error("405"));
     for (packet_map::iterator it= request.begin(); it != request.end(); ++it)
     {
         if (valid_headers.find(it->first) == valid_headers.end())
@@ -55,6 +52,7 @@ void  Parser::fillValidHeaders()
 {
     valid_headers.insert("GET");
 	valid_headers.insert("POST");
+	valid_headers.insert("PUT");
 	valid_headers.insert("DELETE");
     valid_headers.insert("Standard headers:");
     valid_headers.insert("accept-encoding:");
@@ -98,7 +96,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("Dnt:");
     valid_headers.insert("X-Requested-With:");
     valid_headers.insert("X-CSRF-Token:");
-    valid_headers.insert("Sec-Fetch-Dest:");
+    valid_headers.insert("Postman-Token:");
     valid_headers.insert("Sec-Fetch-Dest:");
     valid_headers.insert("Sec-Fetch-Mode:");
     valid_headers.insert("Sec-Fetch-Site:");

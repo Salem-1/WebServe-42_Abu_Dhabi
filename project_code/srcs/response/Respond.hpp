@@ -4,6 +4,7 @@
 # define RESPOND_HPP
 
 # include "../POST/Post.hpp"
+# include "../PUT/PUT.hpp"
 # include "../DELETE/DELETE.hpp"
 # include "../GET/GET.hpp"
 
@@ -36,7 +37,6 @@ class Respond
 		std::string	    execute(stringmap &server_info, std::string path, std::string args);
         int		        checkPoisonedURL(packet_map &request);
         std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
-
     public:
 		int				client_socket;
         response_packet	response;
@@ -46,10 +46,10 @@ class Respond
 		// ErrResponse     err;
 
     private:
-
         size_t	                    response_bytes_sent;
         std::vector<int>            nominated_servers;
         std::vector<std::string>    server_names;
+        bool            isput;
     
 };
 // void* sendAll_thread(void* arg);

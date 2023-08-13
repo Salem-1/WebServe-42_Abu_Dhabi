@@ -61,7 +61,6 @@ void    GET_response::fillOkResponse(stringmap &server_info)
         return ;
     
     std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
-
     DIR *dir;
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
@@ -130,6 +129,7 @@ bool    GET_response::fillBadPath(stringmap &server_info)
         return (true);
 
 }
+
 std::string    GET_response::constructPath(stringmap &server_info)
 {
 
@@ -162,6 +162,9 @@ std::string    GET_response::constructPath(stringmap &server_info)
 
     std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     
+    //the error is here
+    std::cout << "dir = " << dir << std::endl;
+
     if (server_info.find(dir) != server_info.end())
     {
         print_to_file("testers/our_tester/logs/dir_path.txt", server_info[dir]);
