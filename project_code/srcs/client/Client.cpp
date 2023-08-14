@@ -1,3 +1,9 @@
+
+
+
+
+
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -6,7 +12,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 18:24:22 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/14 14:46:34 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +79,7 @@ void Client::handleRequest(struct kevent event)
 			// std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
 			if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
 			{
-				vis_str(receiver.parser.packet, "Start packet parsing");
+				// vis_str(receiver.parser.packet, "Start packet parsing");
 				responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
 			}
 		}

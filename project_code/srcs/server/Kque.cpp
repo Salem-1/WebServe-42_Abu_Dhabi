@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/11 08:45:22 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/14 16:03:41 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void    Kque::handleRequestByClient(struct kevent event)
     int client_socket = event.ident;
     active_clients.insert(client_socket);
     clients[client_socket].handleRequest(event);
-    clients[client_socket].getPort(client_socket);
+    // clients[client_socket].getPort(client_socket);
     if (clients[event.ident].state == KILL_CONNECTION)
     {
         removeClient(client_socket);

@@ -49,7 +49,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     std::string msg;
 
     if (cgi_path != "")
-		response_string = responseCGI(request, server_info, cgi_path, err);
+		response_string = responseCGI(request, server_info, cgi_path, err, full_request.body);
 	else if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {

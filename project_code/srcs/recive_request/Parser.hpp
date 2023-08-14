@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 17:08:07 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/14 15:48:27 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class Parser
         Parser(const Parser &obj2);
         Parser &operator= (const Parser &obj2);
         
-        void					fillHeaderRequest(std::string packet);
+        void					fillHeaderRequest(std::string &packet);
         void					parse(char *new_buffer);
         void					setBytereadAndReadsock(int bytes, int sock);
         void					visualizeRequestPacket();
@@ -41,7 +41,6 @@ class Parser
         void					fillPath();
         void					visualizeResponse();
         int						fillStatuCode(std::string status_code, std::string message);
-		int						chunkLength(std::string buffer);
 		std::string				parseChunks(const std::string &s, const std::string &delimiter);
     public:
 		int						read_again;
