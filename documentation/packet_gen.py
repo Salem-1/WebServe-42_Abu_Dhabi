@@ -38,6 +38,7 @@ def send_packet(path):
     finally:
         # Close the socket
         client_socket.close()
+    return response.decode()
         
 def send_chunked_packet(path, comment):
     
@@ -90,3 +91,19 @@ else:
     send_chunked_packet("/", "green\0ahmed")
 # send_packet("/hello");
 # send_packet("/attacks/out");
+
+path = "/"
+packet = f"""GET {path} HTTP/1.1\r
+Host: 127.0.0.1:3490\r
+User-Agent: curl/7.87.0\r
+Accept: */*\r\n\r\n"""
+port = 5555
+if ("200 OK" in send_packet(packet, port)):
+    print("Normal Pakcet passed :)")
+else:
+    print("Normal packet failed :(")
+    exit(1);
+packet = f"""GET {path} HTTP/1.1\r
+    Host: 127.0.0.1:3490\r
+    User-Agent: curl/7.87.0\r
+    Accept: */*\r\n\r\n"""

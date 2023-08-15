@@ -56,13 +56,12 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         fillSupportedMethods(supported_methods, server_info, "GET" ,  request);
         if(!(isSupportedMethod("GET", supported_methods)))
         {
-            msg =  ":( GET is not supported method for "  + response["dir"][0];
+            msg =  "( GET is not supported method for"  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
             response_string = err.code(server_info, "405");
             return ;
         }   
-        
-            msg =  ":) GET is Allowed method for "  + response["dir"][0];
+                    msg =  ":) GET is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
         //@ Ahmed MAHDI also can you put the CGI check here    
         response_string = normalGETResponse(request, server_info);
@@ -74,14 +73,14 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         fillSupportedMethods(supported_methods, server_info, "POST" ,  request);
         if(!(isSupportedMethod("POST", supported_methods)))
                  {
-            msg =  ":( POST is not supported method for "  + response["dir"][0];
+            msg =  ":) POST is not supported method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
             response_string = err.code(server_info, "405");
             return ;
         } 
             msg =  ":) POST is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
-        Post apost(request, full_request, server_info);
+        Post apost(request, full_request, server_info, response);
 		// apost.printPostHeader();
 		// TODO: Get pdf files get to this point
 		apost.printPostBody();
