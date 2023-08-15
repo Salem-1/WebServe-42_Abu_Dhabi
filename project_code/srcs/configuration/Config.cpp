@@ -195,6 +195,25 @@ void   intra_config(conf &servers)
     servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
     servers[0]["DELETE path"] = "POST";
     servers[3]["Methods"] = "GET";
+
+
+
+
+    ["server_name"] = "127.0.0.1";
+    ["Port"] = "3490";
+    ["root"] = pwd + "/intra/YoupiBanane";
+    ["index"] = "youpi.bad_extension";
+    ["/"] = servers[0]["root"] + "/" + servers[0]["index"];
+    ["/ methods"] = "GET";
+    ["Max-Body"] = "100";
+    ["/directory"] = servers[0]["root"] + "/";
+    ["/directory index"] = "youpi.bad_extension" ;
+    ["/put_test methods"] = "PUT" ;
+    ["/put_test"] = servers[0]["root"] + "/PUT/";
+    ["/Yeah autoindex"] = "off";
+    ["/post_body max_lenghth"] = "100";
+    ["/post_body methods"] = "POST";
+    ["DELETE path"] = "POST";
 */
 
 

@@ -6,7 +6,7 @@
 
 class PUT
 {
-private:
+protected:
 	packet_map		_request_map;
 	t_request		_request;
 	stringmap		_server_info;
@@ -21,7 +21,7 @@ public:
 	std::string	constructPath(stringmap &server_info);
 	bool        sanitizedPath(std::string path);
 	bool    	putBody(std::string path);
-	void		fillOkResponse();
+	std::string		fillOkResponse();
 	std::string	_response;
 };
 
