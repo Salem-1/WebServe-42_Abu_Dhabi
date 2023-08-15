@@ -9,13 +9,10 @@ Config::Config()
     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
 
-    
-
-    intra_and_dummy_fill_till_config_parsing(servers);
-    // intra_config(servers);
-    // list_dir_options(servers);
-
-    fillPorts();
+    // if (servers.empty())
+    //     throw(std::runtime_error("Empty server configuration "));
+    // else
+    //     fillPorts();
 }
 
 

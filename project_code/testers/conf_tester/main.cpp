@@ -7,10 +7,14 @@ void    runServer(Config &servers);
 
 int main()
 {
-    // Config  servers;
     tokenized_conf tokenized_server = dummy_conf_tokens();
     ServerFill    fill(tokenized_server);
-    visualize_tokens(fill._conf_tokens);
+    // visualize_tokens(fill._conf_tokens);
+    test_emptyEssentials(fill);
+    test_lenEssentials(fill);
+    test_mixSpacesEssentials(fill);
+    test_essentialOccurance(fill);
+    test_listenConf(fill);
     // runServer(servers);
     return (0);
 }
