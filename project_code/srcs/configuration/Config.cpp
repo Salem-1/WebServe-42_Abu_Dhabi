@@ -1,5 +1,16 @@
 #include "Config.hpp"
 
+/*
+    servers[0][".bla options"] = "post_cgi get_cgi";
+    
+   std::string extension;
+   if (server_info.find(extension + " options") != server_info.end())
+   {
+        std::vector<std::string> options = split(server_info[extension + " options"], " ");
+        if (options.find(post_cgi) != options.end())
+        //dosomething
+   }
+*/
 void    intra_and_dummy_fill_till_config_parsing(conf &server);
 void    python_tester_config(conf &server);
 void    list_dir_options(conf &servers);

@@ -14,7 +14,6 @@ Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0),
 	fullheader = false;
 	ischunked = false;
 	ischunkbody = false;
-	chunklen = 0;
     fillValidHeaders();
 }
 
@@ -49,7 +48,6 @@ void	Parser::purgeParsing()
 	ischunked = false;
 	ischunkbody = false;
 	is_post = false;
-	chunklen = 0;
 	flushParsing();
     fillValidHeaders();
 
@@ -78,8 +76,8 @@ void    Parser::parse(char *new_buffer)
 	// std::string testing(new_buffer, bytes_read);
     packet.append(new_buffer, bytes_read);
     
-    vis_str(new_buffer, "new_buffer inside parser");
-    vis_str(packet, "packet inside parser");
+    // vis_str(new_buffer, "new_buffer inside parser");
+    // vis_str(packet, "packet inside parser");
 	    
     if (fullheader == false)
 	{
@@ -108,27 +106,28 @@ void    Parser::parse(char *new_buffer)
 	}
 	if (Parser::fullheader == true && Parser::fullbody == false && full_request.request_is_valid)
 	{
-		packet_map::iterator it = Parser::request.find("content-length:");
-		if (it != request.end() && full_request.request_is_valid)
+		if (Parser::ischunked == false)
 		{
-			std::istringstream iss(it->second[0]);
-			iss >> full_request.body_content_length;
+			packet_map::iterator it = Parser::request.find("content-length:");
+			if (it != request.end() && full_request.request_is_valid)
+			{
+				std::istringstream iss(it->second[0]);
+				iss >> full_request.body_content_length;
+
+				if ((full_request.body_content_length == 0 && it->second[0] != "0") 
+					||full_request.body_content_length > MAX_BODY_SIZE)
+					throw(std::runtime_error("400"));
+			}
+			else if (Parser::request.find("Transfer-Encoding:") != request.end())
+				Parser::ischunked = Parser::request.find("Transfer-Encoding:")->second[0] == "chunked";
+			else
+			{
+				read_again = 0;
+				fullbody = 1;
+				return ;
+			}
 		}
-		else if (Parser::request.find("Transfer-Encoding:") != request.end())
-			Parser::ischunked = Parser::request.find("Transfer-Encoding:")->second[0] == "chunked";
-		if ((!full_request.body_content_length && !Parser::ischunked ) 
-							|| full_request.body_content_length > MAX_BODY_SIZE)
-		{
-			if (full_request.body_content_length > MAX_BODY_SIZE)
-				throw(std::runtime_error("400"));
-			read_again = 0;
-			fullbody = 1;
-		}
-		  else
-		{
-			read_again = 1;
-			Parser::fillBodyRequest();
-		}
+		Parser::fillBodyRequest();
     }
     if (full_request.header.length() > HEADER_MAX_LENGTH || full_request.request_is_valid == 0)
     {
@@ -159,7 +158,7 @@ void    Parser::setBytereadAndReadsock(int bytes, int sock)
     this->read_sock = sock;
 }
 
-void    Parser::fillHeaderRequest(std::string packet)
+void    Parser::fillHeaderRequest(std::string &packet)
 {
     std::vector<std::string> tmp_vec;
     std::string              header;
@@ -168,7 +167,7 @@ void    Parser::fillHeaderRequest(std::string packet)
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
         tmp_vec = split(*it, " ");
-        if (tmp_vec.size() < 1)
+        if (tmp_vec.size() < 2)
 			throw(std::runtime_error("400"));
         header = tmp_vec[0];
         tmp_vec.erase(tmp_vec.begin());
@@ -177,18 +176,6 @@ void    Parser::fillHeaderRequest(std::string packet)
         else
 			throw(std::runtime_error("400"));
     }
-}
-
-int	Parser::chunkLength(std::string buffer)
-{
-	std::istringstream	strlen(buffer);
-	int 				len = 0;
-	size_t				i = 0;
-	strlen >> len;		 
-	for (i = 0; std::isdigit(buffer[i]);  ++i) { }
-	if (buffer.substr(i) == "\r\n" && len <= MAX_BODY_SIZE)
-		return len;
-	return -1;
 }
 
 std::string Parser::parseChunks(const std::string &s, const std::string &delimiter)
@@ -214,7 +201,6 @@ std::string Parser::parseChunks(const std::string &s, const std::string &delimit
 			if (token.length() != value)
 				throw(std::runtime_error("400"));
 			result += token.substr(0, value);
-			// result += token.substr(0, value) + "/r/n";
 		}
 		pos_start = pos_end + delim_len;
 	}
@@ -226,28 +212,23 @@ void	Parser::fillBodyRequest()
 {
 	if (Parser::ischunked)
 	{
-		int pos = packet.rfind("\r\n0\r\n\r\n");
-		(void) pos;
 		if (packet.rfind("\r\n0\r\n\r\n") == std::string::npos)
 			read_again = 1;
 		else
 		{
-			full_request.body_content_length += chunklen;
 			full_request.body = parseChunks(packet.substr(Parser::body_start_pos), "\r\n");
-			std::cout << BOLDYELLOW << full_request.body << std::endl << RESET;
+			full_request.body_content_length = full_request.body.length();
+			// std::cout << BOLDYELLOW << full_request.body << std::endl << RESET;
 			read_again = 0;
 			fullbody = 1;
 		}
 		return ;
 	}
-	Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos);
-	if (Parser::full_request.body.length() < Parser::full_request.body_content_length)
+	Parser::read_again = 1;
+	if (packet.length() - Parser::body_start_pos >= Parser::full_request.body_content_length)
 	{
-		Parser::read_again = 1;
-	}
-	else
-	{
-		Parser::read_again = 0;
+		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos, Parser::full_request.body_content_length);
 		fullbody = 1;
+		Parser::read_again = 0;
 	}
 }

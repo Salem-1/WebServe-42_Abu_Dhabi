@@ -32,9 +32,11 @@ class Respond
                             std::vector<std::string> &supported_methods, stringmap &server_info
                             , std::string method, packet_map& request);
 	private:
+		static void		closePipe(int *fd);
 		std::string	    isCGI(packet_map &request);
-		std::string	    responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
-		std::string	    execute(stringmap &server_info, std::string path, std::string args);
+		std::string	    responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, ErrResponse &err, std::string &body);
+		std::string	    execute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err);
+		std::string 	postExecute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err, std::string &body);
         int		        checkPoisonedURL(packet_map &request);
         std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
     public:

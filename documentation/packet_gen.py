@@ -7,10 +7,13 @@ import sys
 
 def send_packet(path):
     
-    packet = f"""GET {path} HTTP/1.1\r
+    packet = f"""POST {path} HTTP/1.1\r
     Host: 127.0.0.1:3490\r
     User-Agent: curl/7.87.0\r
-    Accept: */*\r\n\r\n"""
+    Content-Type: application/x-www-form-urlencoded\r
+    Content-Length: 19\r
+    Accept: */*\r\n\r\n
+    comment=Ahmed\0Mahdy"""
     target_host = "127.0.0.1"
     target_port = 5555
 
