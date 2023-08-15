@@ -96,17 +96,21 @@ void    ServerFill::fillPorts(std::vector<std::string> &listen_vec, std::set<std
     essentials_arg.erase("listen");
 }
 
-void    ServerFill::essentialsBasicCheck(std::string &row_essentials, std::vector<std::string> &essentials_vec)
+void    ServerFill::essentialsBasicCheck(std::string &row_essentials, std::vector<std::string> &listen_vec)
 {
         if(row_essentials.size() < 20)
-            throw(std::runtime_error("Bad config file: Empty essentials_vec 💩"));
-        essentials_vec = split(row_essentials, ";");
-        if (essentials_vec.size() < 3 || essentials_vec.size() > 6)
+            throw(std::runtime_error("Bad config file: Empty listen_vec 💩"));
+        listen_vec = split(row_essentials, ";");
+        if (listen_vec.size() < 3 || listen_vec.size() > 6)
             throw(std::runtime_error("Bad config file: wrong essentials parameters 💩"));
-        
+        for (std::vector<std::string>::iterator it = listen_vec.begin();
+            it != listen_vec.end(); ++it)
+        {
+            if (std::to_string(*it) )
+        } 
 }
 
-
+//0 to 65535
 
 // void    fillListen(std::set<std::string> essentials_arg, std::vector<std::string> single_essential)
 // {
