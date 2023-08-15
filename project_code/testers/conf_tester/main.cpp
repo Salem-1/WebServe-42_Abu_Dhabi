@@ -15,6 +15,7 @@ int main()
     test_mixSpacesEssentials(fill);
     test_essentialOccurance(fill);
     test_listenConf(fill);
+    test_hostNameConf(fill);
     // runServer(servers);
     return (0);
 }

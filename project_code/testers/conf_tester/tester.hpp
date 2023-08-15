@@ -13,4 +13,5 @@ void    positive_essential_try_catch(ServerFill &fill, std::string TestCase);
 void    test_mixSpacesEssentials(ServerFill &fill);
 void   test_essentialOccurance(ServerFill &fill);
 void    test_listenConf(ServerFill &fill);
+void    test_hostNameConf(ServerFill &fill);
 #endif

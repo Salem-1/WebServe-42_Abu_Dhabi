@@ -57,6 +57,7 @@ typedef std::map<std::string, std::vector<std::string> >			    response_type;
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
+# define URL_MAX 8000
 # define MAX_BODY_SIZE 100 // 10 MB Will be part of the configuration file
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
