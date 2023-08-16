@@ -1,12 +1,18 @@
+
+
+
+
+
+
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:24 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 22:46:14 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/14 14:46:34 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,27 +58,41 @@ void Client::handleRequest(struct kevent event)
     start_time = clock();
     receiver.read_sock = client_socket;
     responder.client_socket = client_socket;
-    // std::cout << "responder.sending  = "   << responder.sending << std::endl; 
-    // if (event.filter == EVFILT_WRITE)
-    //     std::cout << "socket open for write " << std::endl; 
-    // if (event.filter == EVFILT_READ)
-    //     std::cout << "socket open for READ " << std::endl; 
 
     if (event.filter == EVFILT_WRITE && responder.sending 
         && receiver.state == KEEP_ALIVE)
+    {
         responder.sendAll(receiver.state);
+        if (!responder.sending)
+        {
+            receiver.flushReceive();
+        }
+    }
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
     {
-        responder.sending = false;
-        receiver.receiveAll();
-        
-        // std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
-        if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
-        {
-            vis_str(receiver.parser.packet, "Start packet parsing");
-            responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
-        }
+		try
+		{
+			responder.sending = false;
+			receiver.receiveAll();
+			
+			// std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
+			if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
+			{
+				vis_str(receiver.parser.packet, "Start packet parsing");
+				responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
+			}
+		}
+		catch(const std::exception& e)
+		{
+			receiver.parser.read_again = 0;
+			ErrResponse err;
+			stringmap server_info = responder.getServerInfo(receiver.parser.request, servers, getPort(client_socket));
+			responder.response_string = err.code(server_info, e.what());
+            responder.sending = true;
+			std::cerr << BOLDRED<<  e.what() << '\n' << RESET;
+		}
+		
     }
     
     // else 

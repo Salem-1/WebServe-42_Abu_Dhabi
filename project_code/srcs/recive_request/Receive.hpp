@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Receive.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:56 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 10:59:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/12 08:54:20 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ class Receive
         ~Receive();
         void				readPacket(char *buffer);
         void				receiveAll();
+        void                flushReceive();
         int					read_sock;
         int					bytes_read;
-        char				buffer[BUFFER_SIZE];
+        char				buffer[READ_BUFFER_SIZE];
         connection_state	state;
         Parser				parser;
 		// ?? it is already typedefed in the class

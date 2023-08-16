@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:00 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 15:41:16 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/14 15:48:27 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,15 @@ class Parser
         Parser(const Parser &obj2);
         Parser &operator= (const Parser &obj2);
         
-        void					fillHeaderRequest(std::string packet);
+        void					fillHeaderRequest(std::string &packet);
         void					parse(char *new_buffer);
         void					setBytereadAndReadsock(int bytes, int sock);
         void					visualizeRequestPacket();
         int						checkHeaders();
         void					fillGetRequest(std::string packet);
-		void 					fillBodyRequest();
-    
+		void					fillBodyRequest();
+		void					flushParsing();
+		void					purgeParsing();
     private:
         bool                    earlyBadRequest(std::string packet);
         void					fillResponse();  
@@ -40,7 +41,7 @@ class Parser
         void					fillPath();
         void					visualizeResponse();
         int						fillStatuCode(std::string status_code, std::string message);
-        void					flushParsing();
+		std::string				parseChunks(const std::string &s, const std::string &delimiter);
     public:
 		int						read_again;
 		std::string				packet;
@@ -48,15 +49,19 @@ class Parser
 		int						read_sock;
 		std::string				reponse_packet;
 		int						packet_counter;
-		int						i;
 		size_t					body_start_pos;
 		packet_map				request;
 		t_request				full_request;
 		response_packet			response;
-		std::set<std::string>	valid_headers;
+		std::set<std::string , ciLessLibC>	valid_headers;
 		std::string				filled_response;
 		bool                    is_post;
-		std::string             body;
+		bool					fullheader;
+	private:
+		bool					fullbody;
+		bool					ischunked;
+		bool					ischunkbody;
+		size_t					chunklen;
 };      
 
 #endif

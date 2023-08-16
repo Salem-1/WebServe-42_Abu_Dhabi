@@ -1,6 +1,9 @@
 #include "Post.hpp"
 
-Post::Post(packet_map &request_map, t_request &full_request, stringmap &server_info)
+Post::Post(packet_map &request_map, t_request &full_request, 
+    stringmap &server_info, response_packet & response)
+    : PUT(request_map, full_request, server_info, response), 
+    _response_pack(response)
 {
 	//fill the default response as error
 	this->_response = "HTTP/1.1 500 Internal Server Error\r\n"
@@ -67,7 +70,6 @@ static int simpleBackend(std::string body, std::string &received_body)
 	char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
 	std::string filePath = pwd + "/intra/website/post_backend/index.html";
-
 	std::ifstream inFile(filePath.c_str());
     if (!inFile) {
         std::cerr << "Error: Could not open " << filePath << " for reading.\n";
@@ -141,10 +143,12 @@ void Post::sendToBackend()
 	}
 	if (status)
 		return ;
+	std::ostringstream ostr;
+    ostr << received_body.length();
 	this->_response = "HTTP/1.1 200 OK\r\n"
 					"Content-Type: text/html\r\n"
-					"Content-Length: " + std::to_string(received_body.length()) 
-					+ "\nConnection: keep-alive\r\n\r\n" + received_body;
+					"Content-Length: " + ostr.str() 
+					+ "\r\nConnection: keep-alive\r\n\r\n" + received_body;
 }
 
 std::string Post::get_response() const
@@ -196,5 +200,24 @@ void Post::handlePost()
 	else if (this->_request_map["Content-Type:"][0] == "multipart/form-data;")
 		Post::handleUpload();
 	else
+    {
+        std::string path = constructPath(_server_info);
+        if (!sanitizedPath(path))
+            return ;
+        postBody(path);
 		return ;
+    }
+}
+
+bool    Post::postBody(std::string path)
+{
+    std::cout <<  YELLOW << "PUT path = " << path << RESET << std::endl;
+    std::ofstream outfile(path.c_str(), std::ios::out | std::ios::trunc);
+    if (outfile.fail())
+        throw(std::runtime_error("500"));
+    outfile << _request.body;
+    outfile.close();
+    _response = fillOkResponse();
+    std::cout << _response << std::endl;
+    return (true);
 }

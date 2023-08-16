@@ -4,6 +4,7 @@
 # define RESPOND_HPP
 
 # include "../POST/Post.hpp"
+# include "../PUT/PUT.hpp"
 # include "../DELETE/DELETE.hpp"
 # include "../GET/GET.hpp"
 
@@ -30,20 +31,27 @@ class Respond
         void            fillSupportedMethods(
                             std::vector<std::string> &supported_methods, stringmap &server_info
                             , std::string method, packet_map& request);
+	private:
+		static void		closePipe(int *fd);
+		std::string	    isCGI(packet_map &request);
+		std::string	    responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, ErrResponse &err, std::string &body);
+		std::string	    execute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err);
+		std::string 	postExecute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err, std::string &body);
+        int		        checkPoisonedURL(packet_map &request);
+        std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
+    public:
 		int				client_socket;
         response_packet	response;
         std::string		response_string;
         pthread_t		sendThread;
         bool			sending;
 		// ErrResponse     err;
-	private:
-		std::string	isCGI(packet_map &request);
-		std::string	responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path);
-		std::string	execute(stringmap &server_info, std::string path, std::string args);
-        
+
     private:
-        int		checkPoisonedURL(packet_map &request);
-        size_t	response_bytes_sent;
+        size_t	                    response_bytes_sent;
+        std::vector<int>            nominated_servers;
+        std::vector<std::string>    server_names;
+        bool            isput;
     
 };
 // void* sendAll_thread(void* arg);
