@@ -127,6 +127,7 @@ std::string readAndWrite(int infd, int outfd, std::string &body)
 				n_read = write(infd, &(body[pos]), write_size);
 			else
 				n_read = write(infd, &(body[pos]), body.length() - pos);
+			if (n_read < 0) {}
 			pos += write_size;
 			if (pos > body.length())
 				close(infd);
