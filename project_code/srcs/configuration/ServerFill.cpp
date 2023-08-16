@@ -62,6 +62,8 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
     }
     if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
+    if (inSet(essentials_arg, "client_max_body_size"))
+        servers.servers[0]["Max-Body"] = "1000";
 }
 void    ServerFill::fillBodySize(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
         stringmap &server)
