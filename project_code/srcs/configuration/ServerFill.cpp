@@ -53,24 +53,42 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
         else if(single_essential[0] == "root")
             fillRoot(single_essential, essentials_arg, servers.servers[i]);
         else if(single_essential[0] == "index")
-        {
-            if(essentials_arg.find("index") == essentials_arg.end())
-                throw(std::runtime_error("Bad config file: repeated index param  💩"));
-
-            essentials_arg.erase("index");
-        }
+            fillIndex(single_essential, essentials_arg, servers.servers[i]);
         else if(single_essential[0] == "client_max_body_size")
-        {
-            if(essentials_arg.find("client_max_body_size") == essentials_arg.end())
-                throw(std::runtime_error("Bad config file: repeated client_max_body_size param  💩"));
+            fillBodySize(single_essential, essentials_arg, servers.servers[i]);
 
-            essentials_arg.erase("client_max_body_size");
-        }
         else
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     }
     if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
+}
+void    ServerFill::fillBodySize(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
+        stringmap &server)
+{
+    (void)bodySize_vec;
+    if(essentials_arg.find("client_max_body_size") == essentials_arg.end() 
+        || bodySize_vec.size() != 2 || !isAllDigit(bodySize_vec[1]))
+        throw(std::runtime_error("Bad config file: repeated client_max_body_size param  💩"));
+    server["Max-Body"] = bodySize_vec[1];
+    essentials_arg.erase("client_max_body_size");
+}
+void    ServerFill::fillIndex(std::vector<std::string> &index_vec,  std::set<std::string> &essentials_arg, 
+        stringmap &server)
+{
+    if(essentials_arg.find("index") == essentials_arg.end() || index_vec.size() < 2)
+        throw(std::runtime_error("Bad config file: bad index param  💩"));
+        multiple_index.clear();
+        server["index"] =  "";
+    for (std::vector<std::string>::iterator it = index_vec.begin();
+        it != index_vec.end(); ++it)
+    {
+        multiple_index.push_back(*it);
+        server["index"] += *it + " ";
+    }
+    // server["index"].erase(server["index"].find_last_of(' '), 1);
+    server["index"] = index_vec[1];
+    essentials_arg.erase("index");
 }
 void    ServerFill::fillRoot(std::vector<std::string> &root_vec,  std::set<std::string> &essentials_arg, 
         stringmap &server)
@@ -112,7 +130,7 @@ void    ServerFill::fillPorts(std::vector<std::string> &listen_vec, std::set<std
             throw(std::runtime_error("port num with a more than 5 chars"));
     std::istringstream check_me(listen_vec[1]);
     check_me >> port_check;
-    if (!allInt(listen_vec[1]) || (port_check == 0 && listen_vec[1] != "0") || port_check < 0 || port_check > 65535)
+    if (!isAllDigit(listen_vec[1]) || (port_check == 0 && listen_vec[1] != "0") || port_check < 0 || port_check > 65535)
         throw(std::runtime_error("Non numeric or overflow port number"));
     multiple_ports.push_back(listen_vec[1]);
     essentials_arg.erase("listen");
@@ -128,7 +146,7 @@ void    ServerFill::essentialsBasicCheck(std::string &row_essentials, std::vecto
         
 }
 
-int ServerFill::allInt(std::string str)
+int ServerFill::isAllDigit(std::string str)
 {
     for (size_t i = 0; i < str.size(); ++i)
     {

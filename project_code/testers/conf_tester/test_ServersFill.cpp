@@ -7,7 +7,7 @@ tokenized_conf    dummy_conf_tokens()
     tokenized_conf tokenized_server;
 
     std::vector<std::string> locations;
-    std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     locations.push_back("location / {\nlimit_except GET {\n    deny all;\n}\ntry $uri $uri/ youpi.bad_extension;");
     locations.push_back("location /put_test/ {\nlimit_except PUT {\n    deny all;\n}\n alias /intra/YoupiBanane/PUT/;");
     locations.push_back("location .bla {\n        include fastcgi_params;\nfastcgi_pass unix:/path/to/your/cgi_test_socket.sock;\n fastcgi_param SCRIPT_FILENAME /path/to/your/cgi_test_executable;");
@@ -17,20 +17,69 @@ tokenized_conf    dummy_conf_tokens()
     return (tokenized_server);
 }
 
+void    test_bodySizeConf(ServerFill &fill)
+{
+    conf    &servers = fill.servers.servers;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size;";
+    negative_essential_try_catch(fill, "empty client_max_body_size");
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100;";
+    fill.parseEssentials();
+    if (!servers[0].empty() && inMap(servers[0], "Max-Body"))
+        std::cout << BOLDGREEN << "has client_max_body_size key configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has client_max_body_size key configuration test failed 😱" << RESET << std::endl;
+    if (!servers[0].empty() && inMap(servers[0], "Max-Body") && servers[0]["Max-Body"] == "100")
+        std::cout << BOLDGREEN << "has client_max_body_size = 100 configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has client_max_body_size = 100 configuration test failed 😱" << RESET << std::endl;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100s;";
+    negative_essential_try_catch(fill, "non numeric client_max_body_size");
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size -100;";
+    negative_essential_try_catch(fill, "negative client_max_body_size");
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100*;";
+    negative_essential_try_catch(fill, "char client_max_body_size");
+}
+void    test_indexConf(ServerFill &fill)
+{
+    conf    &servers = fill.servers.servers;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex;\nclient_max_body_size 100;";
+    negative_essential_try_catch(fill, "NO index test");
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100;";
+    fill.parseEssentials();
+    if (!servers[0].empty() && inMap(servers[0], "index"))
+        std::cout << BOLDGREEN << "has index key configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has index key configuration test failed 😱" << RESET << std::endl;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    fill.parseEssentials();
+    if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["index"] == "youpi.bad_extension")
+        std::cout << BOLDGREEN << "has youpi.bad_extension configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has youpi.bad_extension configuration test failed 😱" << RESET << std::endl;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex index.html;\nclient_max_body_size 100;";
+    fill.parseEssentials();
+    if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["index"] == "index.html")
+        std::cout << BOLDGREEN << "has index.html configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has index.html configuration test failed 😱" << RESET << std::endl;
+}
+
 void    test_rootConf(ServerFill &fill)
 {
     conf    &servers = fill.servers.servers;
-    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot / intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot / intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "2 roots test");
-    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     fill.parseEssentials();
     if (!servers[0].empty() && inMap(servers[0], "root"))
         std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has root key configuration test failed 😱" << RESET << std::endl;
     if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["root"] == "intra/YoupiBanane")
         std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
     else
         std::cout << BOLDRED << "has root key configuration test failed 😱" << RESET << std::endl;
-    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     fill.parseEssentials();
     if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["root"] == "/")
         std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
@@ -41,14 +90,14 @@ void    test_rootConf(ServerFill &fill)
 void    test_hostNameConf(ServerFill &fill)
 {
     conf    &servers = fill.servers.servers;
-    fill._conf_tokens[0].first = "listen 333s;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 333s;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "Correct server names ");
 
     if (servers.empty())
         std::cout << BOLDRED << "Empty server configuration test failed 😱" << RESET << std::endl;
     else
         std::cout << BOLDGREEN << "Empty server configuration test passed 😀" << RESET <<std::endl;
-    fill._conf_tokens[0].first = "listen 2345;\nserver_name 127.0.0.1 \tlocal_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 2345;\nserver_name 127.0.0.1 \tlocal_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "multiple  server names ");
     
     fill.parseEssentials();
@@ -63,19 +112,19 @@ void    test_hostNameConf(ServerFill &fill)
 }
 void    test_listenConf(ServerFill &fill)
 {
-    fill._conf_tokens[0].first = "listen 333s;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 333s;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "string port ");
-    fill._conf_tokens[0].first = "listen -333;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen -333;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "negative port ");
-    fill._conf_tokens[0].first = "listen #333;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen #333;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "sympol port ");
-    fill._conf_tokens[0].first = "listen 23413425365678;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 23413425365678;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "large port number ");
-    fill._conf_tokens[0].first = "listen  234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen  234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "1 normal port");
-    fill._conf_tokens[0].first = "listen  2342 234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen  2342 234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "2 ports in same listen");
-    fill._conf_tokens[0].first = "listen 234 2342 234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 234 2342 234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "2 ports in same listen");
     // std::cout << "Multiple port size = " << fill.multiple_ports.size() << std::endl;
     // visualize_string_vector(fill.multiple_ports, "Multiple ports");
@@ -111,32 +160,32 @@ void    test_emptyEssentials(ServerFill &fill)
         // std::cerr << e.what() << '\n';
         std::cout << BOLDGREEN << "empty essentials test passed 😀" << RESET <<std::endl;
     }
-    fill._conf_tokens[0].first = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
  
     positive_essential_try_catch(fill, "non empty");    
 }
 
 void    test_mixSpacesEssentials(ServerFill &fill)
 {
-    fill._conf_tokens[0].first = "lis\nten             3490;\nserver\n_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "lis\nten             3490;\nserver\n_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "bad new live");
-    fill._conf_tokens[0].first = "listen\t3490;\nserver_name 127.0.0.1\tlocal_host;\nroot\tintra/YoupiBanane;\nindex\tyoupi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen\t3490;\nserver_name 127.0.0.1\tlocal_host;\nroot\tintra/YoupiBanane;\nindex\tyoupi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "horizontal tab");
-    fill._conf_tokens[0].first = "listen\v3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen\v3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "vertical tab");
-    fill._conf_tokens[0].first = "listen\t\v\t\t3490;\t\t\t\t\vserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen\t\v\t\t3490;\t\t\t\t\vserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "mix tab and spaces tab");
-    fill._conf_tokens[0].first = "listen 3490;server_name 127.0.0.1 local_host;root intra/YoupiBanane;\nindex youpi.bad_extension; client_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 3490;server_name 127.0.0.1 local_host;root intra/YoupiBanane;\nindex youpi.bad_extension; client_max_body_size 100;";
     positive_essential_try_catch(fill, "mix tab and spaces tab");
 }
 
 void   test_essentialOccurance(ServerFill &fill)
 {
-    fill._conf_tokens[0].first = "server_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "server_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "missed listen");
-    fill._conf_tokens[0].first = "listen     3490;root intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen     3490;root intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "missed servername");
-    fill._conf_tokens[0].first = "server_name 127.0.0.1 local_host;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "server_name 127.0.0.1 local_host;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "missed root");
 }
 

@@ -17,6 +17,8 @@ int main()
     test_listenConf(fill);
     test_hostNameConf(fill);
     test_rootConf(fill);
+    test_indexConf(fill);
+    test_bodySizeConf(fill);
     // runServer(servers);
     return (0);
 }
