@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+         #
+#    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/13 20:24:41 by ymohamed         ###   ########.fr        #
+#    Updated: 2023/08/16 14:20:33 by ahsalem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,9 @@ $(OBJDIR)/%.o : %.cpp
 
 $(NAME): $(OBJS) $(HEADERS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(INCS)
-	
+
+run : $(NAME)
+	./$(NAME)	
 clean:
 	rm -f $(OBJS)
 

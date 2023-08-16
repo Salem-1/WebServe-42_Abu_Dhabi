@@ -16,6 +16,7 @@ int main()
     test_essentialOccurance(fill);
     test_listenConf(fill);
     test_hostNameConf(fill);
+    test_rootConf(fill);
     // runServer(servers);
     return (0);
 }

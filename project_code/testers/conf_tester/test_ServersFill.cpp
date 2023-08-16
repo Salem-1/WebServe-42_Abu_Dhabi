@@ -17,9 +17,30 @@ tokenized_conf    dummy_conf_tokens()
     return (tokenized_server);
 }
 
+void    test_rootConf(ServerFill &fill)
+{
+    conf    &servers = fill.servers.servers;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot / intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    negative_essential_try_catch(fill, "2 roots test");
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill.parseEssentials();
+    if (!servers[0].empty() && inMap(servers[0], "root"))
+        std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
+    if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["root"] == "intra/YoupiBanane")
+        std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has root key configuration test failed 😱" << RESET << std::endl;
+    fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill.parseEssentials();
+    if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["root"] == "/")
+        std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << "has root key configuration test failed 😱" << RESET << std::endl;
+
+}
 void    test_hostNameConf(ServerFill &fill)
 {
-    conf    servers = fill.servers.servers;
+    conf    &servers = fill.servers.servers;
     fill._conf_tokens[0].first = "listen 333s;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
     negative_essential_try_catch(fill, "Correct server names ");
 
@@ -27,7 +48,7 @@ void    test_hostNameConf(ServerFill &fill)
         std::cout << BOLDRED << "Empty server configuration test failed 😱" << RESET << std::endl;
     else
         std::cout << BOLDGREEN << "Empty server configuration test passed 😀" << RESET <<std::endl;
-    fill._conf_tokens[0].first = "listen 2345 3333 ;\nserver_name 127.0.0.1 \tlocal_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
+    fill._conf_tokens[0].first = "listen 2345;\nserver_name 127.0.0.1 \tlocal_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
     positive_essential_try_catch(fill, "multiple  server names ");
     
     fill.parseEssentials();
@@ -42,7 +63,6 @@ void    test_hostNameConf(ServerFill &fill)
 }
 void    test_listenConf(ServerFill &fill)
 {
-    conf    servers = fill.servers.servers;
     fill._conf_tokens[0].first = "listen 333s;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
     negative_essential_try_catch(fill, "string port ");
     fill._conf_tokens[0].first = "listen -333;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
@@ -52,26 +72,13 @@ void    test_listenConf(ServerFill &fill)
     fill._conf_tokens[0].first = "listen 23413425365678;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
     negative_essential_try_catch(fill, "large port number ");
     fill._conf_tokens[0].first = "listen  234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
-    fill.parseEssentials();
-    if (fill.multiple_ports.size() == 1)
-        std::cout << BOLDGREEN << "1 ports test passed 😀" << RESET <<std::endl;
-    else
-        std::cout << BOLDRED << "Test 1 ports failed 😱" << RESET << std::endl;
+    positive_essential_try_catch(fill, "1 normal port");
     fill._conf_tokens[0].first = "listen  2342 234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
-    fill.parseEssentials();
-    if (fill.multiple_ports.size() == 2)
-        std::cout << BOLDGREEN << "2 ports test passed 😀" << RESET <<std::endl;
-    else
-        std::cout << BOLDRED << "Test 2 ports failed 😱" << RESET << std::endl;
+    negative_essential_try_catch(fill, "2 ports in same listen");
     fill._conf_tokens[0].first = "listen 234 2342 234;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size default;";
-    fill.parseEssentials();
-    if (fill.multiple_ports.size() == 3)
-        std::cout << BOLDGREEN << "3 ports test passed 😀" << RESET <<std::endl;
-    else
-        std::cout << BOLDRED << "Test 3 ports failed 😱" << RESET << std::endl;
-
-        // std::cout << "Multiple port size = " << fill.multiple_ports.size() << std::endl;
-        // visualize_string_vector(fill.multiple_ports, "Multiple ports");
+    negative_essential_try_catch(fill, "2 ports in same listen");
+    // std::cout << "Multiple port size = " << fill.multiple_ports.size() << std::endl;
+    // visualize_string_vector(fill.multiple_ports, "Multiple ports");
     
 }
 

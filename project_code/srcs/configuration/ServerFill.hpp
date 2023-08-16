@@ -19,6 +19,8 @@ class ServerFill
         void                fillServerNames(std::vector<std::string> &hosts_vec,  
                                 std::set<std::string> &essentials_arg, stringmap &server);
         void                fill_essential_arg(std::set<std::string> &essential_arg);
+        void                fillRoot(std::vector<std::string> &root_vec,  std::set<std::string> &essentials_arg, 
+                                stringmap &server);
         tokenized_conf          _conf_tokens;
         Config                  servers;
         std::vector<std::string> multiple_ports;

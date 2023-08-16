@@ -14,4 +14,5 @@ void    test_mixSpacesEssentials(ServerFill &fill);
 void   test_essentialOccurance(ServerFill &fill);
 void    test_listenConf(ServerFill &fill);
 void    test_hostNameConf(ServerFill &fill);
+void    test_rootConf(ServerFill &fill);
 #endif

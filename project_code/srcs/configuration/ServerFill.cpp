@@ -34,7 +34,6 @@ void    ServerFill::replaceNlAndTabs(std::string &str)
 
 }
 
-
 void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
 {
     std::set<std::string> essentials_arg;
@@ -51,6 +50,8 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
             fillPorts(single_essential, essentials_arg);
         else if(single_essential[0] == "server_name")
             fillServerNames(single_essential, essentials_arg, servers.servers[i]);
+        else if(single_essential[0] == "root")
+            fillRoot(single_essential, essentials_arg, servers.servers[i]);
         else if(single_essential[0] == "index")
         {
             if(essentials_arg.find("index") == essentials_arg.end())
@@ -65,19 +66,19 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
 
             essentials_arg.erase("client_max_body_size");
         }
-        else if(single_essential[0] == "root")
-        {
-            if(essentials_arg.find("root") == essentials_arg.end())
-                throw(std::runtime_error("Bad config file: repeated root param  💩"));
-
-            essentials_arg.erase("root");
-        }
         else
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
-        i++;
     }
     if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
+}
+void    ServerFill::fillRoot(std::vector<std::string> &root_vec,  std::set<std::string> &essentials_arg, 
+        stringmap &server)
+{
+    if(essentials_arg.find("root") == essentials_arg.end() || root_vec.size() != 2)
+        throw(std::runtime_error("Bad config file: bad root param  💩"));
+    server["root"] = root_vec[1];
+    essentials_arg.erase("root");
 }
 
 void    ServerFill::fillServerNames(std::vector<std::string> &hosts_vec,  std::set<std::string> &essentials_arg, 
@@ -102,20 +103,18 @@ void    ServerFill::fillPorts(std::vector<std::string> &listen_vec, std::set<std
 {
     int port_check = 0;
     multiple_ports.clear();
+    if (listen_vec.size() != 2)
+        throw(std::runtime_error("listen has more thane one port"));
     if(essentials_arg.find("listen") == essentials_arg.end())
-        throw(std::runtime_error("Bad config file: repeated listen param 💩"));
+        essentials_arg.insert("listen");
     // visualize_string_vector(listen_vec, "listen_vec");
-    for (std::vector<std::string>::iterator it = ++listen_vec.begin();
-        it != listen_vec.end(); ++it)
-    {
-        if (it->size() > 5)
-                throw(std::runtime_error("port num with a more than 5 chars"));
-        std::istringstream check_me(*it);
-        check_me >> port_check;
-        if (!allInt(*it) || (port_check == 0 && *it != "0") || port_check < 0 || port_check > 65535)
-            throw(std::runtime_error("Non numeric or overflow port number"));
-        multiple_ports.push_back(*it);
-    }
+    if (listen_vec[1].length() > 5)
+            throw(std::runtime_error("port num with a more than 5 chars"));
+    std::istringstream check_me(listen_vec[1]);
+    check_me >> port_check;
+    if (!allInt(listen_vec[1]) || (port_check == 0 && listen_vec[1] != "0") || port_check < 0 || port_check > 65535)
+        throw(std::runtime_error("Non numeric or overflow port number"));
+    multiple_ports.push_back(listen_vec[1]);
     essentials_arg.erase("listen");
 }
 
