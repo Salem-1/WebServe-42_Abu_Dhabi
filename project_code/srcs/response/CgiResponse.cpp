@@ -38,20 +38,39 @@ std::string Respond::responseCGI(packet_map &request, stringmap &server_info, st
 	return (postExecute(server_info, full_cgi_path, query, err, body));
 }
 
-// std::string	fillingResponsePacket(std::string &full_file_to_string)
-// {
-// 	std::string response_packet;
-// 	response_packet = "HTTP/1.1 200 OK \r\n";
-// 	response_packet += "Server: webserve/1.0\r\n";
-// 	response_packet += "Date: ";
-// 	response_packet += getTimeBuffer();
-// 	response_packet += "Content-Type: text/plain txt \r\n";
-// 	std::stringstream ss;
-// 	ss << full_file_to_string.length();
-//     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
-// 	response_packet += full_file_to_string; 
-// 	return (response_packet);
-// }
+std::string	fillingResponsePacket(std::string &full_file_to_string)
+{
+	
+	std::string status =  " 200 OK\r\n";
+	std::string type = " text/plain txt\r\n";
+	std::string body =  full_file_to_string;
+	size_t  temp_pos = 0;
+	size_t head_end = full_file_to_string.find("\r\n\r\n");
+	if (head_end != full_file_to_string.npos)
+	{
+		std::string header_fields = full_file_to_string.substr(0, head_end + 4);
+		body = full_file_to_string.substr(head_end + 4);
+		temp_pos = header_fields.find("Status:");
+		if (temp_pos != header_fields.npos)
+			status = header_fields.substr(temp_pos + 7, header_fields.find("\r\n", temp_pos) + 2 - temp_pos - 7);
+		temp_pos = header_fields.find("Content-Type:");
+		if (temp_pos != header_fields.npos)
+			type = header_fields.substr(temp_pos + 13, header_fields.find("\r\n", temp_pos)+ 2 - temp_pos - 13);
+	}
+
+	std::string response_packet;
+	
+	response_packet = "HTTP/1.1" + status;
+	response_packet += "Server: webserve/1.0\r\n";
+	response_packet += "Date: ";
+	response_packet += getTimeBuffer();
+	response_packet += "Content-Type:" + type;
+	std::stringstream ss;
+	ss << body.length();
+    response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
+	response_packet += body; 
+	return (response_packet);
+}
 
 void	childExecute(int *fd, std::string &path, std::string str_args)
 {
@@ -114,40 +133,7 @@ void	childExecute(int *fd, std::string &path, std::string str_args)
 	}
 }
 
-std::string readAndWrite(int infd, int outfd, std::string &body)
-{
-	std::string output;
-	int write_size = 10;
-	ssize_t n_read = 0;
-	size_t		pos = 0;
-	while (1) {
-		if (pos <= body.length())
-		{
-			if (pos + write_size < body.length())
-				n_read = write(infd, &(body[pos]), write_size);
-			else
-				n_read = write(infd, &(body[pos]), body.length() - pos);
-			pos += write_size;
-			if (pos > body.length())
-				close(infd);
-		}
-		char buffer[write_size];
-		ssize_t count = read(outfd, buffer, write_size);
-		if (count == -1) {
-			perror("read failed");
-			throw(std::runtime_error("read faild"));
-		} else if (count == 0 && pos >= body.length()) 
-		{
-			break;
-		} else if (count != 0)
-		{
-			output.append(buffer, count);
-		}
-	}
 
-	close(outfd);
-	return output;
-}
 std::string readFromChild(int fd)
 {
 	std::string output;
@@ -222,7 +208,7 @@ std::string Respond::execute(stringmap &server_info, std::string path, std::stri
 			return (err.code(server_info, "501"));
 		}
 		vis_str(output, "inside CGI response");
-		return (output);
+		return (fillingResponsePacket(output));
 	}
 	catch (std::exception &e)
 	{
@@ -290,8 +276,9 @@ std::string Respond::postExecute(stringmap &server_info, std::string path, std::
 		close(outfd[1]);
 		close(infd[0]);
 		// output = readAndWrite(infd[1], outfd[0], body);
-		writeToChild(infd, body);
-		output = readFromChild(outfd[0]);
+		output = ReadAndWirte(infd[1], outfd[0], body);
+		// writeToChild(infd, body);
+		// output = readFromChild(outfd[0]);
 		// close(outfd[0]);
 		while (waitpid(-1, &status, 0) > 0) {}
 		if (WEXITSTATUS(status))
@@ -301,7 +288,7 @@ std::string Respond::postExecute(stringmap &server_info, std::string path, std::
 
 		}
 		vis_str(output, "inside CGI response");
-		return (output);
+		return (fillingResponsePacket(output));
 	}
 	catch (std::exception &e)
 	{

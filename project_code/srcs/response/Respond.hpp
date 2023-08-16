@@ -12,6 +12,8 @@
 // # include "../../includes/webserve.hpp"
 
 
+std::string ReadAndWirte(int infd, int outfd, std::string &body);
+
 class Respond
 {
 
