@@ -221,3 +221,9 @@ bool    Post::postBody(std::string path)
     std::cout << _response << std::endl;
     return (true);
 }
+
+/*
+HTTP/1.1 201 Created
+Date: Mon, 09 Aug 2023 12:34:56 GMT
+Server: ExampleServer/1.0
+*/
