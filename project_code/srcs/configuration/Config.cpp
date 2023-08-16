@@ -7,14 +7,17 @@ void   intra_config(conf &servers);
 Config::Config()
 {
     char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
-
+    std::string tmp(getcwd(buff, sizeof(buff)));
+    pwd = tmp;
     // if (servers.empty())
     //     throw(std::runtime_error("Empty server configuration "));
     // else
-    //     fillPorts();
+    // fillPorts();
 }
-
+std::string Config::getPwd() const
+{
+    return (pwd);    
+}
 
 Config::~Config()
 {
@@ -232,4 +235,13 @@ void    list_dir_options(conf &servers)
     
     servers[0]["Max-Body"] = "8000";
     servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos attacks/ddos.html 301";
+}
+
+
+
+void    Config::visualize_config()
+{
+    for (std::vector<stringmap>::iterator it = servers.begin();
+        it != servers.end(); it++)
+        visualize_string_map(*it);
 }

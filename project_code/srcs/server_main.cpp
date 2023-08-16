@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 	}
 
     Config  servers;
+    Config.fillPorts();
     signal(SIGPIPE, &handle_pipes);
 
     for (std::set<std::string>::iterator it = servers.ports.begin();

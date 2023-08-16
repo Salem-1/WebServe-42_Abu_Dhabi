@@ -17,4 +17,5 @@ void    test_hostNameConf(ServerFill &fill);
 void    test_rootConf(ServerFill &fill);
 void    test_indexConf(ServerFill &fill);
 void    test_bodySizeConf(ServerFill &fill);
+void    test_manyConfs(ServerFill &fill);
 #endif

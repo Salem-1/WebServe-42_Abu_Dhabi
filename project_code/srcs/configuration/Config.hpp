@@ -11,5 +11,9 @@ class Config
         conf					servers;
         std::set<std::string>	ports;
         std::vector<int>		sockets;
+        std::string     getPwd() const;
+        void            visualize_config();
+    private:
+         std::string            pwd;
 };
 #endif
