@@ -2,55 +2,12 @@
 #include "../../includes/webserve.hpp"
 #include "tester.hpp"
 
-
-void     test_multipleEssentials()
-{
-    tokenized_conf tokenized_server = two_tokens_gen(
-        "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;");
-    ServerFill    fill(tokenized_server);
-    visualize_tokens(tokenized_server);
-    negative_essential_try_catch(fill, "repeated port");
-    fill.servers.visualize_config();
-}
-
-void              test_essentialsFill()
-{
-    tokenized_conf tokenized_server = dummy_conf_tokens();
-    ServerFill    fill(tokenized_server);
-    // fill.servers.visualize_config();
-    visualize_tokens(fill._conf_tokens);
-    test_emptyEssentials(fill);
-    test_lenEssentials(fill);
-    test_mixSpacesEssentials(fill);
-    test_essentialOccurance(fill);
-    test_listenConf(fill);
-    test_hostNameConf(fill);
-    test_rootConf(fill);
-    test_indexConf(fill);
-    test_bodySizeConf(fill);
-    test_manyConfs(fill);
-}
 tokenized_conf    dummy_conf_tokens()
 {
     tokenized_conf tokenized_server;
 
     std::vector<std::string> locations;
     std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    locations.push_back("location / {\nlimit_except GET {\n    deny all;\n}\ntry $uri $uri/ youpi.bad_extension;");
-    locations.push_back("location /put_test/ {\nlimit_except PUT {\n    deny all;\n}\n alias /intra/YoupiBanane/PUT/;");
-    locations.push_back("location .bla {\n        include fastcgi_params;\nfastcgi_pass unix:/path/to/your/cgi_test_socket.sock;\n fastcgi_param SCRIPT_FILENAME /path/to/your/cgi_test_executable;");
-    locations.push_back("location /post_body {\nlimit_except POST {\n    deny all;\n}\n client_max_body_size 100m;");
-    locations.push_back("location /directory/\nalias /intra/YoupiBanane/;\nindex youpi.bad_extension;\ntry_files $uri $uri/ /youpi.bad_extension;\nautoindex on;\ntry 404 /erros/error1.html;");
-    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
-    return (tokenized_server);
-}
-
-tokenized_conf    two_tokens_gen(std::string second_essential)
-{
-    tokenized_conf tokenized_server = dummy_conf_tokens();
-
-    std::vector<std::string> locations;
-    std::string              essentials = second_essential;
     locations.push_back("location / {\nlimit_except GET {\n    deny all;\n}\ntry $uri $uri/ youpi.bad_extension;");
     locations.push_back("location /put_test/ {\nlimit_except PUT {\n    deny all;\n}\n alias /intra/YoupiBanane/PUT/;");
     locations.push_back("location .bla {\n        include fastcgi_params;\nfastcgi_pass unix:/path/to/your/cgi_test_socket.sock;\n fastcgi_param SCRIPT_FILENAME /path/to/your/cgi_test_executable;");
@@ -184,7 +141,7 @@ void    test_manyConfs(ServerFill &fill)
     fill.multiple_ports.clear();
     fill._conf_tokens[0].first = "listen 234; listen 5000;listen 4000;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "3 legal ports in same listen");
-    if (fill.servers.servers.size() != 3)
+    if (fill.multiple_ports.size() != 3)
         std::cout << BOLDRED << "Test size 3 multiple ports exists failed 😱" ;
     else
         std::cout << BOLDGREEN << "3 servers exists test passed 😀" ;
@@ -194,10 +151,10 @@ void    test_manyConfs(ServerFill &fill)
     else
         std::cout << BOLDGREEN << "3 servers exists test passed 😀";
     std::cout << " We have " << fill.servers.servers.size() << " servers" << RESET << std::endl;
+    fill.servers.visualize_config();
 }
 void visualize_tokens(tokenized_conf &tokens)
 {
-    std::cout << BOLDBLUE << "number of tokens " << tokens.size() << RESET << std::endl; 
     for (tokenized_conf::iterator it = tokens.begin(); it != tokens.end(); it++)
     {
         std::cout << BOLDYELLOW << "essentials: " << RESET << std::endl;
@@ -208,7 +165,6 @@ void visualize_tokens(tokenized_conf &tokens)
             std::cout << it->second[i] << RESET << std::endl;
         }
     }
-    std::cout << BOLDBLUE << "Visualization ends tokens  = " << tokens.size() << RESET << "\n\n"; 
 }
 
 void    test_emptyEssentials(ServerFill &fill)

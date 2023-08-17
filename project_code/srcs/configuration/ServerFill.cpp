@@ -1,8 +1,8 @@
 #include "ServerFill.hpp"
 
-ServerFill::ServerFill(tokenized_conf &conf_tokens): _conf_tokens(conf_tokens), i(0), port_counter(0)
+ServerFill::ServerFill(tokenized_conf &conf_tokens): _conf_tokens(conf_tokens)
 {
-    // parseEssentials();
+    parseEssentials();
 }
 
 
@@ -14,27 +14,18 @@ ServerFill::~ServerFill()
 
 bool    ServerFill::parseEssentials()
 {
-    i = 0;
     std::vector<std::string> essentials;
     for (tokenized_conf::iterator it = _conf_tokens.begin();
         it != _conf_tokens.end(); ++it)
     {
-
         essentials.clear();
         replaceNlAndTabs(it->first);
         essentialsBasicCheck(it->first, essentials);
         fillEssentials(essentials);
-        fillMultiplePorts();
-        //fill_locations();
-        flushSingleServer();
     }
     return (true);
 }
-void    ServerFill::flushSingleServer()
-{
-    multiple_ports.clear();
-    multiple_index.clear();
-}
+
 void    ServerFill::replaceNlAndTabs(std::string &str)
 {
     std::replace(str.begin(), str.end(), '\n' , ' ');
@@ -46,19 +37,10 @@ void    ServerFill::replaceNlAndTabs(std::string &str)
 void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
 {
     std::set<std::string> essentials_arg;
-    
+    std::vector<std::string> single_essential;
+    size_t i = 0;
     servers.servers.push_back(stringmap());
     fill_essential_arg(essentials_arg);
-    assignEssentials(essentials_arg, essentials);    
-    if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
-            throw(std::runtime_error("Bad config file: bad essential argument 💩"));
-    if (inSet(essentials_arg, "client_max_body_size"))
-        servers.servers[0]["Max-Body"] = "1000";
-}
-
-void   ServerFill::assignEssentials(std::set<std::string> &essentials_arg, std::vector<std::string> &essentials)
-{
-    std::vector<std::string> single_essential;
     for (std::vector<std::string>::iterator it = essentials.begin(); it != essentials.end(); ++it)
     {
         single_essential = split(*it, " ");
@@ -74,27 +56,26 @@ void   ServerFill::assignEssentials(std::set<std::string> &essentials_arg, std::
             fillIndex(single_essential, essentials_arg, servers.servers[i]);
         else if(single_essential[0] == "client_max_body_size")
             fillBodySize(single_essential, essentials_arg, servers.servers[i]);
+
         else
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     }
-}
-void    ServerFill::fillMultiplePorts(void)
-{
-    int port_num = 0;
-    servers.servers[i]["port"] = multiple_ports[port_num];
-    std::cout << "server port = " << servers.servers[i]["port"] << std::endl; 
-    port_counter += multiple_ports.size(); 
-    while (++i < port_counter)
+    if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
+            throw(std::runtime_error("Bad config file: bad essential argument 💩"));
+    if (inSet(essentials_arg, "client_max_body_size"))
+        servers.servers[0]["Max-Body"] = "1000";
+    if (multiple_ports.size() > 1)
     {
-
-        servers.servers.push_back(stringmap());
-        servers.servers[i] = servers.servers[i - 1];
-        servers.servers[i]["port"] = multiple_ports[port_num];
-        port_num++;
+        servers.servers[i]["port"] = multiple_ports[i];
+        while (++i < multiple_ports.size())
+        {
+            servers.servers.push_back(stringmap());
+            servers.servers[i] = servers.servers[i - 1];
+            servers.servers[i]["port"] = multiple_ports[i];
+        }
     }
+    // std::cout << "inside the function we have servers = " << servers.servers.size();
 }
-
-
 void    ServerFill::fillBodySize(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
         stringmap &server)
 {
@@ -116,7 +97,7 @@ void    ServerFill::fillIndex(std::vector<std::string> &index_vec,  std::set<std
         it != index_vec.end(); ++it)
     {
         multiple_index.push_back(*it);
-        // server["index"] += *it + " ";
+        server["index"] += *it + " ";
     }
     // server["index"].erase(server["index"].find_last_of(' '), 1);
     server["index"] = index_vec[1];
@@ -140,6 +121,7 @@ void    ServerFill::fillServerNames(std::vector<std::string> &hosts_vec,  std::s
     (void)hosts_vec;
     if(essentials_arg.find("server_name") == essentials_arg.end())
         throw(std::runtime_error("Bad config file: repeated server_name param t 💩"));
+    // visualize_string_vector(hosts_vec, "hosts_vec");
     std::string host_names = "";
     for (std::vector<std::string>::iterator it = ++hosts_vec.begin();
             it != hosts_vec.end(); ++it)
@@ -158,6 +140,7 @@ void    ServerFill::fillPorts(std::vector<std::string> &listen_vec, std::set<std
         throw(std::runtime_error("listen has more thane one port"));
     if(essentials_arg.find("listen") == essentials_arg.end())
         essentials_arg.insert("listen");
+    // visualize_string_vector(listen_vec, "listen_vec");
     if (listen_vec[1].length() > 5)
             throw(std::runtime_error("port num with a more than 5 chars"));
     std::istringstream check_me(listen_vec[1]);
@@ -186,6 +169,11 @@ int ServerFill::isAllDigit(std::string str)
     }
     return (true);
 }
+
+// void    fillListen(std::set<std::string> essentials_arg, std::vector<std::string> single_essential)
+// {
+
+// }
 
 void    ServerFill::fill_essential_arg(std::set<std::string>  &essentials_arg)
 {
