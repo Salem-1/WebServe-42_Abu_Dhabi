@@ -126,7 +126,7 @@ void    visualize_string_vector(std::vector<std::string> &vec, std::string vec_n
 
 void    visualize_string_map(std::map<std::string, std::string>  &map)
 {
-    std::cout << BOLDRED << "visualizing string map\n" << RESET << RED;
+    std::cout << BOLDYELLOW << "\nvisualizing string map\n" << RESET << RED;
     if (map.size() == 0)
 		std::cout << "The map you are trying to visualize is empty" << std::endl;
 	else
@@ -135,9 +135,9 @@ void    visualize_string_map(std::map<std::string, std::string>  &map)
     for (std::map<std::string, std::string>::reverse_iterator rit = map.rbegin();
         rit != map.rend(); ++rit)
     {
-        std::cout << "\"" << BOLDBLUE << rit->first << RESET << "\":  \"" << rit->second << "\"" << std::endl;
+        std::cout << "\"" << BLUE << rit->first << RESET << "\":  \"" << rit->second << "\"" << std::endl;
     }
-        std::cout << BOLDRED << "\n\nvisualization ends\n\n\n" << std::endl << RESET;
+        std::cout << BOLDYELLOW << "\n\nvisualization ends\n\n\n" << std::endl << RESET;
 }
 
 class Logger {
