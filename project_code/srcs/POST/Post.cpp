@@ -158,6 +158,8 @@ std::string Post::get_response() const
 
 void Post::handleUpload()
 {
+	char buff[4000];
+    std::string pwd(getcwd(buff, sizeof(buff)));
     // Parse the request header to get the content boundary
     std::string boundary = this->_request.header.substr(this->_request.header.find("boundary=") + 9);
 	boundary = boundary.substr(0, boundary.find("\n"));
@@ -178,9 +180,10 @@ void Post::handleUpload()
     size_t filenameStart = this->_request.body.find("filename=\"", start) + 10;
     size_t filenameEnd = this->_request.body.find("\"", filenameStart);
     std::string filename = this->_request.body.substr(filenameStart, filenameEnd - filenameStart);
+	std::string filePath = pwd + "/intra/website/uploads/" + filename;
 
     // Save the file content to a file
-    std::ofstream outputFile(filename.c_str(), std::ios::binary);
+    std::ofstream outputFile(filePath.c_str(), std::ios::binary);
     if (outputFile) {
         outputFile.write(fileContent.c_str(), fileContent.size());
         outputFile.close();
