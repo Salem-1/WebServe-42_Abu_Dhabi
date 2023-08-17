@@ -260,7 +260,7 @@ std::string Respond::postExecute(stringmap &server_info, std::string path, std::
 				throw(std::runtime_error("dup stdin failed"));
 			close(infd[1]);
 			close(infd[0]);
-			path = "/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/cgi-bin/cgi_tester";
+			path =  server_info["cgi-bin"] + "/cgi_tester";
 			childExecute(outfd, path, "");
 		}
 		// {
