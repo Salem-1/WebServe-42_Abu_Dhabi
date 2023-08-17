@@ -2,6 +2,16 @@
 #include "../../includes/webserve.hpp"
 #include "tester.hpp"
 
+
+void    test_repeated_port()
+{
+    std::string second_essential = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_conf tokenized_server = fill_second_essential(second_essential);
+    ServerFill    fill(tokenized_server);
+    fill.parseEssentials();
+    negative_essential_try_catch(fill, "Duplicated port");
+
+}
 tokenized_conf    dummy_conf_tokens()
 {
     tokenized_conf tokenized_server;
@@ -16,6 +26,16 @@ tokenized_conf    dummy_conf_tokens()
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     return (tokenized_server);
 }
+
+tokenized_conf    fill_second_essential(std::string second_essential)
+{
+    tokenized_conf tokenized_server = dummy_conf_tokens();
+    tokenized_server.push_back(dummy_conf_tokens()[0]);
+    tokenized_server[1].first = second_essential;
+    return (tokenized_server);
+}
+
+
 
 void    test_bodySizeConf(ServerFill &fill)
 {
@@ -39,6 +59,7 @@ void    test_bodySizeConf(ServerFill &fill)
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100*;";
     negative_essential_try_catch(fill, "char client_max_body_size");
 }
+
 void    test_indexConf(ServerFill &fill)
 {
     conf    &servers = fill.servers.servers;

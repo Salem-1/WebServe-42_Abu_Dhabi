@@ -21,6 +21,7 @@ int main()
     test_indexConf(fill);
     test_bodySizeConf(fill);
     test_manyConfs(fill);
+    test_repeated_port();
     // runServer(servers);
     return (0);
 }
