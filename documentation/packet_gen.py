@@ -5,18 +5,7 @@ import sys
 
 
 
-def send_packet(path):
-    
-    packet = f"""POST {path} HTTP/1.1\r
-    Host: 127.0.0.1:3490\r
-    User-Agent: curl/7.87.0\r
-    Content-Type: application/x-www-form-urlencoded\r
-    Content-Length: 19\r
-    Accept: */*\r\n\r\n
-    comment=Ahmed\0Mahdy"""
-    target_host = "127.0.0.1"
-    target_port = 5555
-
+def send(packet, target_host, target_port):
     try:
         # Create a socket object
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,10 +14,17 @@ def send_packet(path):
         client_socket.connect((target_host, target_port))
 
         # Send the packet
-        client_socket.sendall(packet.encode())
+        for pack in packet:
+            client_socket.sendall(pack.encode())
 
         # Receive the response (you can do something with the response if needed)
-        response = client_socket.recv(4096)
+        response = client_socket.recv(20000)
+        print("Response received:")
+        print(response.decode())
+        response = client_socket.recv(20000)
+        print("Response received:")
+        print(response.decode())
+        response = client_socket.recv(20000)
         print("Response received:")
         print(response.decode())
 
@@ -38,7 +34,19 @@ def send_packet(path):
     finally:
         # Close the socket
         client_socket.close()
-    return response.decode()
+
+def send_packet(path):
+    
+    packet = f"""GET {path} HTTP/1.1\r
+    Host: 127.0.0.1:3490\r
+    User-Agent: curl/7.87.0\r
+    Content-Type: application/x-www-form-urlencoded\r
+    Content-Length: 0\r
+    Accept: */*\r\n\r\ncomment=Ahmed\0Mahdy\0\0\0\0\0hadi"""
+    target_host = "127.0.0.1"
+    target_port = 5555
+
+    send(packet, target_host, target_port)
         
 def send_chunked_packet(path, comment):
     
@@ -55,55 +63,37 @@ def send_chunked_packet(path, comment):
     target_host = "127.0.0.1"
     target_port = 5555
     
+    send(packet, target_host, target_port)
 
-
-    try:
-        # Create a socket object
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        # Connect to the server
-        client_socket.connect((target_host, target_port))
-
-        # Send the packet
-        for pack in packet:
-            client_socket.sendall(pack.encode())
-            # input('A\n')
-            # time.sleep(1)
-
-        # Receive the response (you can do something with the response if needed)
-        response = client_socket.recv(4096)
-        print("Response received:")
-        print(response.decode())
-
-    except Exception as e:
-        print(f"Error occurred: {e}")
-
-    finally:
-        # Close the socket
-        client_socket.close()
-
+def send_cgi_packet(path, num):
+    
+    str = f"""POST {path} HTTP/1.1\r
+    Host: 127.0.0.1:3490\r
+    User-Agent: curl/7.87.0\r
+    Accept: */*\r
+    Content-Type: application/x-www-form-urlencoded\r
+    Transfer-Encoding: chunked\r\n\r\n"""
+    
+    print(num)
+    packet = [str]
+    for i in range(1, int(num)):
+        length = hex(len(f"""{i} """))
+        packet += [f"""{length}\r\n""", f"""{i} \r\n"""]
+    packet += ["0\r\n\r\n"]
+    target_host = "127.0.0.1"
+    target_port = 5555
+    # for i in packet:
+    #     print(i)
+    # exit()
+    send(packet, target_host, target_port)
 # Call the function to send the packet
 
 # send_chunked_packet("/", sys.argv[1]);
 if(len(sys.argv) == 1):
-    send_packet("/")
+    send_packet("/cgi-bin/minicgi.sh")
+elif(len(sys.argv) == 2):
+    send_chunked_packet("/", sys.argv[1])
 else:
-    send_chunked_packet("/", "green\0ahmed")
+    send_cgi_packet("/directory/youpi.bla", sys.argv[2])
 # send_packet("/hello");
 # send_packet("/attacks/out");
-
-path = "/"
-packet = f"""GET {path} HTTP/1.1\r
-Host: 127.0.0.1:3490\r
-User-Agent: curl/7.87.0\r
-Accept: */*\r\n\r\n"""
-port = 5555
-if ("200 OK" in send_packet(packet, port)):
-    print("Normal Pakcet passed :)")
-else:
-    print("Normal packet failed :(")
-    exit(1);
-packet = f"""GET {path} HTTP/1.1\r
-    Host: 127.0.0.1:3490\r
-    User-Agent: curl/7.87.0\r
-    Accept: */*\r\n\r\n"""
