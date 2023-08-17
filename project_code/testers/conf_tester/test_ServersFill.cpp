@@ -151,7 +151,7 @@ void    test_manyConfs(ServerFill &fill)
     else
         std::cout << BOLDGREEN << "3 servers exists test passed 😀";
     std::cout << " We have " << fill.servers.servers.size() << " servers" << RESET << std::endl;
-    fill.servers.visualize_config();
+    // fill.servers.visualize_config();
 }
 void visualize_tokens(tokenized_conf &tokens)
 {

@@ -26,6 +26,7 @@ bool    ServerFill::parseEssentials()
     return (true);
 }
 
+
 void    ServerFill::replaceNlAndTabs(std::string &str)
 {
     std::replace(str.begin(), str.end(), '\n' , ' ');
