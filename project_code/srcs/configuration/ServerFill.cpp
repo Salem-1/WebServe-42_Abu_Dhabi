@@ -28,44 +28,7 @@ bool    ServerFill::parseEssentials()
         //fill_locations();
         flushSingleServer();
     }
-    checkRepeatedServers();
     return (true);
-}
-
-void    ServerFill::checkRepeatedServers(void)
-{
-    conf::iterator repeated_it = servers.servers.end();
-
-    for (conf::iterator it = servers.servers.begin();
-        it != servers.servers.end(); ++it)
-    {
-        if (findRepeatedPort(it, repeated_it))
-            checkDuplicateServerNames(it, repeated_it);
-        repeated_it = servers.servers.end();
-
-    }
-}
-
-bool    ServerFill::findRepeatedPort(conf::iterator &it, conf::iterator &repeated_it)
-{
-    for (conf::iterator pit = it
-        ; pit != servers.servers.end(); ++pit)
-    {
-        if ((*it)["port"] == (*pit)["port"])
-        {
-            repeated_it = pit;
-            return (true);
-        }    
-    }
-    return (false);
-}
-
-void    ServerFill::checkDuplicateServerNames(conf::iterator &it, conf::iterator &repeated_it)
-{
-    std::vector<std::string> compared = split((*it)["server_name"], " ");
-    std::vector<std::string> to = split((*repeated_it)["server_name"], " ");
-    (void)it;
-    (void)repeated_it;
 }
 void    ServerFill::flushSingleServer()
 {
