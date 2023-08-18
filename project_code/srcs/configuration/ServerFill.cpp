@@ -1,8 +1,8 @@
 #include "ServerFill.hpp"
 
-ServerFill::ServerFill(tokenized_conf &conf_tokens): _conf_tokens(conf_tokens)
+ServerFill::ServerFill(tokenized_conf &conf_tokens): _conf_tokens(conf_tokens), i(0)
 {
-    parseEssentials();
+    // parseEssentials();
 }
 
 
@@ -15,16 +15,26 @@ ServerFill::~ServerFill()
 bool    ServerFill::parseEssentials()
 {
     std::vector<std::string> essentials;
+    i = 0;
+    servers.servers.clear();
     for (tokenized_conf::iterator it = _conf_tokens.begin();
         it != _conf_tokens.end(); ++it)
     {
-        essentials.clear();
+        flushEssentialsVars(essentials);
         replaceNlAndTabs(it->first);
         essentialsBasicCheck(it->first, essentials);
         fillEssentials(essentials);
     }
     checkRepeatedServers();
     return (true);
+}
+
+void    ServerFill::flushEssentialsVars(std::vector<std::string> essentials)
+{
+        essentials.clear();
+        multiple_index.clear();
+        multiple_ports.clear();
+
 }
 
 void    ServerFill::checkRepeatedServers(void)
@@ -36,14 +46,12 @@ void    ServerFill::checkRepeatedServers(void)
     {
         if (findRepeatedPort(it, repeated_it))
             checkDuplicateServerNames(it, repeated_it);
-        repeated_it = servers.servers.end();
-
     }
 }
 
-bool    ServerFill::findRepeatedPort(conf::iterator &it, conf::iterator &repeated_it)
+bool    ServerFill::findRepeatedPort(conf::iterator it, conf::iterator &repeated_it)
 {
-    for (conf::iterator pit = it
+    for (conf::iterator pit = it + 1
         ; pit != servers.servers.end(); ++pit)
     {
         if ((*it)["port"] == (*pit)["port"])
@@ -59,8 +67,12 @@ void    ServerFill::checkDuplicateServerNames(conf::iterator &it, conf::iterator
 {
     std::vector<std::string> compared = split((*it)["server_name"], " ");
     std::vector<std::string> to = split((*repeated_it)["server_name"], " ");
-    (void)it;
-    (void)repeated_it;
+    for (std::vector<std::string>::iterator compared_it = compared.begin(); 
+        compared_it != compared.end(); compared_it++)
+    {
+        if (inVector(to, *compared_it))
+            throw(std::runtime_error("Conf error: repeated hostname with the same port"));
+    }
 }
 void    ServerFill::flushSingleServer()
 {
@@ -79,7 +91,6 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
 {
     std::set<std::string> essentials_arg;
     std::vector<std::string> single_essential;
-    size_t i = 0;
     servers.servers.push_back(stringmap());
     fill_essential_arg(essentials_arg);
     for (std::vector<std::string>::iterator it = essentials.begin(); it != essentials.end(); ++it)
@@ -105,14 +116,18 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     if (inSet(essentials_arg, "client_max_body_size"))
         servers.servers[0]["Max-Body"] = "1000";
-    if (multiple_ports.size() > 1)
+    if (multiple_ports.size() > 0)
     {
-        servers.servers[i]["port"] = multiple_ports[i];
-        while (++i < multiple_ports.size())
+        servers.servers[i]["port"] = multiple_ports[0];
+        i++;
+        for (std::vector<std::string>::iterator it = ++multiple_ports.begin();
+            it != multiple_ports.end(); ++it)
         {
+
             servers.servers.push_back(stringmap());
             servers.servers[i] = servers.servers[i - 1];
-            servers.servers[i]["port"] = multiple_ports[i];
+            servers.servers[i]["port"] = *it;
+            i++;
         }
     }
     // std::cout << "inside the function we have servers = " << servers.servers.size();
@@ -162,7 +177,6 @@ void    ServerFill::fillServerNames(std::vector<std::string> &hosts_vec,  std::s
     (void)hosts_vec;
     if(essentials_arg.find("server_name") == essentials_arg.end())
         throw(std::runtime_error("Bad config file: repeated server_name param t 💩"));
-    // visualize_string_vector(hosts_vec, "hosts_vec");
     std::string host_names = "";
     for (std::vector<std::string>::iterator it = ++hosts_vec.begin();
             it != hosts_vec.end(); ++it)
@@ -181,7 +195,6 @@ void    ServerFill::fillPorts(std::vector<std::string> &listen_vec, std::set<std
         throw(std::runtime_error("listen has more thane one port"));
     if(essentials_arg.find("listen") == essentials_arg.end())
         essentials_arg.insert("listen");
-    // visualize_string_vector(listen_vec, "listen_vec");
     if (listen_vec[1].length() > 5)
             throw(std::runtime_error("port num with a more than 5 chars"));
     std::istringstream check_me(listen_vec[1]);
@@ -189,7 +202,6 @@ void    ServerFill::fillPorts(std::vector<std::string> &listen_vec, std::set<std
     if (!isAllDigit(listen_vec[1]) || (port_check == 0 && listen_vec[1] != "0") || port_check < 0 || port_check > 65535)
         throw(std::runtime_error("Non numeric or overflow port number"));
     multiple_ports.push_back(listen_vec[1]);
-    
     essentials_arg.erase("listen");
 }
 

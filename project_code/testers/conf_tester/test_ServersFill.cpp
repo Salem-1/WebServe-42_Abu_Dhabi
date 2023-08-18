@@ -8,8 +8,20 @@ void    test_repeated_port()
     std::string second_essential = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     tokenized_conf tokenized_server = fill_second_essential(second_essential);
     ServerFill    fill(tokenized_server);
-    fill.parseEssentials();
-    negative_essential_try_catch(fill, "Duplicated port");
+    negative_essential_try_catch(fill, "Duplicated port with same server name");
+    second_essential = "listen 3400;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_server = fill_second_essential(second_essential);
+    ServerFill    filled(tokenized_server);
+    positive_essential_try_catch(filled, "non dublicate port port");
+    second_essential = "listen 3490;\nserver_name 127.0.0.1 ;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_server = fill_second_essential(second_essential);
+    ServerFill    filler(tokenized_server);
+    negative_essential_try_catch(filler, "dublicate port with duplicate server name");
+    second_essential = "listen 3490;\nserver_name defualt server ;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_server = fill_second_essential(second_essential);
+    ServerFill    f(tokenized_server);
+    positive_essential_try_catch(f, "dublicate port with different server name");
+
 
 }
 tokenized_conf    dummy_conf_tokens()

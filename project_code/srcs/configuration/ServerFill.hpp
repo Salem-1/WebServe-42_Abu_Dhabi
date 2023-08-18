@@ -35,8 +35,9 @@ class ServerFill
                                         std::set<std::string> &essential_arg, std::vector<std::string> &essentials);
         void                        flushSingleServer(void);
         void                        checkRepeatedServers(void);
-        bool                        findRepeatedPort(conf::iterator &it, conf::iterator &repeated_it);
+        bool                        findRepeatedPort(conf::iterator it, conf::iterator &repeated_it);
         void                        checkDuplicateServerNames(conf::iterator &it, conf::iterator &repeated_it);
+        void                        flushEssentialsVars(std::vector<std::string> essentials);
         std::vector<std::string>    multiple_ports;
         std::vector<std::string>    multiple_index;
     private:

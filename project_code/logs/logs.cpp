@@ -213,6 +213,16 @@ bool    inSet(std::set<std::string> data_set, std::string item)
         return (false);
     return (true);
 }
+bool    inVector(std::vector<std::string> data_set, std::string item)
+{
+    for (std::vector<std::string>::iterator it = data_set.begin()
+        ; it != data_set.end(); ++it)
+    {
+        if (*it == item)
+            return (true);
+    }
+    return (false);
+}
 bool    inMap(stringmap data_set, std::string item)
 {
     if (data_set.find(item) == data_set.end())

@@ -117,6 +117,7 @@ void        vis_str(std::string packet, std::string message);
 void        print_to_file(std::string, std::string);
 bool        inSet(std::set<std::string> data_set, std::string item);
 bool        inMap(stringmap data_set, std::string item);
+bool        inVector(std::vector<std::string> data_set, std::string item);
 //---------------------------------------------
 
 
