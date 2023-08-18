@@ -7,22 +7,8 @@ void    runServer(Config &servers);
 
 int main()
 {
-    tokenized_conf tokenized_server = dummy_conf_tokens();
-    ServerFill    fill(tokenized_server);
-    // fill.servers.visualize_config();
-    // visualize_tokens(fill._conf_tokens);
-    test_emptyEssentials(fill);
-    test_lenEssentials(fill);
-    test_mixSpacesEssentials(fill);
-    test_essentialOccurance(fill);
-    test_listenConf(fill);
-    test_hostNameConf(fill);
-    test_rootConf(fill);
-    test_indexConf(fill);
-    test_bodySizeConf(fill);
-    test_manyConfs(fill);
-    test_repeated_port();
-    // runServer(servers);
+    test_Essentials();
+    test_lcation_firstLine();
     return (0);
 }
 

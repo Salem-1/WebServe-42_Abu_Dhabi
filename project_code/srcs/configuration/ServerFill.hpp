@@ -8,7 +8,7 @@ class ServerFill
     public:
         ServerFill(tokenized_conf &conf_tokens);
         ~ServerFill();
-        bool                    parseEssentials();
+        bool                    parseTokens();
         // std::vector<std::string> getMultiplePorts() const;
         // std::vector<std::string> getMultipleindex() const;
         // Config                      getServers();
@@ -23,7 +23,8 @@ class ServerFill
         int                         isAllDigit(std::string str);
         void                        fillServerNames(std::vector<std::string> &hosts_vec,  
                                         std::set<std::string> &essentials_arg, stringmap &server);
-        void                        fill_essential_arg(std::set<std::string> &essential_arg);
+        void                        fillEssentialArg(std::set<std::string> &essential_arg);
+        void                        fillNoRepeateArg(std::set<std::string> &essential_arg);
         void                        fillRoot(std::vector<std::string> &root_vec,  std::set<std::string> &essentials_arg, 
                                         stringmap &server);
         void                        fillIndex(std::vector<std::string> &index_vec,  std::set<std::string> &essentials_arg, 
@@ -38,6 +39,13 @@ class ServerFill
         bool                        findRepeatedPort(conf::iterator it, conf::iterator &repeated_it);
         void                        checkDuplicateServerNames(conf::iterator &it, conf::iterator &repeated_it);
         void                        flushEssentialsVars(std::vector<std::string> essentials);
+        void                        parseEssentials(std::string essential_str, std::vector<std::string> essentials_vec);
+        void                        parseLocations(std::vector<std::string> locations);
+        void                        locationBasicCheck(std::string location);
+        void                        fillLocations(std::string location);
+        void                        fillLocationPath(std::vector<std::string> &location_options,
+                                         std::string &path);
+
         std::vector<std::string>    multiple_ports;
         std::vector<std::string>    multiple_index;
     private:

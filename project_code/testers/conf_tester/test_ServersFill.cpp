@@ -3,26 +3,32 @@
 #include "tester.hpp"
 
 
-void    test_repeated_port()
+
+
+void    test_lcation_firstLine()
 {
-    std::string second_essential = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    tokenized_conf tokenized_server = fill_second_essential(second_essential);
+    tokenized_conf tokenized_server =  dummy_location_fill("locaion /; methods GET   ;\n index youpi.bad_extension;");
     ServerFill    fill(tokenized_server);
-    negative_essential_try_catch(fill, "Duplicated port with same server name");
-    second_essential = "listen 3400;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    tokenized_server = fill_second_essential(second_essential);
-    ServerFill    filled(tokenized_server);
-    positive_essential_try_catch(filled, "non dublicate port port");
-    second_essential = "listen 3490;\nserver_name 127.0.0.1 ;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    tokenized_server = fill_second_essential(second_essential);
-    ServerFill    filler(tokenized_server);
-    negative_essential_try_catch(filler, "dublicate port with duplicate server name");
-    second_essential = "listen 3490;\nserver_name defualt server ;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    tokenized_server = fill_second_essential(second_essential);
-    ServerFill    f(tokenized_server);
-    positive_essential_try_catch(f, "dublicate port with different server name");
+    negative_essential_try_catch(fill, "bad location word");
+    tokenized_server.clear();
+    tokenized_server =  dummy_location_fill("location location /; methods GET   ;\n index youpi.bad_extension;");
+    ServerFill filled(tokenized_server);
+    negative_essential_try_catch(filled, "repeated location word");
+    tokenized_server.clear();
+    tokenized_server =  dummy_location_fill("location /;");
+    ServerFill filld(tokenized_server);
+    negative_essential_try_catch(filld, "no options just location word");
+}
 
+tokenized_conf    dummy_location_fill(std::string location)
+{
+    tokenized_conf tokenized_server;
 
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    locations.push_back(location);
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    return (tokenized_server);
 }
 tokenized_conf    dummy_conf_tokens()
 {
@@ -30,14 +36,38 @@ tokenized_conf    dummy_conf_tokens()
 
     std::vector<std::string> locations;
     std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    locations.push_back("location / {\nlimit_except GET {\n    deny all;\n}\ntry $uri $uri/ youpi.bad_extension;");
-    locations.push_back("location /put_test/ {\nlimit_except PUT {\n    deny all;\n}\n alias /intra/YoupiBanane/PUT/;");
-    locations.push_back("location .bla {\n        include fastcgi_params;\nfastcgi_pass unix:/path/to/your/cgi_test_socket.sock;\n fastcgi_param SCRIPT_FILENAME /path/to/your/cgi_test_executable;");
-    locations.push_back("location /post_body {\nlimit_except POST {\n    deny all;\n}\n client_max_body_size 100m;");
-    locations.push_back("location /directory/\nalias /intra/YoupiBanane/;\nindex youpi.bad_extension;\ntry_files $uri $uri/ /youpi.bad_extension;\nautoindex on;\ntry 404 /erros/error1.html;");
+    locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
+    locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
+    locations.push_back("location .bla ;        include fastcgi_params;\ncgi-bin /path/to/your/cgi_test_socket.sock;\n fastcgi_param SCRIPT_FILENAME /path/to/your/cgi_test_executable;");
+    locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100m;client_max_body_size \t\t100m;");
+    locations.push_back("location .bla; methods POST ; cgi-exec /path/to/your/cgi_test_socket.sock;");
+    locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html;");
+    locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html; redirection 301 /PUT/;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     return (tokenized_server);
 }
+
+
+void    test_Essentials()
+{
+    tokenized_conf tokenized_server = dummy_conf_tokens();
+    ServerFill    fill(tokenized_server);
+    // fill.servers.visualize_config();
+    // visualize_tokens(fill._conf_tokens);
+    test_emptyEssentials(fill);
+    test_lenEssentials(fill);
+    test_mixSpacesEssentials(fill);
+    test_essentialOccurance(fill);
+    test_listenConf(fill);
+    test_hostNameConf(fill);
+    test_rootConf(fill);
+    test_indexConf(fill);
+    test_bodySizeConf(fill);
+    test_manyConfs(fill);
+    test_repeated_port();
+    // runServer(servers);
+}
+
 
 tokenized_conf    fill_second_essential(std::string second_essential)
 {
@@ -55,7 +85,7 @@ void    test_bodySizeConf(ServerFill &fill)
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size;";
     negative_essential_try_catch(fill, "empty client_max_body_size");
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100;";
-    fill.parseEssentials();
+    fill.parseTokens();
     if (!servers[0].empty() && inMap(servers[0], "Max-Body"))
         std::cout << BOLDGREEN << "has client_max_body_size key configuration test passed 😀" << RESET <<std::endl;
     else
@@ -78,19 +108,19 @@ void    test_indexConf(ServerFill &fill)
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "NO index test");
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot  intra/YoupiBanane;\nindex index.html;\nclient_max_body_size 100;";
-    fill.parseEssentials();
+    fill.parseTokens();
     if (!servers[0].empty() && inMap(servers[0], "index"))
         std::cout << BOLDGREEN << "has index key configuration test passed 😀" << RESET <<std::endl;
     else
         std::cout << BOLDRED << "has index key configuration test failed 😱" << RESET << std::endl;
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    fill.parseEssentials();
+    fill.parseTokens();
     if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["index"] == "youpi.bad_extension")
         std::cout << BOLDGREEN << "has youpi.bad_extension configuration test passed 😀" << RESET <<std::endl;
     else
         std::cout << BOLDRED << "has youpi.bad_extension configuration test failed 😱" << RESET << std::endl;
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex index.html;\nclient_max_body_size 100;";
-    fill.parseEssentials();
+    fill.parseTokens();
     if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["index"] == "index.html")
         std::cout << BOLDGREEN << "has index.html configuration test passed 😀" << RESET <<std::endl;
     else
@@ -103,7 +133,7 @@ void    test_rootConf(ServerFill &fill)
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot / intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     negative_essential_try_catch(fill, "2 roots test");
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    fill.parseEssentials();
+    fill.parseTokens();
     if (!servers[0].empty() && inMap(servers[0], "root"))
         std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
     else
@@ -113,7 +143,7 @@ void    test_rootConf(ServerFill &fill)
     else
         std::cout << BOLDRED << "has root key configuration test failed 😱" << RESET << std::endl;
     fill._conf_tokens[0].first = "listen 333;\nserver_name local_host;\nroot /;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
-    fill.parseEssentials();
+    fill.parseTokens();
     // std::cout << servers[0]["root"] << std::endl;
     if (!servers[0].empty() && inMap(servers[0], "root") && servers[0]["root"] == fill.servers.getPwd()  + "/")
         std::cout << BOLDGREEN << "has root key configuration test passed 😀" << RESET <<std::endl;
@@ -134,7 +164,7 @@ void    test_hostNameConf(ServerFill &fill)
     fill._conf_tokens[0].first = "listen 2345;\nserver_name 127.0.0.1 \tlocal_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "multiple  server names ");
     
-    fill.parseEssentials();
+    fill.parseTokens();
     if (servers.empty() || !inMap(servers[0], "server_name"))
         std::cout << BOLDRED << "hostname found in server test failed 😱" << RESET << std::endl;
     else
@@ -206,7 +236,7 @@ void    test_emptyEssentials(ServerFill &fill)
 
     try
     {
-        fill.parseEssentials();
+        fill.parseTokens();
         std::cout << BOLDRED << "Test empty Essentials failed 😱" << RESET << std::endl;
 
     }
@@ -278,7 +308,7 @@ void    negative_essential_try_catch(ServerFill &fill, std::string TestCase)
 {
     try
     {
-        fill.parseEssentials();
+        fill.parseTokens();
         std::cout << BOLDRED << TestCase << " failed 😱" << RESET << std::endl;
 
     }
@@ -293,7 +323,7 @@ void    positive_essential_try_catch(ServerFill &fill, std::string TestCase)
 {
     try
     {
-        fill.parseEssentials();
+        fill.parseTokens();
         std::cout << BOLDGREEN << TestCase << " test passed 😀" << RESET <<std::endl;
 
     }
@@ -302,4 +332,26 @@ void    positive_essential_try_catch(ServerFill &fill, std::string TestCase)
         std::cout << BOLDRED << TestCase << " failed 😱" << RESET << std::endl;
         std::cerr << e.what() << '\n';
     }
+}
+
+void    test_repeated_port()
+{
+    std::string second_essential = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_conf tokenized_server = fill_second_essential(second_essential);
+    ServerFill    fill(tokenized_server);
+    negative_essential_try_catch(fill, "Duplicated port with same server name");
+    second_essential = "listen 3400;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_server = fill_second_essential(second_essential);
+    ServerFill    filled(tokenized_server);
+    positive_essential_try_catch(filled, "non dublicate port port");
+    second_essential = "listen 3490;\nserver_name 127.0.0.1 ;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_server = fill_second_essential(second_essential);
+    ServerFill    filler(tokenized_server);
+    negative_essential_try_catch(filler, "dublicate port with duplicate server name");
+    second_essential = "listen 3490;\nserver_name defualt server ;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    tokenized_server = fill_second_essential(second_essential);
+    ServerFill    f(tokenized_server);
+    positive_essential_try_catch(f, "dublicate port with different server name");
+
+
 }

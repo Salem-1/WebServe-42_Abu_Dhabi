@@ -2,7 +2,7 @@
 
 ServerFill::ServerFill(tokenized_conf &conf_tokens): _conf_tokens(conf_tokens), i(0)
 {
-    // parseEssentials();
+    // parseTokens();
 }
 
 
@@ -12,22 +12,68 @@ ServerFill::~ServerFill()
 }
 
 
-bool    ServerFill::parseEssentials()
+bool    ServerFill::parseTokens()
 {
-    std::vector<std::string> essentials;
+    std::vector<std::string> essentials_vec;
     i = 0;
     servers.servers.clear();
     for (tokenized_conf::iterator it = _conf_tokens.begin();
         it != _conf_tokens.end(); ++it)
     {
-        flushEssentialsVars(essentials);
-        replaceNlAndTabs(it->first);
-        essentialsBasicCheck(it->first, essentials);
-        fillEssentials(essentials);
+        parseEssentials(it->first, essentials_vec);
+        parseLocations(it->second);
     }
     checkRepeatedServers();
     return (true);
 }
+
+void     ServerFill::parseEssentials(std::string essential_str, std::vector<std::string> essentials_vec)
+{
+        flushEssentialsVars(essentials_vec);
+        replaceNlAndTabs(essential_str);
+        essentialsBasicCheck(essential_str, essentials_vec);
+        fillEssentials(essentials_vec);
+}
+
+void    ServerFill::parseLocations(std::vector<std::string> locations)
+{
+    for (std::vector<std::string>::iterator it = locations.begin();
+        it != locations.end(); it++)
+    {
+        // std::cout << *it << std::endl; 
+        replaceNlAndTabs(*it);
+        locationBasicCheck(*it);
+        fillLocations(*it);
+    }
+}
+
+void    ServerFill::fillLocations(std::string location)
+{
+    std::set<std::string>       no_repeate_arg;
+    std::vector<std::string>    location_options = split(location, ";");
+    std::string                 path;
+
+    fillNoRepeateArg(no_repeate_arg);
+    fillLocationPath(location_options, path);
+}
+
+void    ServerFill::fillLocationPath(std::vector<std::string> &location_options, std::string &path)
+{
+    if (location_options.size() < 2)
+        throw(std::runtime_error("Bad config file: incomplete location block"));
+    std::vector<std::string> tmp_location_path = split(location_options[0], " ");
+    if (tmp_location_path.size() != 2 || tmp_location_path[0] != "location")
+        throw(std::runtime_error("Bad config file: bad location block"));
+    path = location_options[1];
+    
+}
+
+void    ServerFill::locationBasicCheck(std::string location)
+{
+    if (location.length() < 13)
+        throw(std::runtime_error("Bad configuration file: bad location"));
+}
+
 
 void    ServerFill::flushEssentialsVars(std::vector<std::string> essentials)
 {
@@ -92,7 +138,7 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
     std::set<std::string> essentials_arg;
     std::vector<std::string> single_essential;
     servers.servers.push_back(stringmap());
-    fill_essential_arg(essentials_arg);
+    fillEssentialArg(essentials_arg);
     for (std::vector<std::string>::iterator it = essentials.begin(); it != essentials.end(); ++it)
     {
         single_essential = split(*it, " ");
@@ -228,11 +274,18 @@ int ServerFill::isAllDigit(std::string str)
 
 // }
 
-void    ServerFill::fill_essential_arg(std::set<std::string>  &essentials_arg)
+void    ServerFill::fillEssentialArg(std::set<std::string>  &essentials_arg)
 {
     essentials_arg.insert("listen");
     essentials_arg.insert("server_name");
     essentials_arg.insert("index");
     essentials_arg.insert("root");
     essentials_arg.insert("client_max_body_size");
+};
+void    ServerFill::fillNoRepeateArg(std::set<std::string>  &no_repeate_arg)
+{
+    no_repeate_arg.insert("root");
+    no_repeate_arg.insert("index");
+    no_repeate_arg.insert("client_max_body_size");
+    no_repeate_arg.insert("cgi-bin");
 };
