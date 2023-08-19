@@ -3,9 +3,24 @@
 #include "tester.hpp"
 
 
+void    test_no_root_no_location_root()
+{
+    std::cout << "Make it after finishing locations inshalla" << std::endl;
+};
+
 void    test_index()
 {
-    one_location_test("location /;root /YoupiBanan; index index.html; nonsense on", "nonsesnse give as directive", "-");
+    one_location_test("location /;root /YoupiBanan; index ", "no indexes directive", "-");
+    one_location_test("location /;root /YoupiBanan; index youbi.bla index.html", "2 indexes directive", "-");
+    tokenized_conf tokenized_server =  dummy_location_fill("location /; root //; methods GET   ;\n index index.html;");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/ index"], "index.html", "correct index passes index.html");
+    tokenized_server =  dummy_location_fill("location /YoubiBanana; root /YoubiBanana/dir; methods GET   ;\n index youpi.bad_extension;");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/YoubiBanana index"], "youpi.bad_extension", "correct index passes Youbi");
+ 
 }
 
 void    test_location_root()
@@ -14,24 +29,22 @@ void    test_location_root()
     ServerFill    fill(tokenized_server);
 
     positive_essential_try_catch(fill, "Normal location");
-    cmp_strings(fill.servers.servers[0]["/"], "/YoubiBanana", "correct location root");
+    cmp_strings(fill.servers.servers[0]["/"], fill.servers.servers[0]["root"] + "/YoubiBanana", "correct location root");
     one_location_test("location /;root ;", "root has no path", "-");
     one_location_test("location /;root /youbi not youbi;", "root has 3 pathes", "-");
     one_location_test("location /;root /youbi ;", "normal location", "+");
     tokenized_server =  dummy_location_fill("location /; root /put-test; methods GET   ;\n index youpi.bad_extension;");
     ServerFill    fi(tokenized_server);
     fi.parseTokens();
-    cmp_strings(fi.servers.servers[0]["/"], "/put-test", "put-test location root ");
+    cmp_strings(fi.servers.servers[0]["/"], fi.servers.servers[0]["root"] + "/put-test", "put-test location root ");
     tokenized_server =  dummy_location_fill("location /; root /put-tgxfhkljhcgvhjklhgfchvjklhcgfhvjbklhvgcfxgvjhbkbhv21346jvvv5hvvh3crfqyvewctiy23ewugvwdvavhgvdbahfgvdbhgsvudyibahsgvdfyilhsvfyidhsgyusyghyfgygvbiugglersg2sd62gest; methods GET   ;\n index youpi.bad_extension;");
     ServerFill    f(tokenized_server);
     f.parseTokens();
-    cmp_strings(f.servers.servers[0]["/"], "/put-tgxfhkljhcgvhjklhgfchvjklhcgfhvjbklhvgcfxgvjhbkbhv21346jvvv5hvvh3crfqyvewctiy23ewugvwdvavhgvdbahfgvdbhgsvudyibahsgvdfyilhsvfyidhsgyusyghyfgygvbiugglersg2sd62gest", "crazy long location root ");
-    // fill.servers.visualize_config();
+    cmp_strings(f.servers.servers[0]["/"],f.servers.servers[0]["root"] +  "/put-tgxfhkljhcgvhjklhgfchvjklhcgfhvjbklhvgcfxgvjhbkbhv21346jvvv5hvvh3crfqyvewctiy23ewugvwdvavhgvdbahfgvdbhgsvudyibahsgvdfyilhsvfyidhsgyusyghyfgygvbiugglersg2sd62gest", "crazy long location root ");
     tokenized_server =  dummy_location_fill("location /; root /; methods GET   ;\n index youpi.bad_extension;");
     ServerFill    fe(tokenized_server);
     fe.parseTokens();
-    cmp_strings(fe.servers.servers[0]["/"], "/", "/ location root ");
-    // fill.servers.visualize_config();
+    cmp_strings(fe.servers.servers[0]["/"], fe.servers.servers[0]["root"] + "/", "/ location root ");
 }
 
 void    cmp_strings(std::string left, std::string right, std::string msg)
@@ -117,8 +130,6 @@ void    test_Essentials()
 {
     tokenized_conf tokenized_server = dummy_conf_tokens();
     ServerFill    fill(tokenized_server);
-    // fill.servers.visualize_config();
-    // visualize_tokens(fill._conf_tokens);
     test_emptyEssentials(fill);
     test_lenEssentials(fill);
     test_mixSpacesEssentials(fill);
@@ -258,8 +269,7 @@ void    test_listenConf(ServerFill &fill)
     fill.multiple_ports.clear();
     fill._conf_tokens[0].first = "listen 234; listen 5000;listen 4000;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     positive_essential_try_catch(fill, "3 legal ports in same listen");
-    // std::cout << "Multiple port size = " << fill.multiple_ports.size() << std::endl;
-    // visualize_string_vector(fill.multiple_ports, "Multiple ports");
+
     
 }
 
@@ -279,7 +289,7 @@ void    test_manyConfs(ServerFill &fill)
     else
         std::cout << BOLDGREEN << "3 servers exists test passed 😀";
     std::cout << " We have " << fill.servers.servers.size() << " servers" << RESET << std::endl;
-    // fill.servers.visualize_config();
+
 }
 void visualize_tokens(tokenized_conf &tokens)
 {

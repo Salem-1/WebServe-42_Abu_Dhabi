@@ -93,9 +93,18 @@ void    ServerFill::fillLocations(std::string location)
 void    ServerFill::fillRestLocationDirectives(locations_args & args)
 {
         fillRootLocation(args);
+        fillIndexLocation(args);
 
 }
 
+void    ServerFill::fillIndexLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "index")
+        return ;
+    if (args.tmp_directive.size() != 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of root directive arguments"));
+    servers.servers[i][args.path + " index"] = args.tmp_directive[1];
+}
 void    ServerFill::fillRootLocation(locations_args &args)
 {
 
@@ -103,7 +112,7 @@ void    ServerFill::fillRootLocation(locations_args &args)
         return ;
     if (args.tmp_directive.size() != 2)
         throw(std::runtime_error("Bad configuration file: wrong number of root directive arguments"));
-    servers.servers[i][args.path] = args.tmp_directive[1];
+    servers.servers[i][args.path] = servers.servers[i]["root"] + args.tmp_directive[1];
 }
 
 void    ServerFill::fillArgs(locations_args &args, std::string &path, 
