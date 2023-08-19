@@ -45,11 +45,10 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     response["Status-code"].push_back("200");
 	std::string cgi_path = isCGI(request);    
 	std::vector<std::string> supported_methods;
-    ErrResponse err;
     std::string msg;
 
     if (cgi_path != "")
-		response_string = responseCGI(request, server_info, cgi_path, err, full_request.body);
+		response_string = responseCGI(request, server_info, cgi_path, full_request);
 	else if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {
@@ -65,7 +64,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
         //@ Ahmed MAHDI also can you put the CGI check here    
         response_string = normalGETResponse(request, server_info);
-        std::cout << "redirection packet = " << response_string;
+        // std::cout << "redirection packet = " << response_string;
 
     }
     else if (request.find("POST") != request.end())
@@ -83,11 +82,10 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         Post apost(request, full_request, server_info, response);
 		// apost.printPostHeader();
 		// TODO: Get pdf files get to this point
-		apost.printPostBody();
+		// apost.printPostBody();
 		// exit(0);
 		apost.handlePost();
 		response_string = apost.get_response();
-		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
     }
     else if (request.find("PUT") != request.end())
     {
@@ -102,10 +100,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             msg =  ":) PUT is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             std::cout << msg<< std::endl;
         PUT put(request, full_request, server_info, response);
-		put.printPUTBody();
+		// put.printPUTBody();
 		put.handlePUT();
 		response_string = put._response;
-		std::cout << BOLDYELLOW << "responding to PUT: " << response_string<<  std::endl << RESET;
     }
     else if (request.find("DELETE") != request.end())
     {

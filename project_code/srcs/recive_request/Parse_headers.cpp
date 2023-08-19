@@ -37,7 +37,7 @@ int Parser::validPacketHeaders()
 		throw(std::runtime_error("405"));
     for (packet_map::iterator it= request.begin(); it != request.end(); ++it)
     {
-        if (valid_headers.find(it->first) == valid_headers.end())
+        if (it->first.find("X-") != 0 && valid_headers.find(it->first) == valid_headers.end())
 		{
 			std::cout << BOLDGREEN << "Header <" << it->first << "> not a valid header" << RESET <<std::endl;
             return (0);

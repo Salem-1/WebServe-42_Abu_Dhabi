@@ -76,7 +76,7 @@ void    Parser::parse(char *new_buffer)
     packet.append(new_buffer, bytes_read);
     
     // vis_str(new_buffer, "new_buffer inside parser");
-    // vis_str(packet, "packet inside parser");
+    // vis_str(packet, "packet inside parser\n");
 	    
     if (fullheader == false)
 	{
@@ -91,6 +91,7 @@ void    Parser::parse(char *new_buffer)
 				full_request.header = packet.substr(0, body_start_pos);
 				fillHeaderRequest(full_request.header);
 				fullheader = true;
+				print_to_file("/Users/ayassin/Desktop/green.txt", full_request.header);
 			}
 			full_request.request_is_valid = checkHeaders();
 			if (full_request.header.find("HTTP/1.1") == std::string::npos)
@@ -101,6 +102,7 @@ void    Parser::parse(char *new_buffer)
 				read_again = 0;
 				return ;
 			}
+
 		}
 	}
 	if (Parser::fullheader == true && Parser::fullbody == false && full_request.request_is_valid)
@@ -191,9 +193,7 @@ std::string Parser::parseChunks(const std::string &s, const std::string &delimit
 		{
 			if (token.length() > 8 || token.length() < 1)
 				throw(std::runtime_error("400"));
-			// what if extar chars are present
   			sscanf(token.c_str(), "%lx", &value);
-  			std::cout << value << std::endl;
 		}
 		else
 		{
@@ -217,7 +217,6 @@ void	Parser::fillBodyRequest()
 		{
 			full_request.body = parseChunks(packet.substr(Parser::body_start_pos), "\r\n");
 			full_request.body_content_length = full_request.body.length();
-			// std::cout << BOLDYELLOW << full_request.body << std::endl << RESET;
 			read_again = 0;
 			fullbody = 1;
 		}

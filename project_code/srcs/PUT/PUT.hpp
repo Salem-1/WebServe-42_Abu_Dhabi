@@ -13,6 +13,7 @@ protected:
 	response_packet _response_pack;
 	ErrResponse		err;
 public:
+	PUT(packet_map &request_map, t_request &full_request, stringmap &server_info);
 	PUT(packet_map &request_map, t_request &full_request, stringmap &server_info, response_packet &response);
 	~PUT();
 	void		printPUTHeader();
