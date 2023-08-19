@@ -7,10 +7,10 @@ void    test_no_root_no_location_root()
 {
     std::cout << "Make it after finishing locations inshalla" << std::endl;
 };
-void    test_methods()
+void    test_error_page()
 {
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT", "Normal method", "+");
-
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT", "Normal method", "-");
+}
 void    test_index()
 {
     one_location_test("location /;root /YoupiBanan; index ", "no indexes directive", "-");

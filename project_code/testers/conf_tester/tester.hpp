@@ -30,4 +30,5 @@ void            cmp_bool(bool left, bool right, std::string msg);
 void            test_index();
 void            test_autoindex();
 void            test_methods();
+void            test_error_page();
 #endif  
