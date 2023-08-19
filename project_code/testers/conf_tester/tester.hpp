@@ -28,4 +28,6 @@ void            one_location_test(
 void            cmp_strings(std::string left, std::string right, std::string msg);
 void            cmp_bool(bool left, bool right, std::string msg);
 void            test_index();
+void            test_autoindex();
+void            test_methods();
 #endif  

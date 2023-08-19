@@ -22,6 +22,46 @@ void    test_index()
     cmp_strings(fil.servers.servers[0]["/YoubiBanana index"], "youpi.bad_extension", "correct index passes Youbi");
  
 }
+void    test_methods()
+{
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT", "Normal method", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods ", "empty method", "-");
+    one_location_test("location /;root /YoupiBanan; methods GGET;", "wrong method", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST GET", "Repeated method", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT OPTION", "more than allowed method", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT GET", "repeated method", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE put", "bad case method", "-");
+
+    tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET ;");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/ methods"], "GET", "correct GET method");
+    tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST;");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/ methods"], "GET POST", "methods GET POST");
+    tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods DELETE PUT GET POST;");
+    ServerFill    f(tokenized_server);
+    f.parseTokens();
+    cmp_strings(f.servers.servers[0]["/ methods"], "DELETE PUT GET POST", "methods DELETE PUT GET POST");
+}
+
+void    test_autoindex()
+{
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on ", "no semicolon normal indexes directive", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex;", "no option autoindex directive", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on off;", "2 autoindexes options directive", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex ol;", "wrong autoindexes options directive", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex of;", "wrong autoindexes options directive", "-");
+    tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on;");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/ autoindex"], "on", "correct autoindex on");
+    tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex off;");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/ autoindex"], "off", "correct autoindex off");
+}
 
 void    test_location_root()
 {

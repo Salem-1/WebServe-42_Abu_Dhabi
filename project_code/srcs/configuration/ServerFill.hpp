@@ -48,9 +48,12 @@ class ServerFill
         void                        fillRestLocationDirectives(locations_args &args);
         void                        fillRootLocation(locations_args &args);
         void                        fillIndexLocation(locations_args &args);
+        void                        fillAutoIndexLocation(locations_args &args);
         void                        fillServerPorts();
         void                        fillArgs(locations_args &args, std::string &path, 
                                         std::vector<std::string> &location_options, std::set<std::string>  &no_repeate_arg);
+
+        void                        fillmethodsLocation(locations_args &args);
         std::vector<std::string>    multiple_ports;
         std::vector<std::string>    multiple_index;
     private:

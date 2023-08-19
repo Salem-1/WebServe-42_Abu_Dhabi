@@ -94,7 +94,44 @@ void    ServerFill::fillRestLocationDirectives(locations_args & args)
 {
         fillRootLocation(args);
         fillIndexLocation(args);
+        fillAutoIndexLocation(args);
+        fillmethodsLocation(args);
 
+}
+
+void    ServerFill::fillmethodsLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "methods")
+        return ;
+    if (args.tmp_directive.size() < 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of methods arguments"));
+    std::set<std::string> allowed_methods;
+    allowed_methods.insert("GET");
+    allowed_methods.insert("POST");
+    allowed_methods.insert("DELETE");
+    allowed_methods.insert("PUT");
+    for (std::vector<std::string>::iterator it = ++args.tmp_directive.begin();
+            it != args.tmp_directive.end(); ++it)
+    {
+        if (!inSet(allowed_methods, *it))
+            throw(std::runtime_error("Bad configuration file: bad of methods arguments"));
+        servers.servers[i][args.path + " methods"] += *it;
+        if (it + 1 != args.tmp_directive.end())
+            servers.servers[i][args.path + " methods"] += " ";
+        allowed_methods.erase(*it);
+    }
+}
+
+void    ServerFill::fillAutoIndexLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "autoindex")
+        return ;
+    if (args.tmp_directive.size() != 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of autindex directive arguments"));
+    if (args.tmp_directive[1] == "on" || args.tmp_directive[1] == "off")
+        servers.servers[i][args.path + " autoindex"] = args.tmp_directive[1];
+    else
+        throw(std::runtime_error("Bad configuration file: wrong  autindex directive argument"));
 }
 
 void    ServerFill::fillIndexLocation(locations_args &args)
@@ -102,9 +139,10 @@ void    ServerFill::fillIndexLocation(locations_args &args)
     if(args.tmp_directive[0] != "index")
         return ;
     if (args.tmp_directive.size() != 2)
-        throw(std::runtime_error("Bad configuration file: wrong number of root directive arguments"));
+        throw(std::runtime_error("Bad configuration file: wrong number of index directive arguments"));
     servers.servers[i][args.path + " index"] = args.tmp_directive[1];
 }
+
 void    ServerFill::fillRootLocation(locations_args &args)
 {
 
@@ -304,7 +342,6 @@ void    ServerFill::essentialsBasicCheck(std::string &row_essentials, std::vecto
         if(row_essentials.size() < 20)
             throw(std::runtime_error("Bad config file: Empty essentials_vec 💩"));
         essentials_vec = split(row_essentials, ";");
-        
 }
 
 int ServerFill::isAllDigit(std::string str)

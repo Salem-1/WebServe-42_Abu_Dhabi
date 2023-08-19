@@ -11,6 +11,8 @@ int main()
     test_lcation_firstLine();
     test_location_root();
     test_index();
+    test_autoindex();
+    test_methods();
     return (0);
 }
 
