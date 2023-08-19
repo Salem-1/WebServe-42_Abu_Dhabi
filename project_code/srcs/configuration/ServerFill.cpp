@@ -96,9 +96,18 @@ void    ServerFill::fillRestLocationDirectives(locations_args & args)
         fillIndexLocation(args);
         fillAutoIndexLocation(args);
         fillmethodsLocation(args);
+        fillErrorPageLocation(args);
 
 }
 
+
+void    ServerFill::fillErrorPageLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "methods")
+        return ;
+    if (args.tmp_directive.size() < 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of methods arguments"));
+}
 void    ServerFill::fillmethodsLocation(locations_args &args)
 {
     if(args.tmp_directive[0] != "methods")
