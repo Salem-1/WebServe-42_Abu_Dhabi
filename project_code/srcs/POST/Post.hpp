@@ -13,6 +13,7 @@ private:
 	response_packet _response_pack;
 	void			sendToBackend();
 	void			handleUpload();
+	bool    	postBody(std::string path);
 
 public:
 	Post(packet_map &request_map, t_request &full_request, stringmap &server_info
@@ -24,7 +25,6 @@ public:
 	void		handlePost();
 	std::string	get_response() const;
 	static void	visualizeStringMap(packet_map &map);
-	bool    	postBody(std::string path);
 };
 
 #endif 

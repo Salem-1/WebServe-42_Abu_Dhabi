@@ -95,7 +95,7 @@ bool    PUT::putBody(std::string path)
 std::string    PUT::fillOkResponse()
 {
     this->_response = "HTTP/1.1 201 Created\r\n"
-	            "Server: webserve/1.0\r\n"
+	            "Server: Phantoms\r\n"
                 "Date: "
                 + getTimeBuffer()
 		        + "\r\n";

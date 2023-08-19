@@ -106,6 +106,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
     // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
+	servers[0]["cgi-bin"] = pwd + "/intra/cgi-bin";
     
    
    

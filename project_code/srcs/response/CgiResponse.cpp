@@ -61,7 +61,7 @@ std::string	fillingResponsePacket(packet_map &request, std::string &full_file_to
 	std::string response_packet;
 	
 	response_packet = "HTTP/1.1" + status;
-	response_packet += "Server: webserve/1.0\r\n";
+	response_packet += "Server: Phantoms\r\n";
 	response_packet += "Date: ";
 	response_packet += getTimeBuffer();
 	response_packet += "Content-Type:" + type;
