@@ -99,7 +99,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     servers[0]["/ methods"] = "GET";
-    servers[0]["Max-Body"] = "100";
+    servers[0]["Max-Body"] = "10000000000";
     servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
@@ -170,7 +170,8 @@ void   intra_config(conf &servers)
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     servers[0]["/ methods"] = "GET";
-    servers[0]["Max-Body"] = "100";
+    servers[0]["Max-Body"] = "10000000000";
+    // servers[0]["/post-body Max-Body"] = "10000000000";
     servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
@@ -205,7 +206,7 @@ void   intra_config(conf &servers)
     ["index"] = "youpi.bad_extension";
     ["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     ["/ methods"] = "GET";
-    ["Max-Body"] = "100";
+    ["Max-Body"] = "10000000000";
     ["/directory"] = servers[0]["root"] + "/";
     ["/directory index"] = "youpi.bad_extension" ;
     ["/put_test methods"] = "PUT" ;
@@ -241,6 +242,6 @@ void    list_dir_options(conf &servers)
     servers[0]["/secret autoindex"] = "off";
     
     
-    servers[0]["Max-Body"] = "8000";
+    servers[0]["Max-Body"] = "100000000000";
     servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos attacks/ddos.html 301";
 }

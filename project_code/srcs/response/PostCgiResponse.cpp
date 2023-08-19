@@ -72,9 +72,9 @@ std::string ReadAndWirte(int infd, int outfd, std::string &body)
 						throw(std::runtime_error("write faild"));
 					}
 					pos += count;
-					if (pos >= body.length())
-						close(infd);
 				}
+				if (pos >= body.length())
+					close(infd);
 				// std::cout << "Write event occurred on fd: " << events[i].ident << std::endl;
 			}
 		}

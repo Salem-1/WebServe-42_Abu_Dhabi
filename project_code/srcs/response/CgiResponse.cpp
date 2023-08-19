@@ -20,7 +20,7 @@ std::string	Respond::isCGI(packet_map &request)
 	return ("");
 }
 
-std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, ErrResponse &err, std::string &body)
+std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, t_request &full_request)
 {
 	std::string query;
     std::cout << "inside response CGI" << std::endl;
@@ -34,11 +34,11 @@ std::string Respond::responseCGI(packet_map &request, stringmap &server_info, st
 	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
 	std::cout << BOLDGREEN << "query = " << query << std::endl << RESET;
 	if (request.find("GET") != request.end())
-		return (execute(server_info, full_cgi_path, query, err));
-	return (postExecute(server_info, full_cgi_path, query, err, body));
+		return (execute(request, full_request, server_info, full_cgi_path));
+	return (postExecute(request, full_request, server_info, full_cgi_path));
 }
 
-std::string	fillingResponsePacket(std::string &full_file_to_string)
+std::string	fillingResponsePacket(packet_map &request, std::string &full_file_to_string)
 {
 	
 	std::string status =  " 200 OK\r\n";
@@ -65,73 +65,64 @@ std::string	fillingResponsePacket(std::string &full_file_to_string)
 	response_packet += "Date: ";
 	response_packet += getTimeBuffer();
 	response_packet += "Content-Type:" + type;
+	if (request.find("X-Secret-Header-For-Test:") !=  request.end())
+		response_packet += "X-Secret-Header-For-Test: 1\r\n";
 	std::stringstream ss;
 	ss << body.length();
-    response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
+	response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
 	response_packet += body; 
 	return (response_packet);
 }
 
-void	childExecute(int *fd, std::string &path, std::string str_args)
-{
-	int env_size = 3;
-	int i_env = -1;
-	int i_args = -1;
-	std::string hrdcode[] = {"SERVER_PROTOCOL=HTTP/1.1",
-							"REQUEST_METHOD=POST", 
-							"PATH_INFO=/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/YoupiBanane/youpi.bla"};
-	char **env = NULL;
-	char **args = NULL;
-	try
-	{
-		if (dup2(fd[1], STDOUT_FILENO) == -1)
-			throw(std::runtime_error("dup failed"));
-		close(fd[1]);
-		close(fd[0]);
-		const char *temp_path = path.c_str();
-		env = new char*[env_size + 1];
-		env[env_size] = NULL;
-		++i_env;
-		for (; i_env < env_size; ++i_env)
-		{
-			env[i_env] = new char[200];
-			strcpy(env[i_env], hrdcode[i_env].c_str());
-		}
-		if (str_args != "")
-		{
-			args = new char*[2];
-			args[1] = NULL;
-			++i_args;
-			args[i_args] = new char[200];
-			strcpy(args[i_args++], str_args.c_str());
-			std::cout << BOLD << args[0] << RESET << std::endl;
-		}
-		if (execve(temp_path, args, env) ==  -1)
-		{
-			perror("execve failed: ");
-			std::cerr << "It freakin faild to execute " << temp_path << std::endl;
-		}
-		for (int j = 0; j < env_size; ++j)
-			delete env[j];
-		delete[] env;
-		std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
-		exit(127);
 
-	}
-	catch (std::bad_alloc &e)
-	{
-		for (int j = 0; j < i_env; ++j)
-			delete env[j];
-		if (i_env > 0)
-			delete[] env;
-		if (i_args == 1)
-			delete args[0];
-		else if (i_args == 0)
-			delete [] args;
-		std::cerr << BOLDMAGENTA << e.what() << "*********************\n " << RESET;
-		exit(1);
-	}
-}
+
+
+// void	childExecute(int *fd, std::string &path)
+// {
+// 	int env_size = 4;
+// 	int i_env = -1;
+// 	std::string hrdcode[] = {"SERVER_PROTOCOL=HTTP/1.1",
+// 							"REQUEST_METHOD=POST", 
+// 							"PATH_INFO=/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/YoupiBanane/youpi.bla",
+// 							"HTTP_X_SECRET_HEADER_FOR_TEST=1"};
+// 	char **env = NULL;
+// 	try
+// 	{
+// 		if (dup2(fd[1], STDOUT_FILENO) == -1)
+// 			throw(std::runtime_error("dup failed"));
+// 		close(fd[1]);
+// 		close(fd[0]);
+// 		const char *temp_path = path.c_str();
+// 		env = new char*[env_size + 1];
+// 		env[env_size] = NULL;
+// 		++i_env;
+// 		for (; i_env < env_size; ++i_env)
+// 		{
+// 			env[i_env] = new char[200];
+// 			strcpy(env[i_env], hrdcode[i_env].c_str());
+// 		}
+// 		if (execve(temp_path, NULL, env) ==  -1)
+// 		{
+// 			perror("execve failed: ");
+// 			std::cerr << "It freakin faild to execute " << temp_path << std::endl;
+// 		}
+// 		for (int j = 0; j < env_size; ++j)
+// 			delete env[j];
+// 		delete[] env;
+// 		std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
+// 		exit(127);
+
+// 	}
+// 	catch (std::bad_alloc &e)
+// 	{
+// 		for (int j = 0; j < i_env; ++j)
+// 			delete env[j];
+// 		if (i_env > 0)
+// 			delete[] env;
+// 		std::cerr << BOLDMAGENTA << e.what() << "*********************\n " << RESET;
+// 		exit(1);
+// 	}
+// }
 
 
 std::string readFromChild(int fd)
@@ -155,35 +146,12 @@ std::string readFromChild(int fd)
 	return output;
 }
 
-void writeToChild(int *fd, std::string body)
-{
-	int write_size = 10;
-	ssize_t n = 0;
-	for (size_t i = 0; i < body.length(); i += write_size)
-	{
-		if (i + write_size <= body.length())
-			n = write(fd[1], &(body[i]), write_size);
-		else
-			n = write(fd[1], &(body[i]), body.length() - i);
-
-		if (n < 0)
-		{
-			// closePipe(infd);
-			// closePipe(outfd);
-			// perror("Write inside CGI:");
-			throw(std::runtime_error("out read faild"));
-		}
-	}
-	close(fd[1]);
-}
-
-std::string Respond::execute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err)
+std::string Respond::execute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path)
 {
 	int fd[2];
 	int status = 0;
 	int id = 0;
 	std::string output;
-	(void) args;
 
 	try 
 	{
@@ -196,7 +164,12 @@ std::string Respond::execute(stringmap &server_info, std::string path, std::stri
 			throw(std::runtime_error("fork failed"));
 		}
 		if (id == 0)
-			childExecute(fd, path, "");
+		{
+			ChildExec child(request, full_request, server_info, fd);
+			child.childExecute(path);
+			exit(127);
+		}
+			// childExecute(fd, path);
 		close(fd[1]);
 		output = readFromChild(fd[0]);
 		close(fd[0]);
@@ -208,7 +181,7 @@ std::string Respond::execute(stringmap &server_info, std::string path, std::stri
 			return (err.code(server_info, "501"));
 		}
 		vis_str(output, "inside CGI response");
-		return (fillingResponsePacket(output));
+		return (fillingResponsePacket(request, output));
 	}
 	catch (std::exception &e)
 	{
@@ -219,14 +192,13 @@ std::string Respond::execute(stringmap &server_info, std::string path, std::stri
 
 
 
-std::string Respond::postExecute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err, std::string &body)
+std::string Respond::postExecute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path)
 {
 	int infd[2];
 	int outfd[2];
 	int status = 0;
 	int id = 0;
 	std::string output;
-	(void) args;
 
 	try 
 	{
@@ -246,40 +218,18 @@ std::string Respond::postExecute(stringmap &server_info, std::string path, std::
 		}
 		if (id == 0)
 		{
-			// int write_size = 10;
-			// for (size_t i = 0; i < body.length(); i += write_size)
-			// {
-			// 	ssize_t n = write(infd[1], &(body[i]), write_size);
-			// 	if (n < 0)
-			// 	{
-			// 		perror("Write inside CGI:");
-			// 		// throw(std::runtime_error("out read faild"));
-			// 	}
-			// }
 			if ((dup2(infd[0], STDIN_FILENO) == -1))
 				throw(std::runtime_error("dup stdin failed"));
 			close(infd[1]);
 			close(infd[0]);
 			path = "/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/cgi-bin/cgi_tester";
-			childExecute(outfd, path, "");
+			ChildExec child(request, full_request, server_info, outfd);
+			child.childExecute(path);
+			exit(127);
 		}
-		// {
-		// 	id = fork();
-		// 	if (id == 0)
-		// 	{
-		// 		close(outfd[1]);
-		// 		close(outfd[0]);
-		// 		path = "/bin/echo";
-		// 		childExecute(infd, path, body);
-		// 	}
-		// }
 		close(outfd[1]);
 		close(infd[0]);
-		// output = readAndWrite(infd[1], outfd[0], body);
-		output = ReadAndWirte(infd[1], outfd[0], body);
-		// writeToChild(infd, body);
-		// output = readFromChild(outfd[0]);
-		// close(outfd[0]);
+		output = ReadAndWirte(infd[1], outfd[0], full_request.body);
 		while (waitpid(-1, &status, 0) > 0) {}
 		if (WEXITSTATUS(status))
 		{
@@ -288,7 +238,7 @@ std::string Respond::postExecute(stringmap &server_info, std::string path, std::
 
 		}
 		vis_str(output, "inside CGI response");
-		return (fillingResponsePacket(output));
+		return (fillingResponsePacket(request ,output));
 	}
 	catch (std::exception &e)
 	{

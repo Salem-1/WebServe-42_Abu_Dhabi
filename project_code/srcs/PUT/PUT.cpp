@@ -1,5 +1,27 @@
 #include "PUT.hpp"
 
+PUT::PUT(packet_map &request_map, t_request &full_request, stringmap &server_info):
+    _request_map(request_map), _request(full_request), _server_info(server_info)
+{
+	//fill the default response as error
+	this->_response = "HTTP/1.1 500 Internal Server Error\r\n"
+                       "Content-Type: text/html\r\n"
+                       "Content-Length: 223\r\n\r\n"
+                       "<!DOCTYPE html>\n"
+                       "<html>\n"
+                       "<head>\n"
+                       "    <title>Internal Server Error</title>\n"
+                       "</head>\n"
+                       "<body>\n"
+                       "    <h1>500 Internal Server Error</h1>\n"
+                       "    <p>The server encountered an unexpected condition that prevented it from fulfilling the request.</p>\n"
+                       "</body>\n"
+                       "</html>\n";
+	// this->_request_map = request_map;
+	// this->_request = full_request;
+	// this->_server_info = server_info;
+}
+
 PUT::PUT(packet_map &request_map, t_request &full_request, stringmap &server_info, response_packet &response):
     _request_map(request_map), _request(full_request), _server_info(server_info) , _response_pack(response)
 {
