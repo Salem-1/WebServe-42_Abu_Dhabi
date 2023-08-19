@@ -103,10 +103,13 @@ void    ServerFill::fillRestLocationDirectives(locations_args & args)
 
 void    ServerFill::fillErrorPageLocation(locations_args &args)
 {
-    if(args.tmp_directive[0] != "methods")
+    if(args.tmp_directive[0] != "error_page")
         return ;
-    if (args.tmp_directive.size() < 2)
-        throw(std::runtime_error("Bad configuration file: wrong number of methods arguments"));
+    if (args.tmp_directive.size() != 3)
+        throw(std::runtime_error("Bad configuration file: wrong number of error_page arguments"));
+    if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() != 3)
+        throw(std::runtime_error("Bad configuration file: provided bad error code  error_page arguments"));
+    servers.servers[i][args.path + " " + args.tmp_directive[1]] = args.tmp_directive[2];
 }
 void    ServerFill::fillmethodsLocation(locations_args &args)
 {

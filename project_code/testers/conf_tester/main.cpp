@@ -13,6 +13,7 @@ int main()
     test_index();
     test_autoindex();
     test_methods();
+    test_error_page();
     return (0);
 }
 

@@ -9,7 +9,23 @@ void    test_no_root_no_location_root()
 };
 void    test_error_page()
 {
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT", "Normal method", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page;", "missed error pgae params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page error.html;", "missed error pgae params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 40. error.html;", "missed error pgae params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page -40 error.html;", "non numeric error pgae params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html 403;", "missed error pgae params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html;", "healthy error pgae params", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 4044 error.html;", "wrong error pgae num", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 40 error.html;", "missed error pgae params", "-");
+    tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/ 404"], "error.html", "correct error page error.html");
+    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 403 notfound.html;");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/YoupiBanana 403"], "notfound.html", "correct error page notfound.html");
+
 }
 void    test_index()
 {
