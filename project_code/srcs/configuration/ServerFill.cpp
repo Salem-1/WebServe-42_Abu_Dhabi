@@ -82,6 +82,12 @@ void    ServerFill::fillLocations(std::string location)
         fillCgiBinLocation(args);
         return ;
     }
+    else if (args.path[0] == '.')
+    {
+        fillCGIExecutable(args);
+        return ;
+    }
+
     for (std::vector<std::string>::iterator it = ++location_options.begin();
         it != location_options.end(); ++it)
     {
@@ -94,6 +100,22 @@ void    ServerFill::fillLocations(std::string location)
     }
 }
 
+void    ServerFill::fillCGIExecutable(locations_args & args)
+{
+        for (std::vector<std::string>::iterator it = ++args.location_options.begin();
+        it != args.location_options.end(); ++it)
+    {
+        args.tmp_directive = split(*it, " ");
+        if (args.tmp_directive.empty())
+            continue;   
+        if (args.tmp_directive.size() != 2)
+            throw(std::runtime_error("Bad config file: single bad  directive args"));
+        if (args.tmp_directive[0] != "index")
+            throw(std::runtime_error("Bad config file: CGI executable directive"));
+         servers.servers[i][args.path] = servers.servers[i]["root"] + args.tmp_directive[1];
+        // std::cout << servers.servers[i][args.path] << std::endl;
+    }
+}
 void    ServerFill::fillCgiBinLocation(locations_args & args)
 {
     args.cgi_essential.insert("root");

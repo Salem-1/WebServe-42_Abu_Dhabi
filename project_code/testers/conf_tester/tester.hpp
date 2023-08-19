@@ -34,4 +34,5 @@ void            test_error_page();
 void            test_redirection();
 void            test_cgi_bin();
 void            test_bodySize_location();
+void            test_cgi_extentions_location();
 #endif  

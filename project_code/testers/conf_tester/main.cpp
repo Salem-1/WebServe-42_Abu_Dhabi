@@ -17,6 +17,7 @@ int main()
     test_redirection();
     test_cgi_bin();
     test_bodySize_location();
+    test_cgi_extentions_location();
     return (0);
 }
 

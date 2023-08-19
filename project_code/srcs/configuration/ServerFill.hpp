@@ -59,6 +59,7 @@ class ServerFill
         void                        fillCGIRootLocation(locations_args &args);
         void                        fillCGIErrorLocation(locations_args &args);
         void                        fillBodySizeLocation(locations_args &args);
+        void                        fillCGIExecutable(locations_args & args);
         std::vector<std::string>    multiple_ports;
         std::vector<std::string>    multiple_index;
     private:

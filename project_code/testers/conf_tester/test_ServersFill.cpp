@@ -11,13 +11,13 @@ void    test_no_root_no_location_root()
 void    test_cgi_extentions_location()
 {
     one_location_test("location .bla;  index;", "index has no value", "-");
+    one_location_test("location .bla;  index  /cgi-bin/cgi_tester;", "index value", "+");
     one_location_test("location .bla;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100", "Should have only index", "-");
-    one_location_test("location .bla;  index  /cgi-bin/cgi_tester;", "index has no value", "+");
-    tokenized_conf tokenized_server =  dummy_location_fill("location .bla;  index  /cgi-bin/cgi_tester;", "index has no value");
+    tokenized_conf tokenized_server =  dummy_location_fill("location .bla;  index  /cgi-bin/cgi_tester;");
     ServerFill    fill(tokenized_server);
     fill.parseTokens();
     cmp_strings(fill.servers.servers[0][".bla"], fill.servers.servers[0]["root"]+ "/cgi-bin/cgi_tester", "correct cgi path");
-
+    // std::cout << fill.servers.servers[0]["root"]+ "/cgi-bin/cgi_tester" << std::endl;
 }
 void    test_bodySize_location()
 {
@@ -253,9 +253,9 @@ tokenized_conf    dummy_conf_tokens()
     std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
     locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
-    locations.push_back("location .bla ;     \ncgi-bin /path/to/your/cgi_test_socket.sock;\n");
+    locations.push_back("location .bla ;    index /path/to/your/cgi_test_socket.sock;\n");
     locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100;client_max_body_size \t\t100;");
-    locations.push_back("location .bla; methods POST ; ");
+    locations.push_back("location .bla; index cgi-tester ; ");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html;");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html; redirection 301 /PUT/;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
