@@ -1,6 +1,19 @@
 #include "Respond.hpp"
 
 
+bool	Respond::bodyTooBig(response_packet &response, stringmap &server_info, std::string &body)
+{
+	size_t max_body = 0;
+	std::string query = response["dir"][0] + " Max-Body";
+	if (server_info.find(query) == server_info.end())
+		query = "Max-Body";
+	std::istringstream max(server_info[query]);
+	max >> max_body;
+	if (max_body < body.length())
+		return (true);
+	return(false);		
+}
+
 void    Respond::visualizeResponse()
 {
     std::cout << BOLDRED << "\nVisualizing reponse API\n" << std::endl;

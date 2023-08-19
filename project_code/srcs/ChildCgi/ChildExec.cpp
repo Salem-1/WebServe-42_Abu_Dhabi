@@ -46,11 +46,10 @@ char **ChildExec::envMaker(std::string path)
 	std::vector<std::string> env_vector;
 	env_vector.push_back("REQUEST_METHOD=" + method);
 	env_vector.push_back(std::string("SERVER_PROTOCOL=") + _request_map[method][1]);
-	// env_vector.push_back("SERVER_PROTOCOL=HTTP/1.1");
 	env_vector.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	env_vector.push_back("SERVER_NAME=Phantoms");
 	env_vector.push_back("SERVER_PORT=Phantoms");
-	env_vector.push_back(std::string("PATH_INFO=") + path); // DONT FORGET PATHINFO
+	env_vector.push_back(std::string("PATH_INFO=") + path);
 	_request_map.erase(method);
 	_request_map.erase("Status-Code");
 	for(packet_map::iterator it = _request_map.begin(); it != _request_map.end(); ++it)
@@ -88,7 +87,7 @@ void	ChildExec::childExecute(std::string path)
 			delete [] _env[i];
 		if (i_env > 0)
 			delete[] _env;
-		std::cout<< "500";
+		std::cout<< "404";
 	}
 	catch (std::bad_alloc &e)
 	{

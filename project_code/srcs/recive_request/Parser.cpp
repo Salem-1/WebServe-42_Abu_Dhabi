@@ -72,7 +72,6 @@ void    Parser::parse(char *new_buffer)
         read_again = 0;
         return ;
     }
-	// std::string testing(new_buffer, bytes_read);
     packet.append(new_buffer, bytes_read);
     
     // vis_str(new_buffer, "new_buffer inside parser");
@@ -219,6 +218,7 @@ void	Parser::fillBodyRequest()
 			full_request.body_content_length = full_request.body.length();
 			read_again = 0;
 			fullbody = 1;
+			packet.clear();
 		}
 		return ;
 	}
@@ -227,6 +227,7 @@ void	Parser::fillBodyRequest()
 	{
 		Parser::full_request.body = Parser::packet.substr(Parser::body_start_pos, Parser::full_request.body_content_length);
 		fullbody = 1;
+		packet.clear();
 		Parser::read_again = 0;
 	}
 }
