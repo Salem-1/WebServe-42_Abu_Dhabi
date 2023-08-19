@@ -48,7 +48,7 @@ void    get_mime(std::map<std::string, std::string> &mimes)
 void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  std::string file_path)
 {
     response_packet = "HTTP/1.1 200 OK \r\n";
-    response_packet += "Server: webserve/1.0\r\n";
+    response_packet += "Server: Phantoms\r\n";
     response_packet += "Date: ";
     response_packet += getTimeBuffer();
     response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
@@ -85,7 +85,7 @@ void   GET_response::fillRedirectedPacket(void)
     response_packet = "HTTP/1.1 ";
     response_packet += redirection["Status-code"] + " ";
     response_packet +=  err.StatusCodes[redirection["Status-code"]] + " \r\n";
-    response_packet += "Server: webserve/1.0\r\n";
+    response_packet += "Server: Phantoms\r\n";
     response_packet += "Location: " + redirection["new_path"] + "\r\n";
     response_packet += "Date: ";
     response_packet += getTimeBuffer();

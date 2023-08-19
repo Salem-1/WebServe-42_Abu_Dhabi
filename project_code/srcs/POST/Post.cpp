@@ -156,6 +156,14 @@ std::string Post::get_response() const
 	return (this->_response);
 }
 
+
+// static function to back for handleUpload method which is used to check if file exists
+static bool fileExists(const std::string& name) 
+{
+	std::ifstream file(name.c_str());
+	return file.good();
+}
+
 void Post::handleUpload()
 {
 	char buff[4000];
@@ -176,21 +184,41 @@ void Post::handleUpload()
 	fileContent = fileContent.substr(0, fileContent.length() - boundary.length() - 7);
 
     // Extract the filename from the body
-	// TODO: check if filename is empty and pot proper names ans set the path to save the file
     size_t filenameStart = this->_request.body.find("filename=\"", start) + 10;
     size_t filenameEnd = this->_request.body.find("\"", filenameStart);
     std::string filename = this->_request.body.substr(filenameStart, filenameEnd - filenameStart);
-	std::string filePath = pwd + "/intra/website/uploads/" + filename;
+	filename = pwd + "/intra/website/uploads/" + filename;
+
+	// Check if the file already exists
+	std::string newFileName = filename;
+	size_t dotPos = filename.find(".");
+	int number = 1;
+	while (fileExists(newFileName)) 
+	{
+		if (dotPos != std::string::npos)
+			newFileName = filename.substr(0, dotPos) + "_" + std::to_string(number++) + filename.substr(dotPos);
+		else
+			newFileName = filename + "_" + std::to_string(number++);
+	}
+
 
     // Save the file content to a file
-    std::ofstream outputFile(filePath.c_str(), std::ios::binary);
+    std::ofstream outputFile(newFileName.c_str(), std::ios::binary);
     if (outputFile) {
         outputFile.write(fileContent.c_str(), fileContent.size());
         outputFile.close();
         std::cout << "File content saved to: " << filename << std::endl;
     } else {
         std::cerr << "Error saving file." << std::endl;
+		return ;
     }
+	this->_response = "HTTP/1.1 201 Created\r\n"
+				"Server: Phantoms\r\n"
+				"Content-Type: text/html\r\n"
+				"Location: https://example.com/resources/123\r\n" //TODO: change to the actual location
+				"Content-Length: 51"
+				"\r\nConnection: close\r\n\r\n"
+				"<h1>File upload successful! Your file was received.</h1>\n";
 }
 
 void Post::handlePost()

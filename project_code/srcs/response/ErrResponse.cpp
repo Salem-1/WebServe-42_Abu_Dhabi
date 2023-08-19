@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 23:25:27 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/17 19:05:55 by ymohamed         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ std::string ErrResponse::constructCustomErrPacket(std::string err, std::string &
 {
       response_packet = "HTTP/1.1 " + err 
         + " " + StatusCodes[err] + "\r\n";
-    response_packet += "Server: webserve/1.0\r\n";
+    response_packet += "Server: Phantoms\r\n";
     response_packet += "Date: ";
     response_packet += getTimeBuffer();
     response_packet += "Content-Type: text/html\r\n";
@@ -62,7 +62,7 @@ std::string ErrResponse::erroredResponse(std::string err)
 {
     response_packet = "HTTP/1.1 " + err
         + " " + StatusCodes[err] + "\r\n";
-    response_packet += "Server: webserve/1.0\r\n";
+    response_packet += "Server: Phantoms\r\n";
     response_packet += "Date: ";
     response_packet += getTimeBuffer();
     response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
