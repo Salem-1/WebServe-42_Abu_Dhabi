@@ -22,4 +22,10 @@ tokenized_conf  fill_second_essential(std::string second_essential);
 void            test_Essentials();
 void            test_lcation_firstLine();
 tokenized_conf  dummy_location_fill(std::string location);
+void            test_location_root();
+void            one_location_test(
+                    std::string location_case, std::string msg, std::string sign);
+void            cmp_strings(std::string left, std::string right, std::string msg);
+void            cmp_bool(bool left, bool right, std::string msg);
+void            test_index();
 #endif  

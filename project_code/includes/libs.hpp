@@ -106,6 +106,15 @@ enum connection_state
     KEEP_ALIVE = 1
 };
 
+typedef struct locations_args
+{
+    std::vector<std::string>    location_options;
+    std::vector<std::string>    tmp_directive;
+    std::string                 path;
+    std::set<std::string>       no_repeate_arg;
+    
+} locations_args;
+
 std::vector<std::string> split(std::string str, std::string delimeter);
 std::string getTimeBuffer();
 void        printAddrInfo( struct addrinfo *ai);

@@ -9,6 +9,8 @@ int main()
 {
     test_Essentials();
     test_lcation_firstLine();
+    test_location_root();
+    // test_index();
     return (0);
 }
 

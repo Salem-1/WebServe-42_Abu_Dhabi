@@ -3,6 +3,63 @@
 #include "tester.hpp"
 
 
+void    test_index()
+{
+    one_location_test("location /;root /YoupiBanan; index index.html; nonsense on", "nonsesnse give as directive", "-");
+}
+
+void    test_location_root()
+{
+    tokenized_conf tokenized_server =  dummy_location_fill("location /; root /YoubiBanana; methods GET   ;\n index youpi.bad_extension;");
+    ServerFill    fill(tokenized_server);
+
+    positive_essential_try_catch(fill, "Normal location");
+    cmp_strings(fill.servers.servers[0]["/"], "/YoubiBanana", "correct location root");
+    one_location_test("location /;root ;", "root has no path", "-");
+    one_location_test("location /;root /youbi not youbi;", "root has 3 pathes", "-");
+    one_location_test("location /;root /youbi ;", "normal location", "+");
+    tokenized_server =  dummy_location_fill("location /; root /put-test; methods GET   ;\n index youpi.bad_extension;");
+    ServerFill    fi(tokenized_server);
+    fi.parseTokens();
+    cmp_strings(fi.servers.servers[0]["/"], "/put-test", "put-test location root ");
+    tokenized_server =  dummy_location_fill("location /; root /put-tgxfhkljhcgvhjklhgfchvjklhcgfhvjbklhvgcfxgvjhbkbhv21346jvvv5hvvh3crfqyvewctiy23ewugvwdvavhgvdbahfgvdbhgsvudyibahsgvdfyilhsvfyidhsgyusyghyfgygvbiugglersg2sd62gest; methods GET   ;\n index youpi.bad_extension;");
+    ServerFill    f(tokenized_server);
+    f.parseTokens();
+    cmp_strings(f.servers.servers[0]["/"], "/put-tgxfhkljhcgvhjklhgfchvjklhcgfhvjbklhvgcfxgvjhbkbhv21346jvvv5hvvh3crfqyvewctiy23ewugvwdvavhgvdbahfgvdbhgsvudyibahsgvdfyilhsvfyidhsgyusyghyfgygvbiugglersg2sd62gest", "crazy long location root ");
+    // fill.servers.visualize_config();
+    tokenized_server =  dummy_location_fill("location /; root /; methods GET   ;\n index youpi.bad_extension;");
+    ServerFill    fe(tokenized_server);
+    fe.parseTokens();
+    cmp_strings(fe.servers.servers[0]["/"], "/", "/ location root ");
+    // fill.servers.visualize_config();
+}
+
+void    cmp_strings(std::string left, std::string right, std::string msg)
+{
+    if (left == right)
+      std::cout << BOLDGREEN << msg  << " test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << msg  <<  " test failed 😱" << RESET << std::endl;
+}
+
+void    cmp_bool(bool left, bool right, std::string msg)
+{
+    if (left == right)
+      std::cout << BOLDGREEN << msg  << " test passed 😀" << RESET <<std::endl;
+    else
+        std::cout << BOLDRED << msg  <<  " test failed 😱" << RESET << std::endl;
+}
+
+void one_location_test(std::string location_case, std::string msg, std::string sign)
+{
+    tokenized_conf tokenized_server =  dummy_location_fill(location_case);
+    ServerFill    fill(tokenized_server);
+
+    if (sign == "+")
+        positive_essential_try_catch(fill, msg);
+    else
+        negative_essential_try_catch(fill, msg);
+}
 
 
 void    test_lcation_firstLine()
@@ -18,6 +75,14 @@ void    test_lcation_firstLine()
     tokenized_server =  dummy_location_fill("location /;");
     ServerFill filld(tokenized_server);
     negative_essential_try_catch(filld, "no options just location word");
+    tokenized_server.clear();
+    tokenized_server =  dummy_location_fill("location ;root index.html;");
+    ServerFill fi(tokenized_server);
+    negative_essential_try_catch(fi, "no path provided");
+    tokenized_server.clear();
+    tokenized_server =  dummy_location_fill("location / /d ;root index.html;");
+    ServerFill fil(tokenized_server);
+    negative_essential_try_catch(fil, "2 pathes path provided");
 }
 
 tokenized_conf    dummy_location_fill(std::string location)
@@ -38,9 +103,9 @@ tokenized_conf    dummy_conf_tokens()
     std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
     locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
-    locations.push_back("location .bla ;        include fastcgi_params;\ncgi-bin /path/to/your/cgi_test_socket.sock;\n fastcgi_param SCRIPT_FILENAME /path/to/your/cgi_test_executable;");
+    locations.push_back("location .bla ;     \ncgi-bin /path/to/your/cgi_test_socket.sock;\n");
     locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100m;client_max_body_size \t\t100m;");
-    locations.push_back("location .bla; methods POST ; cgi-exec /path/to/your/cgi_test_socket.sock;");
+    locations.push_back("location .bla; methods POST ; ");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html;");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html; redirection 301 /PUT/;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
@@ -352,6 +417,4 @@ void    test_repeated_port()
     tokenized_server = fill_second_essential(second_essential);
     ServerFill    f(tokenized_server);
     positive_essential_try_catch(f, "dublicate port with different server name");
-
-
 }

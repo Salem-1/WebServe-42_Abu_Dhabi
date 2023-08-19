@@ -22,9 +22,28 @@ bool    ServerFill::parseTokens()
     {
         parseEssentials(it->first, essentials_vec);
         parseLocations(it->second);
+        fillServerPorts();
     }
     checkRepeatedServers();
     return (true);
+}
+
+void    ServerFill::fillServerPorts()
+{
+    if (multiple_ports.size() > 0)
+    {
+        servers.servers[i]["port"] = multiple_ports[0];
+        i++;
+        for (std::vector<std::string>::iterator it = ++multiple_ports.begin();
+            it != multiple_ports.end(); ++it)
+        {
+
+            servers.servers.push_back(stringmap());
+            servers.servers[i] = servers.servers[i - 1];
+            servers.servers[i]["port"] = *it;
+            i++;
+        }
+    }
 }
 
 void     ServerFill::parseEssentials(std::string essential_str, std::vector<std::string> essentials_vec)
@@ -52,20 +71,54 @@ void    ServerFill::fillLocations(std::string location)
     std::set<std::string>       no_repeate_arg;
     std::vector<std::string>    location_options = split(location, ";");
     std::string                 path;
+    locations_args              args;
 
     fillNoRepeateArg(no_repeate_arg);
-    fillLocationPath(location_options, path);
-}
-
-void    ServerFill::fillLocationPath(std::vector<std::string> &location_options, std::string &path)
-{
     if (location_options.size() < 2)
         throw(std::runtime_error("Bad config file: incomplete location block"));
+    fillLocationPath(location_options, path);
+    fillArgs(args, path, location_options, no_repeate_arg);
+    for (std::vector<std::string>::iterator it = ++location_options.begin();
+        it != location_options.end(); ++it)
+    {
+        args.tmp_directive = split(*it, " ");
+        if (args.tmp_directive.empty())
+            continue;   
+        if (args.tmp_directive.size() < 2)
+            throw(std::runtime_error("Bad config file: single bad  directive args"));
+        fillRestLocationDirectives(args);
+    }
+}
+
+void    ServerFill::fillRestLocationDirectives(locations_args & args)
+{
+        fillRootLocation(args);
+
+}
+
+void    ServerFill::fillRootLocation(locations_args &args)
+{
+
+    if(args.tmp_directive[0] != "root")
+        return ;
+    if (args.tmp_directive.size() != 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of root directive arguments"));
+    servers.servers[i][args.path] = args.tmp_directive[1];
+}
+
+void    ServerFill::fillArgs(locations_args &args, std::string &path, 
+            std::vector<std::string> &location_options, std::set<std::string>  &no_repeate_arg)
+{
+    args.location_options = location_options;
+    args.path = path;
+    args.no_repeate_arg = no_repeate_arg;
+}
+void ServerFill::fillLocationPath(std::vector<std::string> &location_options, std::string &path)
+{
     std::vector<std::string> tmp_location_path = split(location_options[0], " ");
     if (tmp_location_path.size() != 2 || tmp_location_path[0] != "location")
         throw(std::runtime_error("Bad config file: bad location block"));
-    path = location_options[1];
-    
+    path = tmp_location_path[1];
 }
 
 void    ServerFill::locationBasicCheck(std::string location)
@@ -162,20 +215,6 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     if (inSet(essentials_arg, "client_max_body_size"))
         servers.servers[0]["Max-Body"] = "1000";
-    if (multiple_ports.size() > 0)
-    {
-        servers.servers[i]["port"] = multiple_ports[0];
-        i++;
-        for (std::vector<std::string>::iterator it = ++multiple_ports.begin();
-            it != multiple_ports.end(); ++it)
-        {
-
-            servers.servers.push_back(stringmap());
-            servers.servers[i] = servers.servers[i - 1];
-            servers.servers[i]["port"] = *it;
-            i++;
-        }
-    }
     // std::cout << "inside the function we have servers = " << servers.servers.size();
 }
 void    ServerFill::fillBodySize(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
@@ -276,7 +315,7 @@ int ServerFill::isAllDigit(std::string str)
 
 void    ServerFill::fillEssentialArg(std::set<std::string>  &essentials_arg)
 {
-    essentials_arg.insert("listen");
+    essentials_arg.insert("listen"); 
     essentials_arg.insert("server_name");
     essentials_arg.insert("index");
     essentials_arg.insert("root");
