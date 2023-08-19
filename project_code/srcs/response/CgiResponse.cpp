@@ -16,7 +16,6 @@ std::string	Respond::isCGI(packet_map &request)
 	if (it->second.size() > 0 && (it->second[0].find("cgi-bin") != std::string::npos ||
 		(it->second[0].find(".bla") != std::string::npos && it->first == "POST")))
 		return (it->second[0]);
-	
 	return ("");
 }
 
@@ -28,9 +27,9 @@ std::string Respond::responseCGI(packet_map &request, stringmap &server_info, st
 	{
 		query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
 		cgi_path = cgi_path.substr(0, cgi_path.find("?"));
-		// server_info["query"] = query;
+		server_info["query"] = query;
 	}
-	std::string full_cgi_path = server_info["cgi-bin"] + cgi_path;
+	std::string full_cgi_path = server_info["/cgi-bin"] + cgi_path;
 	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
 	std::cout << BOLDGREEN << "query = " << query << std::endl << RESET;
 	if (request.find("GET") != request.end())
@@ -73,56 +72,6 @@ std::string	fillingResponsePacket(packet_map &request, std::string &full_file_to
 	response_packet += body; 
 	return (response_packet);
 }
-
-
-
-
-// void	childExecute(int *fd, std::string &path)
-// {
-// 	int env_size = 4;
-// 	int i_env = -1;
-// 	std::string hrdcode[] = {"SERVER_PROTOCOL=HTTP/1.1",
-// 							"REQUEST_METHOD=POST", 
-// 							"PATH_INFO=/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/YoupiBanane/youpi.bla",
-// 							"HTTP_X_SECRET_HEADER_FOR_TEST=1"};
-// 	char **env = NULL;
-// 	try
-// 	{
-// 		if (dup2(fd[1], STDOUT_FILENO) == -1)
-// 			throw(std::runtime_error("dup failed"));
-// 		close(fd[1]);
-// 		close(fd[0]);
-// 		const char *temp_path = path.c_str();
-// 		env = new char*[env_size + 1];
-// 		env[env_size] = NULL;
-// 		++i_env;
-// 		for (; i_env < env_size; ++i_env)
-// 		{
-// 			env[i_env] = new char[200];
-// 			strcpy(env[i_env], hrdcode[i_env].c_str());
-// 		}
-// 		if (execve(temp_path, NULL, env) ==  -1)
-// 		{
-// 			perror("execve failed: ");
-// 			std::cerr << "It freakin faild to execute " << temp_path << std::endl;
-// 		}
-// 		for (int j = 0; j < env_size; ++j)
-// 			delete env[j];
-// 		delete[] env;
-// 		std::cerr << BOLDMAGENTA <<  "*********************\n " << RESET;
-// 		exit(127);
-
-// 	}
-// 	catch (std::bad_alloc &e)
-// 	{
-// 		for (int j = 0; j < i_env; ++j)
-// 			delete env[j];
-// 		if (i_env > 0)
-// 			delete[] env;
-// 		std::cerr << BOLDMAGENTA << e.what() << "*********************\n " << RESET;
-// 		exit(1);
-// 	}
-// }
 
 
 std::string readFromChild(int fd)

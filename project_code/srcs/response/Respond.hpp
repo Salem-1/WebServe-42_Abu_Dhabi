@@ -43,7 +43,8 @@ class Respond
 		std::string 	postExecute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path);
         int		        checkPoisonedURL(packet_map &request);
         std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
-    public:
+		bool			bodyTooBig(response_packet &response, stringmap &server_info, std::string &body);
+	public:
 		int				client_socket;
         response_packet	response;
         std::string		response_string;

@@ -5,8 +5,8 @@ std::string ReadAndWirte(int infd, int outfd, std::string &body)
 
 	int 		kq = kqueue(); // Create a new kernel event queue
 	std::string	output;
-	size_t 		write_size = 10;
-	size_t 		read_size = 10;
+	size_t 		write_size = 1000;
+	size_t 		read_size = 1000;
 	size_t		pos = 0;
 	if (kq == -1) {
 		std::cerr << "Failed to create kqueue" << std::endl;
