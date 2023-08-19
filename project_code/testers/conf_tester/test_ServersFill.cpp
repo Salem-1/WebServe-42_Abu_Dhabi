@@ -7,14 +7,81 @@ void    test_no_root_no_location_root()
 {
     std::cout << "Make it after finishing locations inshalla" << std::endl;
 };
+
+void    test_bodySize_location()
+{
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100", "healthy client max body", "+");
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size ", "no number max body", "-");
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 1000000000 ", "large max body", "+");
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100dvs", "non numeric client max body", "-");
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size -100", "negative client max body", "-");
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100 200 ", "2 numbers max body", "-");
+    one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 10000000000 ", "overflow max body", "-");
+    tokenized_conf tokenized_server =  dummy_location_fill("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100000");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/ Max-Body"], "100000", "correct max body 100000");
+    tokenized_server =  dummy_location_fill("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 1");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/ Max-Body"], "1", "correct max body 100000");
+
+}
+
+void    test_cgi_bin()
+{
+    one_location_test("location /cgi-bin;  error_page 404 error.html; root /Youbibanana", "healthy root cgi-bin", "+");
+    one_location_test("location /cgi-bin;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 another.html", "non healthy cgi-bin", "-");
+    one_location_test("location /cgi-bin;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 another.html", "has redirection cgi-bin", "-");
+    one_location_test("location /cgi-bin;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;", "has index cgi-bin", "-");
+    one_location_test("location /cgi-bin;  error_page 404 error.html; autoindex on;" , "has autoindex cgi-bin", "-");
+    one_location_test("location /cgi-bin;  error_page 404 error.html;", "no root cgi-bin", "-");
+    one_location_test("location /cgi-bin;  error_page 404 error.html; root exec.out; root /another", "double root root cgi-bin", "-");
+    tokenized_conf tokenized_server =  dummy_location_fill("location /cgi-bin;  error_page 404 error.html; root /Youbibanana");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/cgi-bin"], fill.servers.servers[0]["root"]+ "/Youbibanana", "correct cgi-bin route");
+    tokenized_server =  dummy_location_fill("location /cgi-bin;root /; ");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/cgi-bin"], fil.servers.servers[0]["root"]+ "/", "correct cgi-bin route");
+
+}
+void    test_redirection()
+{
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 another.html", "healthy redirection params", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 another.html", "healthy redirection params", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection  another.html", "2 redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 index index", "4 redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 304 another.html 4", "4 redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 3012 another.html", "bad status code redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 30. another.html", "non numeric status code redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection -30 another.html", "negative status code redirection params", "-");
+    tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT;redirection 300 another.html;");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0]["/ 300"], "another.html", "correct redirection 300");
+    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; redirection 301 another.html;");
+    ServerFill    fil(tokenized_server);
+    fil.parseTokens();
+    cmp_strings(fil.servers.servers[0]["/YoupiBanana 301"], "another.html", "correct redirection 301");
+     tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT;redirection 300 another.html;");
+    ServerFill    filll(tokenized_server);
+    filll.parseTokens();
+    cmp_strings(filll.servers.servers[0]["/ 300"], "another.html", "correct redirection 300");
+    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; redirection 301 another.html;");
+    ServerFill    fi(tokenized_server);
+    fi.parseTokens();
+    cmp_strings(fi.servers.servers[0]["/YoupiBanana 301"], "another.html", "correct redirection 301");
+}
 void    test_error_page()
 {
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html;", "healthy error pgae params", "+");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page;", "missed error pgae params", "-");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page error.html;", "missed error pgae params", "-");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 40. error.html;", "missed error pgae params", "-");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page -40 error.html;", "non numeric error pgae params", "-");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html 403;", "missed error pgae params", "-");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html;", "healthy error pgae params", "+");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 4044 error.html;", "wrong error pgae num", "-");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 40 error.html;", "missed error pgae params", "-");
     tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html");
@@ -176,7 +243,7 @@ tokenized_conf    dummy_conf_tokens()
     locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
     locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
     locations.push_back("location .bla ;     \ncgi-bin /path/to/your/cgi_test_socket.sock;\n");
-    locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100m;client_max_body_size \t\t100m;");
+    locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100;client_max_body_size \t\t100;");
     locations.push_back("location .bla; methods POST ; ");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html;");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html; redirection 301 /PUT/;");

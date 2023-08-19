@@ -59,7 +59,6 @@ void    ServerFill::parseLocations(std::vector<std::string> locations)
     for (std::vector<std::string>::iterator it = locations.begin();
         it != locations.end(); it++)
     {
-        // std::cout << *it << std::endl; 
         replaceNlAndTabs(*it);
         locationBasicCheck(*it);
         fillLocations(*it);
@@ -78,6 +77,11 @@ void    ServerFill::fillLocations(std::string location)
         throw(std::runtime_error("Bad config file: incomplete location block"));
     fillLocationPath(location_options, path);
     fillArgs(args, path, location_options, no_repeate_arg);
+    if (args.path  == "/cgi-bin")
+    {
+        fillCgiBinLocation(args);
+        return ;
+    }
     for (std::vector<std::string>::iterator it = ++location_options.begin();
         it != location_options.end(); ++it)
     {
@@ -90,6 +94,49 @@ void    ServerFill::fillLocations(std::string location)
     }
 }
 
+void    ServerFill::fillCgiBinLocation(locations_args & args)
+{
+    args.cgi_essential.insert("root");
+    args.cgi_essential.insert("error_page");
+    for (std::vector<std::string>::iterator it = ++args.location_options.begin();
+        it != args.location_options.end(); ++it)
+    {
+        args.tmp_directive = split(*it, " ");
+        if (args.tmp_directive.empty())
+            continue;
+        if (args.tmp_directive.size() < 2 || !inSet(args.cgi_essential, args.tmp_directive[0]))
+            throw(std::runtime_error("Bad config file: single bad  directive args CGI"));
+        fillCGIRootLocation(args);
+        fillCGIErrorLocation(args);
+    }
+    if (inSet(args.cgi_essential, "root"))
+            throw(std::runtime_error("Bad config file: CGI with no root"));
+
+}
+
+void    ServerFill::fillCGIErrorLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "error_page")
+        return ;
+    if (args.tmp_directive.size() != 3)
+        throw(std::runtime_error("Bad configuration file: wrong number of error_page  CGI arguments"));
+    if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() != 3)
+        throw(std::runtime_error("Bad configuration file: provided bad error code  error_page arguments CGI"));
+    servers.servers[i][args.path + " " + args.tmp_directive[1]] = args.tmp_directive[2];
+}
+void    ServerFill::fillCGIRootLocation(locations_args &args)
+{
+
+    if(args.tmp_directive[0] != "root")
+        return ;
+    if (!inSet(args.cgi_essential, "root"))
+        throw(std::runtime_error("Bad configuration file: bad  root directive CGI"));
+    if (args.tmp_directive.size() != 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of root directive arguments"));
+    args.cgi_essential.erase("root");
+    servers.servers[i][args.path] = servers.servers[i]["root"] + args.tmp_directive[1];
+}
+
 void    ServerFill::fillRestLocationDirectives(locations_args & args)
 {
         fillRootLocation(args);
@@ -97,9 +144,33 @@ void    ServerFill::fillRestLocationDirectives(locations_args & args)
         fillAutoIndexLocation(args);
         fillmethodsLocation(args);
         fillErrorPageLocation(args);
+        fillRedirectioneLocation(args);
+        fillBodySizeLocation(args);
 
 }
 
+
+void    ServerFill::fillBodySizeLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "client_max_body_size")
+        return ;
+    if (args.tmp_directive.size() != 2)
+        throw(std::runtime_error("Bad configuration file: wrong number of redirection client max body size"));
+    if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() > 10)
+        throw(std::runtime_error("Bad configuration file: provided bad body size "));
+    servers.servers[i][args.path + " Max-Body"] = args.tmp_directive[1];
+}
+
+void    ServerFill::fillRedirectioneLocation(locations_args &args)
+{
+    if(args.tmp_directive[0] != "redirection")
+        return ;
+    if (args.tmp_directive.size() != 3)
+        throw(std::runtime_error("Bad configuration file: wrong number of redirection arguments"));
+    if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() != 3)
+        throw(std::runtime_error("Bad configuration file: provided bad redirection code  redirection arguments"));
+    servers.servers[i][args.path + " " + args.tmp_directive[1]] = args.tmp_directive[2];
+}
 
 void    ServerFill::fillErrorPageLocation(locations_args &args)
 {

@@ -31,4 +31,7 @@ void            test_index();
 void            test_autoindex();
 void            test_methods();
 void            test_error_page();
+void            test_redirection();
+void            test_cgi_bin();
+void            test_bodySize_location();
 #endif  

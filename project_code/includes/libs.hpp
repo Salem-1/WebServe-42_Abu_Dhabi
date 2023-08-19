@@ -112,6 +112,7 @@ typedef struct locations_args
     std::vector<std::string>    tmp_directive;
     std::string                 path;
     std::set<std::string>       no_repeate_arg;
+    std::set<std::string>       cgi_essential;
     
 } locations_args;
 

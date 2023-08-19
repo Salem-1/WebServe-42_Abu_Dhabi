@@ -14,6 +14,9 @@ int main()
     test_autoindex();
     test_methods();
     test_error_page();
+    test_redirection();
+    test_cgi_bin();
+    test_bodySize_location();
     return (0);
 }
 

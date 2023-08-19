@@ -50,11 +50,15 @@ class ServerFill
         void                        fillIndexLocation(locations_args &args);
         void                        fillAutoIndexLocation(locations_args &args);
         void                        fillErrorPageLocation(locations_args &args);
+        void                        fillCgiBinLocation(locations_args &args);
+        void                        fillRedirectioneLocation(locations_args &args);
         void                        fillServerPorts();
         void                        fillArgs(locations_args &args, std::string &path, 
                                         std::vector<std::string> &location_options, std::set<std::string>  &no_repeate_arg);
-
         void                        fillmethodsLocation(locations_args &args);
+        void                        fillCGIRootLocation(locations_args &args);
+        void                        fillCGIErrorLocation(locations_args &args);
+        void                        fillBodySizeLocation(locations_args &args);
         std::vector<std::string>    multiple_ports;
         std::vector<std::string>    multiple_index;
     private:
