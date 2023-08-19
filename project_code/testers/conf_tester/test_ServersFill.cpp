@@ -8,6 +8,17 @@ void    test_no_root_no_location_root()
     std::cout << "Make it after finishing locations inshalla" << std::endl;
 };
 
+void    test_cgi_extentions_location()
+{
+    one_location_test("location .bla;  index;", "index has no value", "-");
+    one_location_test("location .bla;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100", "Should have only index", "-");
+    one_location_test("location .bla;  index  /cgi-bin/cgi_tester;", "index has no value", "+");
+    tokenized_conf tokenized_server =  dummy_location_fill("location .bla;  index  /cgi-bin/cgi_tester;", "index has no value");
+    ServerFill    fill(tokenized_server);
+    fill.parseTokens();
+    cmp_strings(fill.servers.servers[0][".bla"], fill.servers.servers[0]["root"]+ "/cgi-bin/cgi_tester", "correct cgi path");
+
+}
 void    test_bodySize_location()
 {
     one_location_test("location /;  error_page 404 error.html; root /Youbibanana; client_max_body_size 100", "healthy client max body", "+");
