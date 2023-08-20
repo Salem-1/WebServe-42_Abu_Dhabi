@@ -18,14 +18,19 @@ void   intra_config(conf &servers);
 Config::Config()
 {
     char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
-    intra_and_dummy_fill_till_config_parsing(servers);
+    std::string tmp(getcwd(buff, sizeof(buff)));
+    pwd = tmp;
     // intra_config(servers);
-    // list_dir_options(servers);
-
-    fillPorts();
+    intra_and_dummy_fill_till_config_parsing(servers);
+    // if (servers.empty())
+    //     throw(std::runtime_error("Empty server configuration "));
+    // else
+    // fillPorts();
 }
-
+std::string Config::getPwd() const
+{
+    return (pwd);    
+}
 
 Config::~Config()
 {
@@ -120,12 +125,6 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[1]["root"] = pwd + "/intra/YoupiBanane";
     servers[1]["index"] = "youpi.bad_extension";
     servers[1]["/"] = servers[1]["root"] + "/" + servers[1] ["index"];
-    servers[1]["/images"] = servers[1]["root"] + "/path_to_images/";
-    servers[1]["/images index"] = servers[1]["/images"] + "base_image.jpg";
-    servers[1]["/styles"] = servers[1]["root"] + "/styles/";
-    servers[1]["/styles index"] = servers[1]["root"] + "/styles/" + "styles.css";
-    servers[1]["/js"] = servers[1]["root"] + "/js/";
-    servers[1]["/js index"] = servers[1]["root"] + "/js/" + "script.js";
     
    
     servers.push_back(std::map<std::string, std::string>());
@@ -136,14 +135,8 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["root"] = pwd + "/intra/website";
     servers[2]["index"] = "index.html";
     servers[2]["/"] = servers[2]["root"] + "/" + servers[2] ["index"];
-    servers[2]["/images"] = servers[2]["root"] + "/path_to_images/";
-    servers[2]["/images index"] = servers[2]["/images"] + "base_image.jpg";
-    servers[2]["/styles"] = servers[2]["root"] + "/styles/";
-    servers[2]["/styles index"] = servers[2]["root"] + "/styles/" + "styles.css";
-    servers[2]["/js"] = servers[2]["root"] + "/js/";
-    servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
     servers[2]["404"] = servers[2]["root"] +  "/" + "not_found.html";
-	servers[2]["cgi-bin"] = pwd + "/intra";
+	servers[2]["/cgi-bin"] =  servers[2]["root"]+ "../.";
     
     servers.push_back(std::map<std::string, std::string>());
     servers[3]["DELETE path"] = "POST";
@@ -152,12 +145,6 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[3]["root"] = pwd + "/intra/website";
     servers[3]["index"] = "index.html";
     servers[3]["/"] = servers[3]["root"] + "/" + servers[3] ["index"];
-    servers[3]["/images"] = servers[3]["root"] + "/path_to_images/";
-    servers[3]["/images index"] = servers[3]["/images"] + "base_image.jpg";
-    servers[3]["/styles"] = servers[3]["root"] + "/styles/";
-    servers[3]["/styles index"] = servers[3]["root"] + "/styles/" + "styles.css";
-    servers[3]["/js"] = servers[3]["root"] + "/js/";
-    servers[3]["/js index"] = servers[3]["root"] + "/js/" + "script.js";
     servers[3]["Methods"] = "GET DELETE";
         
 }
@@ -179,7 +166,6 @@ void   intra_config(conf &servers)
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
-    // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
 }
 
@@ -247,4 +233,13 @@ void    list_dir_options(conf &servers)
     
     servers[0]["Max-Body"] = "100000000000";
     servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos attacks/ddos.html 301";
+}
+
+
+
+void    Config::visualize_config()
+{
+    for (std::vector<stringmap>::iterator it = servers.begin();
+        it != servers.end(); it++)
+        visualize_string_map(*it);
 }

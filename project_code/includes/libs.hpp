@@ -43,12 +43,12 @@ struct ciLessLibC : public std::binary_function<std::string, std::string, bool> 
     }
 };
 
-typedef std::vector<std::map<std::string, std::string> >			conf; 
-typedef std::map<std::string, std::string>							stringmap;
-typedef std::map<std::string, std::vector<std::string>, ciLessLibC>	packet_map;
-typedef std::map<std::string, std::vector<std::string> >			response_packet;
-typedef std::map<std::string, std::vector<std::string> >			response_type;
-
+typedef std::vector<std::pair<std::string, std::vector<std::string> > > tokenized_conf;
+typedef std::map<std::string, std::vector<std::string>, ciLessLibC>	    packet_map;
+typedef std::vector<std::map<std::string, std::string> >			    conf; 
+typedef std::map<std::string, std::string>							    stringmap;
+typedef std::map<std::string, std::vector<std::string> >			    response_packet;
+typedef std::map<std::string, std::vector<std::string> >			    response_type;
 # define BACKLOG 500
 # define MAX_EVENTS 500
 # define READ_BUFFER_SIZE 260000
@@ -57,7 +57,9 @@ typedef std::map<std::string, std::vector<std::string> >			response_type;
 # define TIME_PER_SEC 10000
 # define TIME_PER_MILLI_SEC 10
 # define HEADER_MAX_LENGTH 8000
-# define MAX_BODY_SIZE 1000000000 // 10 MB Will be part of the configuration file
+# define URL_MAX 8000
+# define MAX_BODY_SIZE 100 
+# define MAX_BODY_SIZE_STR "100" 
 // # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
@@ -105,15 +107,28 @@ enum connection_state
     KEEP_ALIVE = 1
 };
 
-std::vector<std::string> split(std::string str, std::string delimeter);
-void printAddrInfo( struct addrinfo *ai);
-void    visualize_servers(
-    std::vector<std::map<std::string, std::string> > servers);
+typedef struct locations_args
+{
+    std::vector<std::string>    location_options;
+    std::vector<std::string>    tmp_directive;
+    std::string                 path;
+    std::set<std::string>       no_repeate_arg;
+    std::set<std::string>       cgi_essential;
+    
+} locations_args;
 
-void    visualize_string_map(std::map<std::string, std::string>  &map);
-void    vis_str(std::string packet, std::string message);
-std::string	getTimeBuffer();
-void print_to_file(std::string, std::string);
+std::vector<std::string> split(std::string str, std::string delimeter);
+std::string getTimeBuffer();
+void        printAddrInfo( struct addrinfo *ai);
+void        visualize_servers(
+                std::vector<std::map<std::string, std::string> > servers);
+void        visualize_string_map(std::map<std::string, std::string>  &map);
+void         visualize_string_vector(std::vector<std::string> &vec, std::string vec_name);
+void        vis_str(std::string packet, std::string message);
+void        print_to_file(std::string, std::string);
+bool        inSet(std::set<std::string> data_set, std::string item);
+bool        inMap(stringmap data_set, std::string item);
+bool        inVector(std::vector<std::string> data_set, std::string item);
 //---------------------------------------------
 
 
