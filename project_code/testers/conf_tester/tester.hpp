@@ -41,4 +41,5 @@ void            test_multiple_servers();
 void            test_DELETE_path();
 void            test_root_index();
 void            test_intra_config();
+void            test_dummy_intra_fill_config();
 #endif  

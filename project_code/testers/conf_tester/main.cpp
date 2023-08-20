@@ -24,6 +24,7 @@ int main()
     test_DELETE_path();
     test_root_index();
     test_intra_config();
+    test_dummy_intra_fill_config();
     return (0);
 }
 

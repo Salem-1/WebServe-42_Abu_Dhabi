@@ -3,6 +3,39 @@
 #include "tester.hpp"
 
 
+void    test_dummy_intra_fill_config()
+{
+    tokenized_conf tokenized_server;
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST;";    
+    locations.push_back("location /; methods DELETE   ;");
+    locations.push_back("location /directory/; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\nmethods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /cgi-bin/cgi_tester;\n");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    
+    locations.clear();
+    essentials = " listen      4444; server_name 127.0.0.1 server_name; root        /intra/website; DELETE_path POST; index       youpi.bad_extension;";    
+    locations.push_back("location /;  index   youpi.bad_extension;;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    
+    locations.clear();
+    essentials = " listen      5555; server_name 127.0.0.1 server_name; root        /intra/website; index       index.html;";    
+    locations.push_back("location / ; index   index.html; error_page 404 not_found.html;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+   
+    locations.clear();
+    essentials = "    listen      4444; server_name default_server; DELETE_path POST; root        /intra/website; index       index.html;";    
+    locations.push_back("location / ; methods GET DELETE;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    ServerFill    fill(tokenized_server);
+    positive_essential_try_catch(fill, "filled intra config ");
+    fill.servers.visualize_config();
+    std::cout << BOLDYELLOW << "\n\n----------------------------------------\n\n" << RESET << std::endl;
+    Config standard;
+    cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
+    standard.visualize_config();
+}
 
 void    test_intra_config()
 {
@@ -16,11 +49,10 @@ void    test_intra_config()
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     ServerFill    fill(tokenized_server);
     positive_essential_try_catch(fill, "filled intra config ");
-    fill.servers.visualize_config();
+    // fill.servers.visualize_config();
     Config standard;
     cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
-    standard.visualize_config();
-
+    // standard.visualize_config();
 }
 
 void    test_root_index()
