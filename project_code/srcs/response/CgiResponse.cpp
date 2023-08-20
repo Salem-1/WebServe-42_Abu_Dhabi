@@ -6,40 +6,42 @@ void Respond::closePipe(int *fd)
 	close(fd[1]);
 }
 
-std::string	Respond::isCGI(packet_map &request)
+std::string	Respond::isCGI(stringmap &server_info, packet_map &request)
 {
+	std::string path = "";
+	std::string query;
 	packet_map::iterator it = request.find("GET");
 	if (it == request.end())
 		it = request.find("POST");
 	if (it == request.end())
 		return ("");
-	if (it->second.size() > 0 && (it->second[0].find("cgi-bin") != std::string::npos ||
-		(it->second[0].find(".bla") != std::string::npos && it->first == "POST")))
-		return (it->second[0]);
-	return ("");
-}
-
-std::string Respond::responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, t_request &full_request)
-{
-	std::string query;
-    std::cout << "inside response CGI" << std::endl;
-	if (cgi_path.find("?") != std::string::npos)
+	else 
+		path = it->second[0];
+	if (path.find("?") != std::string::npos)
 	{
-		query = cgi_path.substr(cgi_path.find("?") + 1, cgi_path.length() - 1);
-		cgi_path = cgi_path.substr(0, cgi_path.find("?"));
+		query = path.substr(path.find("?") + 1, path.length() - 1);
+		path = path.substr(0, path.find("?"));
 		server_info["query"] = query;
 	}
-	std::string full_cgi_path = server_info["/cgi-bin"] + cgi_path;
-	std::cout << BOLDGREEN << "full path = " << full_cgi_path << std::endl << RESET;
-	std::cout << BOLDGREEN << "query = " << query << std::endl << RESET;
-	if (request.find("GET") != request.end())
-		return (execute(request, full_request, server_info, full_cgi_path));
-	return (postExecute(request, full_request, server_info, full_cgi_path));
+	if (it->first == "GET")
+	{
+		if (path.find("/cgi-bin/") != std::string::npos)
+			return (server_info["/cgi-bin"] + path);
+		else
+			return ("");
+	}
+	if (path.rfind(".") == path.npos)
+		return ("");
+	std::string file_extension = path.substr(path.rfind("."));
+	if (server_info.find(file_extension) != server_info.end() && it->first == "POST")
+		path = server_info[file_extension];
+	return (path);
 }
 
-std::string	fillingResponsePacket(packet_map &request, std::string &full_file_to_string)
+std::string	Respond::fillingResponsePacket(packet_map &request, stringmap &server_info, std::string &full_file_to_string)
 {
-	
+	if (full_file_to_string.rfind("50", 1) == 0 || full_file_to_string.rfind("40", 1) == 0)
+		return (err.code(server_info, full_file_to_string));
 	std::string status =  " 200 OK\r\n";
 	std::string type = " text/plain txt\r\n";
 	std::string body =  full_file_to_string;
@@ -95,7 +97,7 @@ std::string readFromChild(int fd)
 	return output;
 }
 
-std::string Respond::execute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path)
+std::string Respond::getExecute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path)
 {
 	int fd[2];
 	int status = 0;
@@ -116,9 +118,7 @@ std::string Respond::execute(packet_map &request, t_request &full_request, strin
 		{
 			ChildExec child(request, full_request, server_info, fd);
 			child.childExecute(path);
-			exit(127);
 		}
-			// childExecute(fd, path);
 		close(fd[1]);
 		output = readFromChild(fd[0]);
 		close(fd[0]);
@@ -129,8 +129,8 @@ std::string Respond::execute(packet_map &request, t_request &full_request, strin
 				return (err.code(server_info, "404"));
 			return (err.code(server_info, "501"));
 		}
-		vis_str(output, "inside CGI response");
-		return (fillingResponsePacket(request, output));
+		// vis_str(output, "inside CGI response");
+		return (fillingResponsePacket(request, server_info, output));
 	}
 	catch (std::exception &e)
 	{
@@ -171,11 +171,8 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 				throw(std::runtime_error("dup stdin failed"));
 			close(infd[1]);
 			close(infd[0]);
-			// path = "/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/cgi-bin/cgi_tester";
-			path = server_info[".bla"];
 			ChildExec child(request, full_request, server_info, outfd);
 			child.childExecute(path);
-			exit(127);
 		}
 		close(outfd[1]);
 		close(infd[0]);
@@ -185,10 +182,9 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		{
 			if (WEXITSTATUS(status) == 127)
 				return (err.code(server_info, "404"));
-
 		}
-		vis_str(output, "inside CGI response");
-		return (fillingResponsePacket(request ,output));
+		// vis_str(output, "inside CGI response");
+		return (fillingResponsePacket(request, server_info, output));
 	}
 	catch (std::exception &e)
 	{
