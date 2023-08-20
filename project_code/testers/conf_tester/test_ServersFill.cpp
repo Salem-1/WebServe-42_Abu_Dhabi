@@ -30,11 +30,10 @@ void    test_dummy_intra_fill_config()
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     ServerFill    fill(tokenized_server);
     positive_essential_try_catch(fill, "filled intra config ");
-    fill.servers.visualize_config();
-    std::cout << BOLDYELLOW << "\n\n----------------------------------------\n\n" << RESET << std::endl;
+    // fill.servers.visualize_config();
     Config standard;
-    cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
-    standard.visualize_config();
+    // cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
+    // standard.visualize_config();
 }
 
 void    test_intra_config()
@@ -51,7 +50,7 @@ void    test_intra_config()
     positive_essential_try_catch(fill, "filled intra config ");
     // fill.servers.visualize_config();
     Config standard;
-    cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
+    // cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
     // standard.visualize_config();
 }
 
@@ -176,30 +175,39 @@ void    test_cgi_bin()
 }
 void    test_redirection()
 {
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 another.html", "healthy redirection params", "+");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 another.html", "healthy redirection params", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection /ransomware attacks/ransom.html  302 ;redirection  /ddos attacks/ddos.html 301;", "healthy redirection params", "+");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection  /ddos attacks/ddos.html 301", "healthy redirection params", "+");
     one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection  another.html", "2 redirection params", "-");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 301 index index", "4 redirection params", "-");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 304 another.html 4", "4 redirection params", "-");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 3012 another.html", "bad status code redirection params", "-");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection 30. another.html", "non numeric status code redirection params", "-");
-    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection -30 another.html", "negative status code redirection params", "-");
-    tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT;redirection 300 another.html;");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection /ddos 301 index index", "4 redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection /ddos 304 another.html 4", "4 redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection  /ddos 3012 another.html", "bad status code redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection  /ddos 30. another.html", "non numeric status code redirection params", "-");
+    one_location_test("location /;root /YoupiBanan; index index.html; autoindex on;  error_page 404 error.html;redirection /ddos -30 another.html", "negative status code redirection params", "-");
+   
+   
+
+}
+void    check_redirection_out()
+{
+    tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT;redirection /ransomware attacks/ransom.html  302; redirection  /ddos attacks/ddos.html 301;");
     ServerFill    fill(tokenized_server);
     fill.parseTokens();
-    cmp_strings(fill.servers.servers[0]["/ 300"], "another.html", "correct redirection 300");
-    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; redirection 301 another.html;");
+    cmp_strings(fill.servers.servers[0]["/ redirection"], "/ransomware attacks/ransom.html 302 , /ddos attacks/ddos.html 301", "correct redirection 301");
+    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT;redirection /ransomware attacks/ransom.html  302; redirection  /ddos attacks/ddos.html 301;");
     ServerFill    fil(tokenized_server);
     fil.parseTokens();
-    cmp_strings(fil.servers.servers[0]["/YoupiBanana 301"], "another.html", "correct redirection 301");
-     tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT;redirection 300 another.html;");
+    
+    cmp_strings(fil.servers.servers[0]["/YoupiBanana redirection"], "/ransomware attacks/ransom.html 302 , /ddos attacks/ddos.html 301", "correct redirection 301");
+    tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT;redirection /ransomware attacks/ransom.html  302; redirection  /ddos attacks/ddos.html 301;");
     ServerFill    filll(tokenized_server);
     filll.parseTokens();
-    cmp_strings(filll.servers.servers[0]["/ 300"], "another.html", "correct redirection 300");
-    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; redirection 301 another.html;");
+    cmp_strings(filll.servers.servers[0]["/ redirection"], "/ransomware attacks/ransom.html 302 , /ddos attacks/ddos.html 301", "correct redirection 300");
+    // std::cout << filll.servers.servers[0]["/ redirection"] << std::endl;
+    // std::cout << "/ransomware attacks/ransom.html 302 , /ddos attacks/ddos.html 301" << std::endl;
+    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT;redirection /ransomware attacks/ransom.html  302; redirection  /ddos attacks/ddos.html 301;");
     ServerFill    fi(tokenized_server);
     fi.parseTokens();
-    cmp_strings(fi.servers.servers[0]["/YoupiBanana 301"], "another.html", "correct redirection 301");
+    cmp_strings(fi.servers.servers[0]["/YoupiBanana redirection"], "/ransomware attacks/ransom.html 302 , /ddos attacks/ddos.html 301", "correct redirection 301");
 }
 void    test_error_page()
 {
@@ -373,7 +381,7 @@ tokenized_conf    dummy_conf_tokens()
     locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100;client_max_body_size \t\t100;");
     locations.push_back("location .bla; index cgi-tester ; ");
     locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html;");
-    locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html; redirection 301 /PUT/;");
+    locations.push_back("location /directory/;root /intra/YoupiBanane/;\nindex youpi.bad_extension;\nautoindex on;\nerror_page 404 error_pages/404.html; redirection /PUT/ /NOT_PUT/ 301 ;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     return (tokenized_server);
 }

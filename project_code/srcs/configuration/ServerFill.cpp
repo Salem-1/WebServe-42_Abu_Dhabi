@@ -197,7 +197,7 @@ void    ServerFill::fillBodySizeLocation(locations_args &args)
     if(args.tmp_directive[0] != "client_max_body_size")
         return ;
     if (args.tmp_directive.size() != 2)
-        throw(std::runtime_error("Bad configuration file: wrong number of redirection client max body size"));
+        throw(std::runtime_error("Bad configuration file: wrong number of directives client max body size"));
     if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() > 10)
         throw(std::runtime_error("Bad configuration file: provided bad body size "));
     servers.servers[i][args.path + " Max-Body"] = args.tmp_directive[1];
@@ -207,11 +207,18 @@ void    ServerFill::fillRedirectioneLocation(locations_args &args)
 {
     if(args.tmp_directive[0] != "redirection")
         return ;
-    if (args.tmp_directive.size() != 3)
+    if (args.tmp_directive.size() != 4)
         throw(std::runtime_error("Bad configuration file: wrong number of redirection arguments"));
-    if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() != 3)
+    if (!isAllDigit(args.tmp_directive[3]) || args.tmp_directive[3].size() != 3)
         throw(std::runtime_error("Bad configuration file: provided bad redirection code  redirection arguments"));
-    servers.servers[i][args.path + " " + args.tmp_directive[1]] = args.tmp_directive[2];
+    if (inMap(servers.servers[i], args.path + " " + "redirection"))
+        servers.servers[i][args.path + " " + "redirection"] += " , ";
+
+    servers.servers[i][args.path + " " + "redirection"] += args.tmp_directive[1];
+    servers.servers[i][args.path + " " + "redirection"] += " ";
+    servers.servers[i][args.path + " " + "redirection"] += args.tmp_directive[2];
+    servers.servers[i][args.path + " " + "redirection"] += " ";
+    servers.servers[i][args.path + " " + "redirection"] += args.tmp_directive[3];
 }
 
 void    ServerFill::fillErrorPageLocation(locations_args &args)

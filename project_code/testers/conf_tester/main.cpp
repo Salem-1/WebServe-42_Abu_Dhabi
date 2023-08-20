@@ -25,6 +25,7 @@ int main()
     test_root_index();
     test_intra_config();
     test_dummy_intra_fill_config();
+    check_redirection_out();
     return (0);
 }
 
