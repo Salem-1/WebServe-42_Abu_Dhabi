@@ -171,7 +171,8 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 				throw(std::runtime_error("dup stdin failed"));
 			close(infd[1]);
 			close(infd[0]);
-			path = "/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/cgi-bin/cgi_tester";
+			// path = "/Users/ayassin/Documents/git_files/WebServe_42_Abu_Dhabi/project_code/intra/cgi-bin/cgi_tester";
+			path = server_info[".bla"];
 			ChildExec child(request, full_request, server_info, outfd);
 			child.childExecute(path);
 			exit(127);
