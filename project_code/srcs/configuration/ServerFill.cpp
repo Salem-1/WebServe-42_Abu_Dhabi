@@ -168,7 +168,15 @@ void    ServerFill::fillRestLocationDirectives(locations_args & args)
         fillErrorPageLocation(args);
         fillRedirectioneLocation(args);
         fillBodySizeLocation(args);
+        ExecludeBadDirectives(args);
 
+}
+
+void    ServerFill::ExecludeBadDirectives(locations_args &args)
+{
+    std::string msg = "Bad config file: Ambigous directive inside location " + args.tmp_directive[0]; 
+    if (!inSet(args.no_repeate_arg ,args.tmp_directive[0]))
+        throw(std::runtime_error(msg));
 }
 
 
@@ -359,14 +367,13 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
             fillIndex(single_essential, essentials_arg, servers.servers[i]);
         else if(single_essential[0] == "client_max_body_size")
             fillBodySize(single_essential, essentials_arg, servers.servers[i]);
-
         else
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     }
     if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     if (inSet(essentials_arg, "client_max_body_size"))
-        servers.servers[0]["Max-Body"] = "1000";
+        servers.servers[0]["Max-Body"] = MAX_BODY_SIZE;
     // std::cout << "inside the function we have servers = " << servers.servers.size();
 }
 void    ServerFill::fillBodySize(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
@@ -476,6 +483,10 @@ void    ServerFill::fillNoRepeateArg(std::set<std::string>  &no_repeate_arg)
 {
     no_repeate_arg.insert("root");
     no_repeate_arg.insert("index");
+    no_repeate_arg.insert("autoindex");
+    no_repeate_arg.insert("redirection");
+    no_repeate_arg.insert("methods");
+    no_repeate_arg.insert("error_page");
     no_repeate_arg.insert("client_max_body_size");
     no_repeate_arg.insert("cgi-bin");
 };

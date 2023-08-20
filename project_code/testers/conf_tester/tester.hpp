@@ -35,4 +35,7 @@ void            test_redirection();
 void            test_cgi_bin();
 void            test_bodySize_location();
 void            test_cgi_extentions_location();
+void            non_sensedirective_location();
+void            test_no_root_no_location_root();
+void            test_multiple_servers();
 #endif  

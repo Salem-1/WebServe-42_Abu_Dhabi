@@ -60,6 +60,8 @@ class ServerFill
         void                        fillCGIErrorLocation(locations_args &args);
         void                        fillBodySizeLocation(locations_args &args);
         void                        fillCGIExecutable(locations_args & args);
+        void                        ExecludeBadDirectives(locations_args &args);
+        void                        test_multiple_servers();
         std::vector<std::string>    multiple_ports;
         std::vector<std::string>    multiple_index;
     private:

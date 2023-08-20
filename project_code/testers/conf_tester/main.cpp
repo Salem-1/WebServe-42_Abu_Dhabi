@@ -18,6 +18,9 @@ int main()
     test_cgi_bin();
     test_bodySize_location();
     test_cgi_extentions_location();
+    non_sensedirective_location();
+    test_no_root_no_location_root();
+    test_multiple_servers();
     return (0);
 }
 

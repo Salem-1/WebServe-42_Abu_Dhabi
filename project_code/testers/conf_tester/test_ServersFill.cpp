@@ -5,9 +5,44 @@
 
 void    test_no_root_no_location_root()
 {
-    std::cout << "Make it after finishing locations inshalla" << std::endl;
+    tokenized_conf tokenized_server;
+
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    ServerFill    fill(tokenized_server);
+    negative_essential_try_catch(fill, "no root given in the essential or location");
 };
 
+void    test_multiple_servers()
+{
+    tokenized_conf tokenized_server;
+
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;root /;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
+    locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
+    locations.push_back("location .bla ;    index /path/to/your/cgi_test_socket.sock;\n");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    essentials = "listen 5555;\nserver_name second_server.com;root /second; \nindex index_second_server.html;\nclient_max_body_size 100;";
+    locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
+    locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
+    locations.push_back("location .bla ;    index /path/to/your/cgi_test_socket.sock;\n");
+    locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100;client_max_body_size \t\t100;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    ServerFill    fill(tokenized_server);
+    positive_essential_try_catch(fill, "no root given in the essential or location");
+    fill.servers.visualize_config();
+
+}
+
+void    non_sensedirective_location()
+{
+    one_location_test("location /;  index inedex.html; hala w'3ala;", "Non sense input in location", "-");
+    one_location_test("location /;  index inedex.html; nonsense non nonsense;", "Non sense input in location", "-");
+
+}
 void    test_cgi_extentions_location()
 {
     one_location_test("location .bla;  index;", "index has no value", "-");
