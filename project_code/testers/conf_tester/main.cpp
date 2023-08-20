@@ -22,6 +22,7 @@ int main()
     test_no_root_no_location_root();
     test_multiple_servers();
     test_DELETE_path();
+    test_root_index();
     return (0);
 }
 

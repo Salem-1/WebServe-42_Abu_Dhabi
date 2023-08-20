@@ -3,6 +3,29 @@
 #include "tester.hpp"
 
 
+void    test_root_index()
+{
+      tokenized_conf tokenized_server;
+
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;root /Youpibanana;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    locations.push_back("location /; methods DELETE   ;");
+    locations.push_back("location /put_test/; methods POST     ;\n  root /intra/YoupiBanane/PUT/;");
+    locations.push_back("location .bla ;    index /path/to/your/cgi_test_socket.sock;\n");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    essentials = "listen 5555;\nserver_name second_server.com;root /second; \nindex index_second_server.html;\nclient_max_body_size 100;";
+    locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
+    locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
+    locations.push_back("location .bla ;    index /path/to/your/cgi_test_socket.sock;\n");
+    locations.push_back("location /post_body; methods POST     ;\n  client_max_body_size 100;client_max_body_size \t\t100;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    ServerFill    fill(tokenized_server);
+    positive_essential_try_catch(fill, "root given in the essential or location");
+    cmp_strings(fill.servers.servers[0]["/"], fill.servers.servers[0]["root"] + "/" + fill.servers.servers[0]["index"], "Correct root index location");
+    cmp_strings(fill.servers.servers[1]["/"], fill.servers.servers[1]["root"] + "/" + fill.servers.servers[1]["index"], "Correct root index location");
+   
+
+}
 void    test_no_root_no_location_root()
 {
     tokenized_conf tokenized_server;
@@ -33,8 +56,10 @@ void    test_multiple_servers()
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     ServerFill    fill(tokenized_server);
     positive_essential_try_catch(fill, "no root given in the essential or location");
-    cmp_strings(fill.servers.servers[1]["/ methods"], "GET", "second server has GET method allowed");
-    cmp_strings(fill.servers.servers[1]["/put_test/ methods"], "PUT", "second server has PUT method allowed");
+    cmp_strings(fill.servers.servers[0]["/ methods"], "DELETE", "second server has GET method allowed");
+    cmp_strings(fill.servers.servers[0]["/put_test/ methods"], "POST", "second server has PUT method allowed");
+    cmp_strings(fill.servers.servers[1]["/ methods"], "DELETE", "second server has GET method allowed");
+    cmp_strings(fill.servers.servers[1]["/put_test/ methods"], "POST", "second server has PUT method allowed");
     // fill.servers.visualize_config();
 
 }

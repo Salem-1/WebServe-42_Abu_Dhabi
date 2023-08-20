@@ -38,5 +38,6 @@ void            test_cgi_extentions_location();
 void            non_sensedirective_location();
 void            test_no_root_no_location_root();
 void            test_multiple_servers();
-void             test_DELETE_path();
+void            test_DELETE_path();
+void            test_root_index();
 #endif  

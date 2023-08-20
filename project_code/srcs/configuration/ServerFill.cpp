@@ -56,13 +56,24 @@ void     ServerFill::parseEssentials(std::string essential_str, std::vector<std:
 
 void    ServerFill::parseLocations(std::vector<std::string> locations)
 {
-    for (std::vector<std::string>::iterator it = locations.begin();
-        it != locations.end(); it++)
+    for (std::vector<std::string>::reverse_iterator it = locations.rbegin();
+        it != locations.rend(); it++)
     {
         replaceNlAndTabs(*it);
         locationBasicCheck(*it);
         fillLocations(*it);
     }
+    fillRootIndex();
+}
+
+void    ServerFill::fillRootIndex()
+{
+    if (inMap(servers.servers[i], "/"))
+        return ;
+    else if (inMap(servers.servers[i], "/ index"))
+        servers.servers[i]["/"] = servers.servers[i]["root"] + "/" + servers.servers[i]["/ index"];
+    if (inMap(servers.servers[i], "index"))
+        servers.servers[i]["/"] = servers.servers[i]["root"] + "/" + servers.servers[i]["index"];
 }
 
 void    ServerFill::fillLocations(std::string location)
