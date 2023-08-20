@@ -88,6 +88,7 @@ void    Parser::parse(char *new_buffer)
 			if (body_start_pos != std::string::npos + 2)
 			{
 				full_request.header = packet.substr(0, body_start_pos);
+				std::cout << BLUE << full_request.header << RESET;
 				fillHeaderRequest(full_request.header);
 				fullheader = true;
 				print_to_file("/Users/ayassin/Desktop/green.txt", full_request.header);

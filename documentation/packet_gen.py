@@ -14,19 +14,24 @@ def send(packet, target_host, target_port):
         client_socket.connect((target_host, target_port))
 
         # Send the packet
+        c = 0
         for pack in packet:
             client_socket.sendall(pack.encode())
-
+            c += len(pack)
+        print(c)
         # Receive the response (you can do something with the response if needed)
-        response = client_socket.recv(20000)
-        print("Response received:")
-        print(response.decode())
-        response = client_socket.recv(20000)
-        print("Response received:")
-        print(response.decode())
-        response = client_socket.recv(20000)
-        print("Response received:")
-        print(response.decode())
+        while(1):
+            response = client_socket.recv(20000)
+            print("Response received:")
+            print(response.decode())
+            if len(response) == 0:
+                exit(0)
+        # response = client_socket.recv(20000)
+        # print("Response received:")
+        # print(response.decode())
+        # response = client_socket.recv(20000)
+        # print("Response received:")
+        # print(response.decode())
 
     except Exception as e:
         print(f"Error occurred: {e}")
@@ -44,7 +49,7 @@ def send_packet(path):
     Content-Length: 0\r
     Accept: */*\r\n\r\ncomment=Ahmed\0Mahdy\0\0\0\0\0hadi"""
     target_host = "127.0.0.1"
-    target_port = 5555
+    target_port = 3490
 
     send(packet, target_host, target_port)
         
@@ -61,7 +66,7 @@ def send_chunked_packet(path, comment):
     packet = [str ,
     f"""{length}\r\n""", f"""comment={comment}\r\n""", """0\r\n\r\n""" ]
     target_host = "127.0.0.1"
-    target_port = 5555
+    target_port = 3490
     
     send(packet, target_host, target_port)
 
@@ -81,7 +86,7 @@ def send_cgi_packet(path, num):
         packet += [f"""{length}\r\n""", f"""{i} \r\n"""]
     packet += ["0\r\n\r\n"]
     target_host = "127.0.0.1"
-    target_port = 5555
+    target_port = 3490
     # for i in packet:
     #     print(i)
     # exit()
