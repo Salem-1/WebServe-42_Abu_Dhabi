@@ -161,6 +161,7 @@ void    ServerFill::fillCGIRootLocation(locations_args &args)
 
 void    ServerFill::fillRestLocationDirectives(locations_args & args)
 {
+
         fillRootLocation(args);
         fillIndexLocation(args);
         fillAutoIndexLocation(args);
@@ -223,6 +224,7 @@ void    ServerFill::fillmethodsLocation(locations_args &args)
     allowed_methods.insert("POST");
     allowed_methods.insert("DELETE");
     allowed_methods.insert("PUT");
+    servers.servers[i][args.path + " methods"].clear();
     for (std::vector<std::string>::iterator it = ++args.tmp_directive.begin();
             it != args.tmp_directive.end(); ++it)
     {
