@@ -7,22 +7,22 @@ void    runServer(Config &servers);
 
 int main()
 {
-    // test_Essentials();
-    // test_lcation_firstLine();
-    // test_location_root();
-    // test_index();
-    // test_autoindex();
-    // test_methods();
-    // test_error_page();
-    // test_redirection();
-    // test_cgi_bin();
-    // test_bodySize_location();
-    // test_cgi_extentions_location();
-    // non_sensedirective_location();
-    // test_no_root_no_location_root();
-    // test_multiple_servers();
-    // test_DELETE_path();
-    // test_root_index();
+    test_Essentials();
+    test_lcation_firstLine();
+    test_location_root();
+    test_index();
+    test_autoindex();
+    test_methods();
+    test_error_page();
+    test_redirection();
+    test_cgi_bin();
+    test_bodySize_location();
+    test_cgi_extentions_location();
+    non_sensedirective_location();
+    test_no_root_no_location_root();
+    test_multiple_servers();
+    test_DELETE_path();
+    test_root_index();
     test_intra_config();
     return (0);
 }

@@ -121,7 +121,7 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["index"] = "index.html";
     servers[2]["/"] = servers[2]["root"] + "/" + servers[2] ["index"];
     servers[2]["404"] = servers[2]["root"] +  "/" + "not_found.html";
-	servers[2]["/cgi-bin"] = pwd + "/intra";
+	servers[2]["/cgi-bin"] =  servers[2]["root"]+ "../.";
     
     servers.push_back(std::map<std::string, std::string>());
     servers[3]["DELETE path"] = "POST";
