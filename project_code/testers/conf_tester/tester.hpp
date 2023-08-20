@@ -40,4 +40,5 @@ void            test_no_root_no_location_root();
 void            test_multiple_servers();
 void            test_DELETE_path();
 void            test_root_index();
+void            test_intra_config();
 #endif  

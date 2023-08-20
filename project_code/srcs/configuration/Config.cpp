@@ -9,6 +9,7 @@ Config::Config()
     char buff[4000];
     std::string tmp(getcwd(buff, sizeof(buff)));
     pwd = tmp;
+    intra_config(servers);
     // if (servers.empty())
     //     throw(std::runtime_error("Empty server configuration "));
     // else

@@ -3,16 +3,38 @@
 #include "tester.hpp"
 
 
+
+void    test_intra_config()
+{
+    tokenized_conf tokenized_server;
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST;";    
+    locations.push_back("location /; methods DELETE   ;");
+    locations.push_back("location /directory/; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\nmethods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /cgi-bin/cgi_tester;\n");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    ServerFill    fill(tokenized_server);
+    positive_essential_try_catch(fill, "filled intra config ");
+    fill.servers.visualize_config();
+    Config standard;
+    cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
+    standard.visualize_config();
+
+}
+
 void    test_root_index()
 {
-      tokenized_conf tokenized_server;
-
+    tokenized_conf tokenized_server;
     std::vector<std::string> locations;
     std::string              essentials = "listen 3490;\nserver_name 127.0.0.1 local_host;root /Youpibanana;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
+    
     locations.push_back("location /; methods DELETE   ;");
     locations.push_back("location /put_test/; methods POST     ;\n  root /intra/YoupiBanane/PUT/;");
     locations.push_back("location .bla ;    index /path/to/your/cgi_test_socket.sock;\n");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    essentials = "listen 5555;\nserver_name second_server.com;root /second; \nindex index_second_server.html;\nclient_max_body_size 100;";
+
     essentials = "listen 5555;\nserver_name second_server.com;root /second; \nindex index_second_server.html;\nclient_max_body_size 100;";
     locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
     locations.push_back("location /put_test/; methods PUT     ;\n  root /intra/YoupiBanane/PUT/;");
@@ -363,13 +385,13 @@ void    test_DELETE_path()
 
     ServerFill fill(tokenized_server);
     positive_essential_try_catch(fill, "normal server no delete path");
-    cmp_strings(fill.servers.servers[0]["DELETE"], "POST", "default post is there");
+    cmp_strings(fill.servers.servers[0]["DELETE path"], "POST", "default post is there");
     essentials = "listen 4490;\nserver_name 127.0.0.1 local_host; DELETE_path PUT/files;\nroot intra/YoupiBanane;\nindex youpi.bad_extension;\nclient_max_body_size 100;";
     locations.push_back("location /; methods GET   ;\n index youpi.bad_extension;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     ServerFill f(tokenized_server);
     positive_essential_try_catch(f, "provided delete path");
-    cmp_strings(f.servers.servers[1]["DELETE"], "PUT/files", "successfully modified delete path");
+    cmp_strings(f.servers.servers[1]["DELETE path"], "PUT/files", "successfully modified delete path");
 }
 
 void    test_bodySizeConf(ServerFill &fill)

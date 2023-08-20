@@ -388,9 +388,9 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
     if (inSet(essentials_arg, "root") || inSet(essentials_arg, "listen") || inSet(essentials_arg, "server_name"))
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     if (inSet(essentials_arg, "client_max_body_size"))
-        servers.servers[0]["Max-Body"] = MAX_BODY_SIZE;
+        servers.servers[i]["Max-Body"] = MAX_BODY_SIZE_STR;
     if (inSet(essentials_arg, "DELETE_path"))
-        servers.servers[0]["DELETE"] = "POST";
+        servers.servers[i]["DELETE path"] = "POST";
     // std::cout << "inside the function we have servers = " << servers.servers.size();
 }
 void    ServerFill::fillDELETE_path(std::vector<std::string> &DELETE_path_vec,  std::set<std::string> &essentials_arg, 
@@ -398,7 +398,7 @@ void    ServerFill::fillDELETE_path(std::vector<std::string> &DELETE_path_vec,  
 {
     if(!inSet(essentials_arg, "DELETE_path") || DELETE_path_vec.size() != 2)
         throw(std::runtime_error("Bad config file: repeated DELETE_path essential  💩"));
-    server["DELETE"] = DELETE_path_vec[1];
+    server["DELETE path"] = DELETE_path_vec[1];
     essentials_arg.erase("DELETE_path");
 
 }
