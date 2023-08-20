@@ -21,6 +21,7 @@ int main()
     non_sensedirective_location();
     test_no_root_no_location_root();
     test_multiple_servers();
+    test_DELETE_path();
     return (0);
 }
 

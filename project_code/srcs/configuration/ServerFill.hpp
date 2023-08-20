@@ -34,6 +34,8 @@ class ServerFill
         void                        fillMultiplePorts(void);
         void                        assignEssentials(
                                         std::set<std::string> &essential_arg, std::vector<std::string> &essentials);
+        void    fillDELETE_path(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
+                    stringmap &server);
         void                        flushSingleServer(void);
         void                        checkRepeatedServers(void);
         bool                        findRepeatedPort(conf::iterator it, conf::iterator &repeated_it);

@@ -149,7 +149,6 @@ void   intra_config(conf &servers)
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
-    // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
 }
 

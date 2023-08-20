@@ -367,6 +367,8 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
             fillIndex(single_essential, essentials_arg, servers.servers[i]);
         else if(single_essential[0] == "client_max_body_size")
             fillBodySize(single_essential, essentials_arg, servers.servers[i]);
+        else if(single_essential[0] == "DELETE_path")
+            fillDELETE_path(single_essential, essentials_arg, servers.servers[i]);
         else
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     }
@@ -374,12 +376,22 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
             throw(std::runtime_error("Bad config file: bad essential argument 💩"));
     if (inSet(essentials_arg, "client_max_body_size"))
         servers.servers[0]["Max-Body"] = MAX_BODY_SIZE;
+    if (inSet(essentials_arg, "DELETE_path"))
+        servers.servers[0]["DELETE"] = "POST";
     // std::cout << "inside the function we have servers = " << servers.servers.size();
+}
+void    ServerFill::fillDELETE_path(std::vector<std::string> &DELETE_path_vec,  std::set<std::string> &essentials_arg, 
+        stringmap &server)
+{
+    if(!inSet(essentials_arg, "DELETE_path") || DELETE_path_vec.size() != 2)
+        throw(std::runtime_error("Bad config file: repeated DELETE_path essential  💩"));
+    server["DELETE"] = DELETE_path_vec[1];
+    essentials_arg.erase("DELETE_path");
+
 }
 void    ServerFill::fillBodySize(std::vector<std::string> &bodySize_vec,  std::set<std::string> &essentials_arg, 
         stringmap &server)
 {
-    (void)bodySize_vec;
     if(essentials_arg.find("client_max_body_size") == essentials_arg.end() 
         || bodySize_vec.size() != 2 || !isAllDigit(bodySize_vec[1]))
         throw(std::runtime_error("Bad config file: repeated client_max_body_size param  💩"));
@@ -477,6 +489,7 @@ void    ServerFill::fillEssentialArg(std::set<std::string>  &essentials_arg)
     essentials_arg.insert("server_name");
     essentials_arg.insert("index");
     essentials_arg.insert("root");
+    essentials_arg.insert("DELETE_path");
     essentials_arg.insert("client_max_body_size");
 };
 void    ServerFill::fillNoRepeateArg(std::set<std::string>  &no_repeate_arg)
