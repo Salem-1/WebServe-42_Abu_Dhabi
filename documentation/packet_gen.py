@@ -14,19 +14,24 @@ def send(packet, target_host, target_port):
         client_socket.connect((target_host, target_port))
 
         # Send the packet
+        c = 0
         for pack in packet:
             client_socket.sendall(pack.encode())
-
+            c += len(pack)
+        print(c)
         # Receive the response (you can do something with the response if needed)
-        response = client_socket.recv(20000)
-        print("Response received:")
-        print(response.decode())
-        response = client_socket.recv(20000)
-        print("Response received:")
-        print(response.decode())
-        response = client_socket.recv(20000)
-        print("Response received:")
-        print(response.decode())
+        while(1):
+            response = client_socket.recv(20000)
+            print("Response received:")
+            print(response.decode())
+            if len(response) == 0:
+                exit(0)
+        # response = client_socket.recv(20000)
+        # print("Response received:")
+        # print(response.decode())
+        # response = client_socket.recv(20000)
+        # print("Response received:")
+        # print(response.decode())
 
     except Exception as e:
         print(f"Error occurred: {e}")

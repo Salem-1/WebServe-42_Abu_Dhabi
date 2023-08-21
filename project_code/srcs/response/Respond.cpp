@@ -43,7 +43,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	std::string cgi_path = isCGI(request);    
+	std::string cgi_path = isCGI(server_info, request);    
 	std::vector<std::string> supported_methods;
     std::string msg;
 
@@ -63,7 +63,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
 		if (bodyTooBig(response, server_info, full_request.body) == true)
 			response_string = err.code(server_info, "413");
 	    else if (cgi_path != "")
-			response_string = responseCGI(request, server_info, cgi_path, full_request);
+			response_string = getExecute(request, full_request, server_info, cgi_path);
 		else
         	response_string = normalGETResponse(request, server_info);
     }
@@ -82,7 +82,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
 		if (bodyTooBig(response, server_info, full_request.body) == true)
 			response_string = err.code(server_info, "413");
         else if (cgi_path != "")
-			response_string = responseCGI(request, server_info, cgi_path, full_request);
+			response_string = postExecute(request, full_request, server_info, cgi_path);
 		else
 		{
 			Post apost(request, full_request, server_info, response);
