@@ -7,6 +7,8 @@ class ServerFill
 {
     public:
         ServerFill(tokenized_conf &conf_tokens);
+        ServerFill(ServerFill const &obj2);
+        ServerFill &operator= (ServerFill const &obj2);
         ~ServerFill();
         bool                    parseTokens();
         // std::vector<std::string> getMultiplePorts() const;

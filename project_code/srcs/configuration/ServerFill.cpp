@@ -5,6 +5,19 @@ ServerFill::ServerFill(tokenized_conf &conf_tokens): _conf_tokens(conf_tokens), 
     // parseTokens();
 }
 
+ServerFill::ServerFill(ServerFill const &obj2)
+{
+    *this = obj2;
+}
+
+ServerFill &ServerFill::operator= (ServerFill const &obj2)
+{
+    if (this != &obj2)
+    {
+        this->servers = obj2.servers;
+    }
+    return (*this);
+}
 
 ServerFill::~ServerFill()
 {
@@ -32,7 +45,7 @@ void    ServerFill::fillServerPorts()
 {
     if (multiple_ports.size() > 0)
     {
-        servers.servers[i]["port"] = multiple_ports[0];
+        servers.servers[i]["Port"] = multiple_ports[0];
         i++;
         for (std::vector<std::string>::iterator it = ++multiple_ports.begin();
             it != multiple_ports.end(); ++it)
@@ -40,7 +53,7 @@ void    ServerFill::fillServerPorts()
 
             servers.servers.push_back(stringmap());
             servers.servers[i] = servers.servers[i - 1];
-            servers.servers[i]["port"] = *it;
+            servers.servers[i]["Port"] = *it;
             i++;
         }
     }
@@ -333,7 +346,7 @@ bool    ServerFill::findRepeatedPort(conf::iterator it, conf::iterator &repeated
     for (conf::iterator pit = it + 1
         ; pit != servers.servers.end(); ++pit)
     {
-        if ((*it)["port"] == (*pit)["port"])
+        if ((*it)["Port"] == (*pit)["Port"])
         {
             repeated_it = pit;
             return (true);

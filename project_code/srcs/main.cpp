@@ -2,6 +2,8 @@
 #include "../includes/webserve.hpp"
 
 
+tokenized_conf    dummy_intra_token_fill();
+
 void handle_pipes(int sig)
 {
     if (sig == SIGPIPE)
@@ -9,7 +11,6 @@ void handle_pipes(int sig)
         std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
     }
 }
-
 int main(int argc, char **argv)
 {
 	if (argc > 2)
@@ -25,19 +26,47 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-    Config  servers;
-    servers.fillPorts();
+    // Config  servers;
+tokenized_conf tokenized_server;
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST; client_max_body_size 10000000000;";    
+    locations.push_back("location /; methods GET   ;");
+    locations.push_back("location /directory; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\n methods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /../cgi-bin/cgi_tester;\n");
+    locations.push_back("location /cgi-bin; root ../intra;");
+    locations.push_back("location /put_test; methods PUT;  root /PUT/;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+   
+
+    ServerFill filled_servers(tokenized_server);
+    filled_servers.servers.fillPorts();
     signal(SIGPIPE, &handle_pipes);
 
-    for (std::set<std::string>::iterator it = servers.ports.begin();
-            it != servers.ports.end(); ++it)
+    for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
+            it != filled_servers.servers.ports.end(); ++it)
     {
         std::cout << "port " << *it << std::endl;
         Listner binded_sock(*it);
-        servers.sockets.push_back(binded_sock.sockfd);
+        filled_servers.servers.sockets.push_back(binded_sock.sockfd);
     }
     std::cout << "server waiting for connection....\n" << std::endl;
-    Kque socket_manager(servers.sockets);
-    socket_manager.watchFds(servers.servers);
+    Kque socket_manager(filled_servers.servers.sockets);
+    socket_manager.watchFds(filled_servers.servers.servers);
     return (0);
+}
+
+tokenized_conf    dummy_intra_token_fill()
+{
+    tokenized_conf tokenized_server;
+    std::vector<std::string> locations;
+    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST; client_max_body_size 10000000000;";    
+    locations.push_back("location /; methods GET   ;");
+    locations.push_back("location /directory; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\n methods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /../cgi-bin/cgi_tester;\n");
+    locations.push_back("location /cgi-bin; root ../intra;");
+    locations.push_back("location /put_test; methods PUT;  root /PUT/;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    return (tokenized_server);
 }
