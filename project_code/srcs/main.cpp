@@ -84,7 +84,7 @@ void    run_server()
     essentials = "    listen      4444; server_name defaultserver; DELETE_path POST; root        /intra/website; index       index.html;";    
     locations.push_back("location / ; methods GET DELETE;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
-
+   
     ServerFill filled_servers(tokenized_server);
     filled_servers.servers.fillPorts();
     signal(SIGPIPE, &handle_pipes);
