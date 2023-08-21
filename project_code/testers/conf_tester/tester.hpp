@@ -44,4 +44,5 @@ void            test_intra_config();
 void            test_dummy_intra_fill_config();
 void            check_redirection_out();
 void            cmp_configs(conf &parsed_conf, conf &standards_conf);
+void            test_duplicated_servers();
 #endif  

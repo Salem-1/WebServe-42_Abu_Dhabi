@@ -4,6 +4,61 @@
 
 
 
+void    test_duplicated_servers()
+{
+    tokenized_conf tokenized_server;
+    std::vector<std::string> locations;
+     std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST; client_max_body_size 10000000000;";    
+    locations.push_back("location /; methods GET   ;");
+    locations.push_back("location /directory; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\n methods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /../cgi-bin/cgi_tester;\n");
+    locations.push_back("location /cgi-bin; root ../intra;");
+    locations.push_back("location /put_test; methods PUT;  root /PUT/;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    
+    locations.clear();
+    essentials = " listen      4444; server_name 127.0.0.1 localhost; root        /intra/YoupiBanane; DELETE_path POST; index       youpi.bad_extension;";    
+    locations.push_back("location /;  index   youpi.bad_extension;;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    
+    locations.clear();
+    essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; index       index.html;";    
+    locations.push_back("location / ; index   index.html; error_page 404 not_found.html;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+   
+    locations.clear();
+    essentials = "    listen      4444; server_name defaultserver; DELETE_path POST; root        /intra/website; index       index.html;";    
+    locations.push_back("location / ; methods GET DELETE;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    locations.clear();
+    essentials = "    listen      4444; server_name defaultserver; DELETE_path POST; root        /intra/website; index       index.html;";    
+    locations.push_back("location / ; methods GET DELETE;");
+    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+    ServerFill    fill(tokenized_server);  
+    
+    negative_essential_try_catch(fill, "repeated port in larger config");
+}
+
+void    test_Essentials()
+{
+    tokenized_conf tokenized_server = dummy_conf_tokens();
+    ServerFill    fill(tokenized_server);
+    test_emptyEssentials(fill);
+    test_lenEssentials(fill);
+    test_mixSpacesEssentials(fill);
+    test_essentialOccurance(fill);
+    test_listenConf(fill);
+    test_hostNameConf(fill);
+    test_rootConf(fill);
+    test_indexConf(fill);
+    test_bodySizeConf(fill);
+    test_manyConfs(fill);
+    test_repeated_port();
+    // runServer(servers);
+}
+
+
 void    cmp_configs(conf &parsed_conf, conf &standards_conf)
 {
     std::set<std::string>   compared;
@@ -443,23 +498,6 @@ tokenized_conf    dummy_conf_tokens()
 }
 
 
-void    test_Essentials()
-{
-    tokenized_conf tokenized_server = dummy_conf_tokens();
-    ServerFill    fill(tokenized_server);
-    test_emptyEssentials(fill);
-    test_lenEssentials(fill);
-    test_mixSpacesEssentials(fill);
-    test_essentialOccurance(fill);
-    test_listenConf(fill);
-    test_hostNameConf(fill);
-    test_rootConf(fill);
-    test_indexConf(fill);
-    test_bodySizeConf(fill);
-    test_manyConfs(fill);
-    test_repeated_port();
-    // runServer(servers);
-}
 
 
 tokenized_conf    fill_second_essential(std::string second_essential)
