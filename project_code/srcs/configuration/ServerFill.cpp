@@ -229,7 +229,9 @@ void    ServerFill::fillErrorPageLocation(locations_args &args)
         throw(std::runtime_error("Bad configuration file: wrong number of error_page arguments"));
     if (!isAllDigit(args.tmp_directive[1]) || args.tmp_directive[1].size() != 3)
         throw(std::runtime_error("Bad configuration file: provided bad error code  error_page arguments"));
-    servers.servers[i][args.path + " " + args.tmp_directive[1]] = args.tmp_directive[2];
+    if (inMap(servers.servers[i] , args.path + " " + args.tmp_directive[0]))
+        servers.servers[i][args.path + " " + args.tmp_directive[0]] += " , ";
+    servers.servers[i][args.path + " " + args.tmp_directive[0]] += args.tmp_directive[1] + " " + servers.servers[i]["root"] + "/" + args.tmp_directive[2];
 }
 void    ServerFill::fillmethodsLocation(locations_args &args)
 {

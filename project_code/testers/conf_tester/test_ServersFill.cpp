@@ -13,6 +13,9 @@ void    cmp_configs(conf &parsed_conf, conf &standards_conf)
     for (conf::iterator parsed = parsed_conf.begin()
             ; parsed != parsed_conf.end(); parsed++)
     {
+            std::cout << BOLDYELLOW<< "--------------------------------------------------- " << RESET << std::endl;
+            std::cout << BOLDYELLOW<< "---------------SERVER <<<" << i << ">>>---------------------- " << RESET << std::endl;
+            std::cout << BOLDYELLOW<< "--------------------------------------------------- " << RESET << std::endl;
         for (stringmap::iterator it = parsed->begin()
             ; it != parsed->end(); it++)
         {
@@ -28,6 +31,7 @@ void    cmp_configs(conf &parsed_conf, conf &standards_conf)
                 std::cout << RED << "\"" <<it->first  <<  "\" : \"" << it->second << "\"" <<  RESET << std::endl;
                 std::cout << BOLDYELLOW<< "--------------------------------------------------- " << RESET << std::endl;
             }
+
         }
 
         for (stringmap::iterator standard = standards_conf[i].begin(); standard != standards_conf[i].end(); standard++)
@@ -50,31 +54,35 @@ void    test_dummy_intra_fill_config()
 {
     tokenized_conf tokenized_server;
     std::vector<std::string> locations;
-    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST;";    
-    locations.push_back("location /; methods DELETE   ;");
-    locations.push_back("location /directory/; \nroot /;\nindex youpi.bad_extension;\n");
-    locations.push_back("    location /post_body ;\nmethods POST ;\nclient_max_body_size 100;\n");
-    locations.push_back("location .bla;index   /cgi-bin/cgi_tester;\n");
+     std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST; client_max_body_size 10000000000;";    
+    locations.push_back("location /; methods GET   ;");
+    locations.push_back("location /directory; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\n methods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /../cgi-bin/cgi_tester;\n");
+    locations.push_back("location /cgi-bin; root ../intra;");
+    locations.push_back("location /put_test; methods PUT;  root /PUT/;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
     locations.clear();
-    essentials = " listen      4444; server_name 127.0.0.1 server_name; root        /intra/website; DELETE_path POST; index       youpi.bad_extension;";    
+    essentials = " listen      4444; server_name 127.0.0.1 localhost; root        /intra/YoupiBanane; DELETE_path POST; index       youpi.bad_extension;";    
     locations.push_back("location /;  index   youpi.bad_extension;;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
     locations.clear();
-    essentials = " listen      5555; server_name 127.0.0.1 server_name; root        /intra/website; index       index.html;";    
+    essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; index       index.html;";    
     locations.push_back("location / ; index   index.html; error_page 404 not_found.html;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
    
     locations.clear();
-    essentials = "    listen      4444; server_name default_server; DELETE_path POST; root        /intra/website; index       index.html;";    
+    essentials = "    listen      4444; server_name defaultserver; DELETE_path POST; root        /intra/website; index       index.html;";    
     locations.push_back("location / ; methods GET DELETE;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     ServerFill    fill(tokenized_server);
-    positive_essential_try_catch(fill, "filled intra config ");
-    // fill.servers.visualize_config();
+    fill.parseTokens();
+    // positive_essential_try_catch(fill, "filled intra config ");
     Config standard;
+    cmp_configs(fill.servers.servers, standard.servers);
+    // fill.servers.visualize_config();
     // cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
     // standard.visualize_config();
 }
@@ -271,12 +279,11 @@ void    test_error_page()
     tokenized_conf tokenized_server =  dummy_location_fill("location /;root /YoupiBanan; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 404 error.html");
     ServerFill    fill(tokenized_server);
     fill.parseTokens();
-    cmp_strings(fill.servers.servers[0]["/ 404"], "error.html", "correct error page error.html");
-    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 403 notfound.html;");
+    cmp_strings(fill.servers.servers[0]["/ error_page"], "404 " + fill.servers.servers[0]["root"] +  "/error.html", "correct error page error.html");
+    tokenized_server =  dummy_location_fill("location /YoupiBanana;root /; index index.html; autoindex on; methods GET POST DELETE PUT; error_page 403 notfound.html; error_page 500 server_error.html");
     ServerFill    fil(tokenized_server);
     fil.parseTokens();
-    cmp_strings(fil.servers.servers[0]["/YoupiBanana 403"], "notfound.html", "correct error page notfound.html");
-
+    cmp_strings(fil.servers.servers[0]["/YoupiBanana error_page"], "403 " + fil.servers.servers[0]["root"] +  "/notfound.html , 500 " + fil.servers.servers[0]["root"] +  "/server_error.html", "correct error page notfound.html");
 }
 void    test_index()
 {
