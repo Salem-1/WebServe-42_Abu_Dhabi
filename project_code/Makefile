@@ -6,7 +6,7 @@
 #    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/20 18:15:30 by ahsalem          ###   ########.fr        #
+#    Updated: 2023/08/20 18:20:04 by ahsalem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ _SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
 		Parser_utils.cpp GET.cpp GET_response.cpp DELETE.cpp DELETE_res.cpp \
 		Respond.cpp Config.cpp logger.cpp parsing_lib.cpp ErrResponse.cpp main.cpp Post.cpp \
 		CgiResponse.cpp PostCgiResponse.cpp GET_response_strings.cpp response_utils.cpp PUT.cpp \
-		ChildExec.cpp CgiResponse.cpp ConfigHandler.cpp ServerFill.cpp 
+		ChildExec.cpp  ConfigHandler.cpp ServerFill.cpp 
 		
 # test_ServersFill.cpp 
 

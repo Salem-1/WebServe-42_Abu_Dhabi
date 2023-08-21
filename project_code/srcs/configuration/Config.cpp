@@ -25,7 +25,7 @@ Config::Config()
     // if (servers.empty())
     //     throw(std::runtime_error("Empty server configuration "));
     // else
-    // fillPorts();
+    fillPorts();
 }
 std::string Config::getPwd() const
 {
