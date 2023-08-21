@@ -43,14 +43,11 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         return ;
     }
     response["Status-code"].push_back("200");
-	std::string cgi_path = isCGI(request);    
+	std::string cgi_path = isCGI(server_info, request);    
 	std::vector<std::string> supported_methods;
-    ErrResponse err;
     std::string msg;
 
-    if (cgi_path != "")
-		response_string = responseCGI(request, server_info, cgi_path, err, full_request.body);
-	else if (request.find("GET") != request.end()
+	if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
     {
         fillSupportedMethods(supported_methods, server_info, "GET" ,  request);
@@ -61,12 +58,14 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             response_string = err.code(server_info, "405");
             return ;
         }   
-                    msg =  ":) GET is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
+            msg =  ":) GET is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
-        //@ Ahmed MAHDI also can you put the CGI check here    
-        response_string = normalGETResponse(request, server_info);
-        std::cout << "redirection packet = " << response_string;
-
+		if (bodyTooBig(response, server_info, full_request.body) == true)
+			response_string = err.code(server_info, "413");
+	    else if (cgi_path != "")
+			response_string = getExecute(request, full_request, server_info, cgi_path);
+		else
+        	response_string = normalGETResponse(request, server_info);
     }
     else if (request.find("POST") != request.end())
     {
@@ -78,16 +77,18 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             response_string = err.code(server_info, "405");
             return ;
         } 
-            msg =  ":) POST is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
-            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
-        Post apost(request, full_request, server_info, response);
-		// apost.printPostHeader();
-		// TODO: Get pdf files get to this point
-		apost.printPostBody();
-		// exit(0);
-		apost.handlePost();
-		response_string = apost.get_response();
-		std::cout << BOLDYELLOW << "responding to post: " << response_string << std::endl << RESET;
+		msg =  ":) POST is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
+		print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
+		if (bodyTooBig(response, server_info, full_request.body) == true)
+			response_string = err.code(server_info, "413");
+        else if (cgi_path != "")
+			response_string = postExecute(request, full_request, server_info, cgi_path);
+		else
+		{
+			Post apost(request, full_request, server_info, response);
+			apost.handlePost();
+			response_string = apost.get_response();
+		}
     }
     else if (request.find("PUT") != request.end())
     {
@@ -102,10 +103,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             msg =  ":) PUT is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
             std::cout << msg<< std::endl;
         PUT put(request, full_request, server_info, response);
-		put.printPUTBody();
+		// put.printPUTBody();
 		put.handlePUT();
 		response_string = put._response;
-		std::cout << BOLDYELLOW << "responding to PUT: " << response_string<<  std::endl << RESET;
     }
     else if (request.find("DELETE") != request.end())
     {

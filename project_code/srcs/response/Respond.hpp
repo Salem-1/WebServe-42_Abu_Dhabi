@@ -7,6 +7,8 @@
 # include "../PUT/PUT.hpp"
 # include "../DELETE/DELETE.hpp"
 # include "../GET/GET.hpp"
+# include "../ChildCgi/ChildExec.hpp"
+
 
 # include "../../includes/libs.hpp"
 // # include "../../includes/webserve.hpp"
@@ -35,19 +37,20 @@ class Respond
                             , std::string method, packet_map& request);
 	private:
 		static void		closePipe(int *fd);
-		std::string	    isCGI(packet_map &request);
-		std::string	    responseCGI(packet_map &request, stringmap &server_info, std::string &cgi_path, ErrResponse &err, std::string &body);
-		std::string	    execute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err);
-		std::string 	postExecute(stringmap &server_info, std::string path, std::string &args, ErrResponse &err, std::string &body);
+		std::string	    isCGI(stringmap &server_info, packet_map &request);
+		std::string	    getExecute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path);
+		std::string 	postExecute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path);
         int		        checkPoisonedURL(packet_map &request);
         std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
-    public:
+		bool			bodyTooBig(response_packet &response, stringmap &server_info, std::string &body);
+		std::string		fillingResponsePacket(packet_map &request, stringmap &server_info, std::string &full_file_to_string);
+	public:
 		int				client_socket;
         response_packet	response;
         std::string		response_string;
         pthread_t		sendThread;
         bool			sending;
-		// ErrResponse     err;
+		ErrResponse     err;
 
     private:
         size_t	                    response_bytes_sent;

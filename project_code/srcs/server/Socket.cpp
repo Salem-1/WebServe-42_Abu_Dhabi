@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/28 23:46:30 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/20 10:58:11 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ void    Socket::nonBlockSock(void)
     if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0)
         errorInSocket("error setting socket option: ");
     std::cout << "Socket set to non block" << std::endl;
-    usleep(500);
 }
 void    Socket::errorInSocket(std::string err)
 {
