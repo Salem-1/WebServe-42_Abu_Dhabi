@@ -9,8 +9,8 @@ Config::Config()
     char buff[4000];
     std::string tmp(getcwd(buff, sizeof(buff)));
     pwd = tmp;
-    // intra_config(servers);
-    intra_and_dummy_fill_till_config_parsing(servers);
+    intra_config(servers);
+    // intra_and_dummy_fill_till_config_parsing(servers);
     // if (servers.empty())
     //     throw(std::runtime_error("Empty server configuration "));
     // else
@@ -84,7 +84,7 @@ void    python_tester_config(conf &servers)
 
 void    intra_and_dummy_fill_till_config_parsing(conf &servers)
 {
-    char buff[4000];
+     char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     servers.push_back(std::map<std::string, std::string>());
      servers[0]["server_name"] = "127.0.0.1";
@@ -93,14 +93,17 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     servers[0]["/ methods"] = "GET";
-    servers[0]["Max-Body"] = "100";
+    servers[0]["Max-Body"] = "10000000000";
+    servers[0]["/post_body Max-Body"] = "100";
+    servers[0]["/post_body methods"] = "POST";
     servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
     // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
-    
+	servers[0]["/cgi-bin"] = pwd + "/intra";
+	servers[0][".bla"] = servers[0]["root"]+ "/../cgi-bin/cgi_tester";
    
    
     servers.push_back(std::map<std::string, std::string>());
@@ -146,12 +149,17 @@ void   intra_config(conf &servers)
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     servers[0]["/ methods"] = "GET";
-    servers[0]["Max-Body"] = "100";
+    servers[0]["Max-Body"] = "10000000000";
+    servers[0]["/post_body Max-Body"] = "100";
+    servers[0]["/post_body methods"] = "POST";
     servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
+    // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
+	servers[0]["/cgi-bin"] = servers[0]["root"]  + "../intra";
+	servers[0][".bla"] = servers[0]["root"]+ "/../cgi-bin/cgi_tester";
 }
 
 

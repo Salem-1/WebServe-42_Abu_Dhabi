@@ -3,6 +3,49 @@
 #include "tester.hpp"
 
 
+
+void    cmp_configs(conf &parsed_conf, conf &standards_conf)
+{
+    std::set<std::string>   compared;
+    std::string             msg;
+    int                     i = 0;
+    
+    for (conf::iterator parsed = parsed_conf.begin()
+            ; parsed != parsed_conf.end(); parsed++)
+    {
+        for (stringmap::iterator it = parsed->begin()
+            ; it != parsed->end(); it++)
+        {
+            if (inMap(standards_conf[i], it->first))
+            {
+                msg = "\"" + it->first + "\"" + " : \"" + it->second + "\"" + "\n\"" + it->first + "\"" + " : \"" + standards_conf[i][it->first]+ "\"";          
+                cmp_strings(it->second, standards_conf[i][it->first], msg);
+                compared.insert(it->first);
+            }
+            else
+            {
+                std::cout << RED << it->first  <<  " not in standard 😱" << RESET << std::endl;
+                std::cout << RED << "\"" <<it->first  <<  "\" : \"" << it->second << "\"" <<  RESET << std::endl;
+                std::cout << BOLDYELLOW<< "--------------------------------------------------- " << RESET << std::endl;
+            }
+        }
+
+        for (stringmap::iterator standard = standards_conf[i].begin(); standard != standards_conf[i].end(); standard++)
+        {
+            if (!inSet(compared, standard->first))
+            {
+                std::cout << BOLDRED << standard->first  <<  " not in our conf 😱" << RESET << std::endl;
+                std::cout << BOLDRED << "\"" <<standard->first  <<  "\" : \"" << standard->second << "\"" <<  RESET << std::endl;
+                std::cout << BOLDYELLOW<< "--------------------------------------------------- " << RESET << std::endl;
+            }
+        }
+        
+        i++;
+    }
+}
+    //                if (left == right)
+    //   std::cout << BOLDGREEN << msg  << " test passed 😀" << RESET <<std::endl;
+    // else
 void    test_dummy_intra_fill_config()
 {
     tokenized_conf tokenized_server;
@@ -40,19 +83,25 @@ void    test_intra_config()
 {
     tokenized_conf tokenized_server;
     std::vector<std::string> locations;
-    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST;";    
-    locations.push_back("location /; methods DELETE   ;");
-    locations.push_back("location /directory/; \nroot /;\nindex youpi.bad_extension;\n");
-    locations.push_back("    location /post_body ;\nmethods POST ;\nclient_max_body_size 100;\n");
-    locations.push_back("location .bla;index   /cgi-bin/cgi_tester;\n");
+    std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST; client_max_body_size 10000000000;";    
+    locations.push_back("location /; methods GET   ;");
+    locations.push_back("location /directory; \nroot /;\nindex youpi.bad_extension;\n");
+    locations.push_back("    location /post_body ;\n methods POST ;\nclient_max_body_size 100;\n");
+    locations.push_back("location .bla;index   /../cgi-bin/cgi_tester;\n");
+    locations.push_back("location /cgi-bin; root ../intra;");
+    locations.push_back("location /put_test; methods PUT;  root /PUT/;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     ServerFill    fill(tokenized_server);
-    positive_essential_try_catch(fill, "filled intra config ");
+    fill.parseTokens();
+    // positive_essential_try_catch(fill, "filled intra config ");
     // fill.servers.visualize_config();
     Config standard;
     // cmp_bool((standard.servers == fill.servers.servers),1  ,"servers are equal");
+    cmp_configs(fill.servers.servers, standard.servers);
     // standard.visualize_config();
 }
+
+
 
 void    test_root_index()
 {
