@@ -10,9 +10,15 @@ void handle_pipes(int sig)
     }
 }
 
-int main()
+int main(int argc, char **argv, char **env)
 {
+    (void)argc;
+    (void)argv;
+    (void)env;
+
     Config  servers;
+    
+    fillEnvPath(servers.servers, env);
     signal(SIGPIPE, &handle_pipes);
 
     for (std::set<std::string>::iterator it = servers.ports.begin();
@@ -28,6 +34,29 @@ int main()
     return (0);
 }
 
+void    fillEnvPath(conf &servers, char **env)
+{
+    std::string path = "";
+    std::string     one_env;
+    if (env != NULL)
+    {
+        for (int i = 0; env[i] != NULL; i++)
+        {
+            one_env.append(env[i]);
+            if (one_env.find("PATH=") == 0)
+            {
+                path = one_env.substr(5, one_env.length() - 1);
+                break ; 
+            }
+            one_env.clear();
+
+        }
+    }
+
+    for (conf::iterator it = servers.begin(); it != servers.end()
+            ; it++)
+        (*it)["path to path"] = path;
+}
 
 
 // void    running_one_server(std::map<std::string, std::string> one_server)
