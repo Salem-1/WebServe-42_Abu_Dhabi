@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Receive.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:56 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 08:54:20 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/22 22:27:01 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,5 @@ class Receive
         char				buffer[READ_BUFFER_SIZE];
         connection_state	state;
         Parser				parser;
-		// ?? it is already typedefed in the class
-        packet_map			&get_request_packet();
-    private:
 };
 #endif

@@ -11,7 +11,6 @@ private:
 
 	int				*_fd;
 	char			**_env;
-	int				i_env;
 
 	std::string standerdString(std::string str);
 	std::string vectorStr(std::vector<std::string> &vec);

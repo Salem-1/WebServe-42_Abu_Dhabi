@@ -31,9 +31,9 @@ class Respond
         int			    fillStatuCode(std::string status_code, std::string message);
         stringmap	    getServerInfo(packet_map &request,conf &servers, std::string port);
         std::string	    normalGETResponse( packet_map &request, stringmap &server_info);
-        bool            isSupportedMethod(std::string method, std::vector<std::string> &supported_methods);
+        bool            isSupportedMethod(std::string method, std::set<std::string> &supported_methods);
         void            fillSupportedMethods(
-                            std::vector<std::string> &supported_methods, stringmap &server_info
+                            std::set<std::string> &supported_methods, stringmap &server_info
                             , std::string method, packet_map& request);
 	private:
 		static void		closePipe(int *fd);
@@ -43,12 +43,11 @@ class Respond
         int		        checkPoisonedURL(packet_map &request);
         std::string     fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j);
 		bool			bodyTooBig(response_packet &response, stringmap &server_info, std::string &body);
-		std::string		fillingResponsePacket(packet_map &request, stringmap &server_info, std::string &full_file_to_string);
+		std::string		fillingResponsePacket(stringmap &server_info, std::string &full_file_to_string);
 	public:
 		int				client_socket;
         response_packet	response;
         std::string		response_string;
-        pthread_t		sendThread;
         bool			sending;
 		ErrResponse     err;
 

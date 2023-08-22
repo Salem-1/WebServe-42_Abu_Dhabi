@@ -59,11 +59,6 @@ void    Receive::readPacket(char *buffer)
         return ;
     }
 }
-// ?? it is already public
-packet_map       &Receive::get_request_packet()
-{
-    return (parser.request);
-}
 
 void    Receive::flushReceive()
 {

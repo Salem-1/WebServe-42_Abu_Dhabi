@@ -44,7 +44,7 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     }
     response["Status-code"].push_back("200");
 	std::string cgi_path = isCGI(server_info, request);    
-	std::vector<std::string> supported_methods;
+	std::set<std::string> supported_methods;
     std::string msg;
 
 	if (request.find("GET") != request.end()
@@ -218,7 +218,7 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
             } 
             if (server_names[j] == fillRequestedHostName(request, port, j))
             {
-                std::cout << "our server is " << nominated_servers[j] << std::endl;
+                // std::cout << "our server is " << nominated_servers[j] << std::endl;
                 return (servers[nominated_servers[i]]);
             }
         }
@@ -241,22 +241,15 @@ std::string     Respond::fillRequestedHostName(packet_map &request, std::string 
     return (requested_host);
 }
 
-bool    Respond::isSupportedMethod(std::string method, std::vector<std::string> &supported_methods)
+bool    Respond::isSupportedMethod(std::string method, std::set<std::string> &supported_methods)
 {
-    if(supported_methods.empty())
-        return (true);
-    for (std::vector<std::string>::iterator it = supported_methods.begin();
-            it != supported_methods.end(); ++it)
-    {
-        if (*it == method)
-            return (true);
-    }
-
-    return (false);
+    if (supported_methods.empty() == true || supported_methods.find(method) != supported_methods.end())
+		return (true);
+	return (false);
 }
 
 void   Respond::fillSupportedMethods(
-                    std::vector<std::string> &supported_methods, stringmap &server_info
+                    std::set<std::string> &supported_methods, stringmap &server_info
                     , std::string method, packet_map& request)
 {
     supported_methods.clear();
@@ -293,15 +286,15 @@ void   Respond::fillSupportedMethods(
     {
         std::cout <<  GREEN << "allowed method = " << server_info[allowed_methods] <<  RESET <<std::endl;
         if (server_info[allowed_methods].empty())
-            supported_methods.push_back("nothing");
+            supported_methods.insert("nothing");
         else
-            supported_methods = split(server_info[allowed_methods], " ");
+            supported_methods = split_to_set(server_info[allowed_methods], " ");
         return ;
     }
     else
         std::cout << "didn't find allowed method" << std::endl;
-    supported_methods.push_back("GET");
-    supported_methods.push_back("POST");
-    supported_methods.push_back("DELETE");
-    supported_methods.push_back("PUT");
+    supported_methods.insert("GET");
+    supported_methods.insert("POST");
+    supported_methods.insert("DELETE");
+    supported_methods.insert("PUT");
 }

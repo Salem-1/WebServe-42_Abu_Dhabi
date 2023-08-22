@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/15 08:22:11 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/22 21:49:42 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,27 @@ std::vector<std::string> split(std::string str, std::string delimeter)
     }
     if (str.substr(0, str.find(delimeter))[0])
         result.push_back(str.substr(0, str.find(delimeter)));
+    return (result);
+}
+
+std::set<std::string> split_to_set(std::string str, std::string delimeter)
+{
+    std::set<std::string>    result;
+
+    if (!str.length())
+        return (result);
+   else if (str.find(delimeter) == std::string::npos || !delimeter.length())
+        result.insert(str);
+    if (str.find(delimeter) == std::string::npos || !str.length() || !delimeter.length())
+        return (result);
+    while (str.find(delimeter) != std::string::npos)
+    {
+        if (str.substr(0, str.find(delimeter))[0])
+            result.insert(str.substr(0, str.find(delimeter)));
+        str = str.substr(str.find(delimeter) + delimeter.length(), str.length());   
+    }
+    if (str.substr(0, str.find(delimeter))[0])
+        result.insert(str.substr(0, str.find(delimeter)));
     return (result);
 }
 

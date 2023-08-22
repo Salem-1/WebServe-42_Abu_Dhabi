@@ -6,11 +6,6 @@
 class Post: public PUT
 {
 private:
-	packet_map		_request_map;
-	t_request		_request;
-	stringmap		_server_info;
-	std::string		_response;
-	response_packet _response_pack;
 	void			sendToBackend();
 	void			handleUpload();
 	bool    	postBody(std::string path);
