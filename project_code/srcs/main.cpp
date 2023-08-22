@@ -84,7 +84,8 @@ void    run_server()
     essentials = "    listen      4444; server_name defaultserver; DELETE_path POST; root        /intra/website; index       index.html;";    
     locations.push_back("location / ; methods GET DELETE;");
     locations.push_back("location  /attacks ;  autoindex off;");
-    locations.push_back("location /strike;         root /attacks/; redirection /fall /nightmares/fall.html 301; redirection /monseter /nightmares/monseter.html 301; error_page 404 not_found.html; error_page 403 monster; redirection /ransomware /another_redir 301; redirection  /another_redir  /attacks/ransom.html 301; autoindex on;");
+    locations.push_back("location /strike;         root /attacks/; redirection /fall /nightmares/fall.html  301; redirection  /another_redir  /attacks/ransom.html 301;redirection /ransomware /strike/another_redir 302;  autoindex on;");
+    // redirection /monseter nightmares/monster.html  301; error_page 404 not_found.html; error_page 403 monster;redirection  /another_redir  attacks/ransom.html 301; redirection /ddos attacks/ddos.html 301;
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
    
     ServerFill filled_servers(tokenized_server);

@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/04 04:27:07 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/22 10:12:15 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,14 @@ class GET_response
         void		    fillingResponsePacket(std::string &full_file_to_string, std::string file_path);
         void		    constructDirResponse(std::vector<std::string> &ls, std::string &full_file_to_string);
 		std::string     getContentType(std::string file_path);
-        bool            redirectedPacket(stringmap &server_info);
+        bool            redirectedPacket(stringmap &server_info, std::string &file_path);
         void            fillRedirectedPacket(void);
         int             fill_redirection_vector(std::vector<std::string> tmp);
         bool            readFileToString(stringmap &server_info, 
                                         std::string &file_path, 
                                         std::string &full_file_to_string);
+        std::string    fetchWinningRedirection(
+                        std::vector<std::string> redirection_vec, std::string file_name);
         std::string		response_packet;
         ErrResponse		err;
         stringmap       redirection;
