@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/14 16:03:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/22 14:06:19 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,9 +153,8 @@ void    Kque::addReadWriteEvent(int fd)
 
 int    Kque::accepting(int  fd)
 {
-
-    int accepted_connection = accept(fd, (struct sockaddr*)&client_address,
-                                 (socklen_t*)&client_address_len);
+	socklen_t  len = sizeof(client_address);
+    int accepted_connection = accept(fd, (struct sockaddr*)&client_address, &len);
     if (accepted_connection < 0)
         perror("accept failed");
     return (accepted_connection);
