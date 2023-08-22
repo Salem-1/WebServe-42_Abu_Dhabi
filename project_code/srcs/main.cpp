@@ -3,7 +3,7 @@
 
 
 tokenized_conf    dummy_intra_token_fill();
-void              run_server();
+
 void handle_pipes(int sig)
 {
     if (sig == SIGPIPE)
@@ -11,8 +11,12 @@ void handle_pipes(int sig)
         std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
     }
 }
-int main(int argc, char **argv)
+
+int main(int argc, char **argv, char **env)
 {
+    (void)argc;
+    (void)argv;
+    (void)env;
 	if (argc > 2)
 	{
 		std::cerr << "Error: too many arguments" << std::endl;
@@ -26,7 +30,7 @@ int main(int argc, char **argv)
 		exit(0);
 	}
 
-    run_server();
+    run_server(env);
 
     return (0);
 }
@@ -46,7 +50,31 @@ tokenized_conf    dummy_intra_token_fill()
     return (tokenized_server);
 }
 
-void    run_server()
+void    fillEnvPath(conf &servers, char **env)
+{
+    std::string path = "";
+    std::string     one_env;
+    if (env != NULL)
+    {
+        for (int i = 0; env[i] != NULL; i++)
+        {
+            one_env.append(env[i]);
+            if (one_env.find("PATH=") == 0)
+            {
+                path = one_env.substr(5, one_env.length() - 1);
+                break ; 
+            }
+            one_env.clear();
+
+        }
+    }
+
+    for (conf::iterator it = servers.begin(); it != servers.end()
+            ; it++)
+        (*it)["path to path"] = path;
+}
+
+void    run_server(char **env)
 {
     // Config  servers;
 // tokenized_conf tokenized_server;
@@ -91,6 +119,7 @@ void    run_server()
     ServerFill filled_servers(tokenized_server);
     filled_servers.servers.visualize_config();
     filled_servers.servers.fillPorts();
+    fillEnvPath(filled_servers.servers.servers, env);
     signal(SIGPIPE, &handle_pipes);
 
     for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();

@@ -61,7 +61,8 @@ char **ChildExec::envMaker(std::string path)
 	_env[env_vector.size()] = NULL;
 	for (std::vector<std::string>::iterator it = env_vector.begin(); it  != env_vector.end(); ++it)
 	{
-		_env[i_env] = new char[it->size()];
+		_env[i_env] = new char[it->size() + 1];
+		bzero(_env[i_env], it->size() + 1);
 		strcpy(_env[i_env], it->c_str());
 		++i_env;
 	}
@@ -69,8 +70,11 @@ char **ChildExec::envMaker(std::string path)
 	return _env;
 }
 
+
+
 void	ChildExec::childExecute(std::string path)
 {
+	char **args = NULL;
 	try
 	{
 		if (dup2(_fd[1], STDOUT_FILENO) == -1)
@@ -80,15 +84,17 @@ void	ChildExec::childExecute(std::string path)
 		_fd = NULL;
 		_env = envMaker(path);
 		
-		if (execve(path.c_str(), NULL, _env) ==  -1)
+		args = new char*[1];
+		*args = NULL;
+		if (execve(path.c_str(), args, _env) ==  -1)
 		{
 			perror("execve failed: ");
 			std::cerr << "It freakin faild to execute " << path << std::endl;
 		}
+		delete [] args;
 		for (int i = 0; i < i_env; ++i)
 			delete [] _env[i];
-		if (i_env > 0)
-			delete[] _env;
+		delete[] _env;
 		std::cout<< "404";
 		exit (127);
 	}
@@ -100,6 +106,8 @@ void	ChildExec::childExecute(std::string path)
 			delete [] _env[i];
 		if (i_env > 0)
 			delete[] _env;
+		if (args != NULL)
+			delete[] args;
 		std::cout<< "500";
 		exit(1);
 	}

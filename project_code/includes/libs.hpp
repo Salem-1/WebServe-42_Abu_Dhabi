@@ -107,6 +107,7 @@ enum connection_state
     KEEP_ALIVE = 1
 };
 
+
 typedef struct locations_args
 {
     std::vector<std::string>    location_options;
@@ -117,18 +118,20 @@ typedef struct locations_args
     
 } locations_args;
 
-std::vector<std::string> split(std::string str, std::string delimeter);
-std::string getTimeBuffer();
-void        printAddrInfo( struct addrinfo *ai);
-void        visualize_servers(
-                std::vector<std::map<std::string, std::string> > servers);
-void        visualize_string_map(std::map<std::string, std::string>  &map);
-void         visualize_string_vector(std::vector<std::string> &vec, std::string vec_name);
-void        vis_str(std::string packet, std::string message);
-void        print_to_file(std::string, std::string);
-bool        inSet(std::set<std::string> data_set, std::string item);
-bool        inMap(stringmap data_set, std::string item);
-bool        inVector(std::vector<std::string> data_set, std::string item);
+std::vector<std::string>    split(std::string str, std::string delimeter);
+std::string                 getTimeBuffer();
+void                        run_server(char **env);
+void                        printAddrInfo( struct addrinfo *ai);
+void                        visualize_servers(
+                                std::vector<std::map<std::string, std::string> > servers);
+void                        visualize_string_map(std::map<std::string, std::string>  &map);
+void                        visualize_string_vector(std::vector<std::string> &vec, std::string vec_name);
+void                        vis_str(std::string packet, std::string message);
+void                        print_to_file(std::string, std::string);
+bool                        inSet(std::set<std::string> data_set, std::string item);
+bool                        inMap(stringmap data_set, std::string item);
+bool                        inVector(std::vector<std::string> data_set, std::string item);
+void                        fillEnvPath(conf &servers, char **env);
 //---------------------------------------------
 
 

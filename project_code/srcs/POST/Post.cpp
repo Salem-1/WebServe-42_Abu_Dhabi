@@ -195,10 +195,13 @@ void Post::handleUpload()
 	int number = 1;
 	while (fileExists(newFileName)) 
 	{
+		std::ostringstream oss;
+		oss << number;
 		if (dotPos != std::string::npos)
-			newFileName = filename.substr(0, dotPos) + "_" + std::to_string(number++) + filename.substr(dotPos);
+			newFileName = filename.substr(0, dotPos) + "_" + oss.str() + filename.substr(dotPos);
 		else
-			newFileName = filename + "_" + std::to_string(number++);
+			newFileName = filename + "_" + oss.str();
+		++number;
 	}
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/14 16:03:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/22 16:55:15 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,8 @@ void    Kque::addReadWriteEvent(int fd)
 int    Kque::accepting(int  fd)
 {
 
-    int accepted_connection = accept(fd, (struct sockaddr*)&client_address,
-                                 (socklen_t*)&client_address_len);
+	socklen_t  len = sizeof(client_address);
+    int accepted_connection = accept(fd, (struct sockaddr*)&client_address, &len);
     if (accepted_connection < 0)
         perror("accept failed");
     return (accepted_connection);
@@ -193,13 +193,17 @@ bool    Kque::closeServer(void)
     for (std::set<int>::iterator it = active_clients.begin();
          it != active_clients.end(); it++)
     {
-        removeClient(*it);
+        deleteFdEvent(*it);
+        // removeClient(*it);
     }
     for (std::vector<int>::iterator it = server_sockets.begin();
-         it != server_sockets.end(); it++)
+         it != server_sockets.end(); ++it)
     {
         deleteFdEvent(*it);
+        // deleteFdEvent(*it);
     }
+    
+    // active_clients.clear();
     return (true);
 }
 std::string  Kque::socketInfo(int sockfd)

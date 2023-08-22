@@ -6,7 +6,7 @@
 #    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/20 18:20:04 by ahsalem          ###   ########.fr        #
+#    Updated: 2023/08/22 16:37:15 by ahsalem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ HEADER = includes/libs.hpp includs/webserve.hpp
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror -std=c++98 -g3 # -fsanitize=address
+CFLAGS =  -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address
 
 INCS =
 ifeq ($(shell uname), Linux)

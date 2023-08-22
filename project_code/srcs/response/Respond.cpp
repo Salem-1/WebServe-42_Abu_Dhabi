@@ -173,7 +173,7 @@ void    Respond::sendAll(connection_state &state)
         send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
     std::cout << send_ret << " bytes sent , packet len = " << packet_len << "\n";
     response_bytes_sent += send_ret;
-    if (send_ret <= 0)
+    if (send_ret < 0)
     {
         perror("send failed");
         flushResponse();
@@ -279,8 +279,10 @@ void   Respond::fillSupportedMethods(
         dir = "/";
     else if (path.find("?") == std::string::npos)
         dir = path;
-    else
+    else if (path.find("?") != 0)
         dir = path.substr(0, path.find("?" - 1));
+	else
+		dir = path;
     response["dir"].clear();  
     response["dir"].push_back(dir);
     server_info["constructed path dir"] = dir;
