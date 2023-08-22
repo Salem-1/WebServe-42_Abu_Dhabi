@@ -115,8 +115,7 @@ void    Parser::parse(char *new_buffer)
 				std::istringstream iss(it->second[0]);
 				iss >> full_request.body_content_length;
 
-				if ((full_request.body_content_length == 0 && it->second[0] != "0") 
-					||full_request.body_content_length > MAX_BODY_SIZE)
+				if ((full_request.body_content_length == 0 && it->second[0] != "0") )
 					throw(std::runtime_error("400"));
 			}
 			else if (Parser::request.find("Transfer-Encoding:") != request.end())

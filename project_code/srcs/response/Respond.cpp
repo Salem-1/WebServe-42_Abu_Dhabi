@@ -161,6 +161,7 @@ void    Respond::sendAll(connection_state &state)
 {
     size_t  packet_len = response_string.length(); 
     std::cout << "inside send all" << std::endl;
+    
     const char *a = response_string.c_str();
     int send_ret = 0;
     // sending = true ;
@@ -282,6 +283,7 @@ void   Respond::fillSupportedMethods(
         dir = path.substr(0, path.find("?" - 1));
     response["dir"].clear();  
     response["dir"].push_back(dir);
+    server_info["constructed path dir"] = dir;
     std::cout <<   "dir = " <<  dir << "             path = " << path << std::endl;
     std::string allowed_methods = dir + " methods";
     std::cout << YELLOW << "serched item = \"" << allowed_methods <<  "\""<<RESET << std::endl;

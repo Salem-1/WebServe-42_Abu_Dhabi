@@ -56,7 +56,7 @@ class Respond
         size_t	                    response_bytes_sent;
         std::vector<int>            nominated_servers;
         std::vector<std::string>    server_names;
-        bool            isput;
+        bool                        isput;
     
 };
 // void* sendAll_thread(void* arg);

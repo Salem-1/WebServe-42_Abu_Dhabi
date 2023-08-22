@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/17 19:05:55 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/22 08:34:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,19 @@ ErrResponse::~ErrResponse()
 std::string ErrResponse::code(
         stringmap &server_info, std::string err)
 {
-    if (server_info.find(err) == server_info.end())
+    //err = 404
+    //server_info[err] = file_name
+    std::string dir = server_info["constructed path dir"];
+    if (!inMap(server_info, dir + " error_page"))
     {
         std::cout << "didn't foudn err " << server_info[err] << std::endl;
         return (erroredResponse(err));
     }
-    std::ifstream infile(server_info[err].c_str());
-    std::cout << server_info[err].c_str() << std::endl;
+    std::string error_path = constructErroPath(server_info[dir + " error_page"], err);
+    std::ifstream infile(error_path.c_str());
+    std::cout << error_path.c_str() << std::endl;
+    std::cout << "dir inside err response = " << dir  << std::endl;
+    std::cout << "server_info[err]0 = " << error_path << std::endl;
     if (infile.fail())
     {
         std::cout << "failed opening the file \n";
@@ -42,59 +48,80 @@ std::string ErrResponse::code(
     std::string full_file_to_string = content_stream.str();
     return (constructCustomErrPacket(err, full_file_to_string));
 }
-
+std::string ErrResponse::constructErroPath(std::string server_eror_info, std::string err)
+{
+    std::vector<std::string > error_pages;
+    std::vector<std::string> single_error_pgae;
+    error_pages = split(server_eror_info, " , ");
+ 
+    for (std::vector<std::string>::iterator it = error_pages.begin()
+        ; it != error_pages.end(); ++it)
+    {
+        std::cout << *it << std::endl;
+        single_error_pgae = split(*it, " ");
+        std::cout << single_error_pgae[0] << std::endl;
+        std::cout << single_error_pgae[1] << std::endl;
+        if (single_error_pgae.size() != 2)
+            return ("bad single page error lenght");
+std::cout << "comparing <" << err << "> to <" << single_error_pgae[0] << ">" << std::endl;
+        if (err == single_error_pgae[0])
+            return (single_error_pgae[1]);
+    }
+        return ("bad error path");
+    
+}
 std::string ErrResponse::constructCustomErrPacket(std::string err, std::string & full_file_to_string)
 {
-      response_packet = "HTTP/1.1 " + err 
+      response_str = "HTTP/1.1 " + err 
         + " " + StatusCodes[err] + "\r\n";
-    response_packet += "Server: Phantoms\r\n";
-    response_packet += "Date: ";
-    response_packet += getTimeBuffer();
-    response_packet += "Content-Type: text/html\r\n";
+    response_str += "Server: Phantoms\r\n";
+    response_str += "Date: ";
+    response_str += getTimeBuffer();
+    response_str += "Content-Type: text/html\r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
-    response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
-    response_packet += full_file_to_string;
-    return (response_packet);
+    response_str += "Content-Length: " + ss.str() + "\r\n\r\n";
+    response_str += full_file_to_string;
+    return (response_str);
 }
 
 std::string ErrResponse::erroredResponse(std::string err)
 {
-    response_packet = "HTTP/1.1 " + err
+    response_str = "HTTP/1.1 " + err
         + " " + StatusCodes[err] + "\r\n";
-    response_packet += "Server: Phantoms\r\n";
-    response_packet += "Date: ";
-    response_packet += getTimeBuffer();
-    response_packet += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
-    response_packet += "Content-Length: 1050\r\n\r\n";
-    response_packet += "<!DOCTYPE html>\r\n";
-    response_packet += "<html>\r\n";
-    response_packet += "<head>\r\n";
-    response_packet += "    <title>";
-    response_packet += err ;
-    response_packet += " " + StatusCodes[err]+ " </title>\r\n";
-    response_packet += "</head>\r\n";
-    response_packet += "<body>\r\n";
-    response_packet += "    <h1>error under construction " + err + " " + StatusCodes[err] + "</h1>\r\n";
-    response_packet += "</body>\r\n";
-    response_packet += "</html>\r\n";
-    response_packet += "<p>\r\n";
-    response_packet += " -------- &&& &&  &amp; &amp; <>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
-    response_packet += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
-    response_packet += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\r\n";
-    response_packet += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\r\n";
-    response_packet += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
-    response_packet += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\r\n";
-    response_packet += "</p>\n";
+    response_str += "Server: Phantoms\r\n";
+    response_str += "Date: ";
+    response_str += getTimeBuffer();
+    response_str += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
+    response_str += "Content-Length: 1050\r\n\r\n";
+    response_str += "<!DOCTYPE html>\r\n";
+    response_str += "<html>\r\n";
+    response_str += "<head>\r\n";
+    response_str += "    <title>";
+    response_str += err ;
+    response_str += " " + StatusCodes[err]+ " </title>\r\n";
+    response_str += "</head>\r\n";
+    response_str += "<body>\r\n";
+    response_str += "    <h1>error under construction " + err + " " + StatusCodes[err] + "</h1>\r\n";
+    response_str += "</body>\r\n";
+    response_str += "</html>\r\n";
+    response_str += "<p>\r\n";
+    response_str += " -------- &&& &&  &amp; &amp; <>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
+    response_str += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
+    response_str += "    &nbsp;&amp;_-&amp;_&amp;&amp;_- |&amp; |&amp;&amp;-&amp;__%_-_&amp;&amp; <br>\r\n";
+    response_str += "    &&&   && &amp; &amp;| &amp;| -&amp; &amp;% ()&amp; -&&<br>\r\n";
+    response_str += "    &nbsp;(🍎)&_---(🍎)&amp;-&amp;-|&amp;&amp;-&amp;&amp;--%---(🍎)~<br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp; &&     -|||<br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |||<br>\r\n";
+    response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , -=-~  .-^- _<br>\r\n";
+    response_str += "</p>\n";
 
-    return (response_packet);
+    return (response_str);
 }
 
 

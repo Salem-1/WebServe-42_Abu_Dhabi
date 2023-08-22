@@ -21,7 +21,7 @@ Config::Config()
     std::string tmp(getcwd(buff, sizeof(buff)));
     pwd = tmp;
     // intra_config(servers);
-    intra_and_dummy_fill_till_config_parsing(servers);
+    // intra_and_dummy_fill_till_config_parsing(servers);
     // if (servers.empty())
     //     throw(std::runtime_error("Empty server configuration "));
     // else
@@ -49,7 +49,7 @@ void    Config::fillPorts()
             std::cout << "inserted " << servers[i]["Port"] << std::endl;
         }
         else
-            throw(std::invalid_argument("Error in reading configuration file, missing port number in a server"));
+            throw(std::invalid_argument("Config: Error in  configuration file,"));
     }
 }
 
