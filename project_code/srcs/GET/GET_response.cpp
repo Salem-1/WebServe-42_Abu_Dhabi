@@ -125,12 +125,17 @@ std::string    GET_response::constructPath(stringmap &server_info)
     std::string dir;
     if (path == "/")
         return (server_info[path]);
-    if (std::count(path.begin(), path.end(), '/') < 2)
+    if (std::count(path.begin(), path.end(), '/') == 2  && path[path.length() - 1] == '/')
+        path = path.substr(0, path.length() - 1);
+    if (std::count(path.begin(), path.end(), '/') < 2 )
     {
         if (inMap(server_info, path))
         {
+            std::cout << BOLDYELLOW<<"it's in map " << path<<  std::endl;
+            std::cout << BOLDYELLOW<<"it's in map " << server_info[path] <<  std::endl;
+            std::cout << BOLDYELLOW<<server_info[path] << std::endl;
             if (server_info.find(path + " index") != server_info.end())
-                return (server_info[path] +server_info[path + " index"]);
+                return (server_info[path] + server_info[path + " index"]);
             else
                 return (server_info[path]);
         }
@@ -157,7 +162,6 @@ std::string    GET_response::constructPath(stringmap &server_info)
 
     if (server_info.find(dir) != server_info.end())
     {
-        print_to_file("testers/our_tester/logs/dir_path.txt", server_info[dir]);
         return (server_info[dir] + rest_of_path);
     }
     std::cout << "didn't found strike" << std::endl;

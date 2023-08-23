@@ -98,13 +98,13 @@ void    run_server(char **env)
     locations.clear();
     essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; client_max_body_size 5; index       index.html;";    
     locations.push_back("location / ; index   index.html; error_page 404 not_found.html;");
-    locations.push_back("location  /post_backend ;  client_max_body_size 50;");
+    locations.push_back("location  /post_backend ;  client_max_body_size 50; ");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
    
     locations.clear();
     essentials = "    listen      4444; server_name defaultserver; DELETE_path POST; root        /intra/website; index       index.html;";    
     locations.push_back("location / ; methods GET DELETE;");
-    locations.push_back("location  /attacks ;  autoindex off;");
+    locations.push_back("location  /attacks ;  autoindex off;root /attacks/ ;index ddos.html;");
     locations.push_back("location /strike;         root /attacks/; redirection /fall /nightmares/fall.html  301; redirection  /another_redir  /attacks/ransom.html 301;redirection /ransomware /strike/another_redir 302;  autoindex on;");
     // redirection /monseter nightmares/monster.html  301; error_page 404 not_found.html; error_page 403 monster;redirection  /another_redir  attacks/ransom.html 301; redirection /ddos attacks/ddos.html 301;
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));

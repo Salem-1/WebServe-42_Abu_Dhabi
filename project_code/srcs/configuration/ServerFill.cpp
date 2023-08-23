@@ -119,7 +119,7 @@ void    ServerFill::fillLocations(std::string location)
         if (args.tmp_directive.empty())
             continue;   
         if (args.tmp_directive.size() < 2)
-            throw(std::invalid_argument("Bad config file: single bad  directive args"));
+            throw(std::invalid_argument("Bad config file: Fill locatation:  single bad  directive args directive size less than 2 options"));
         fillRestLocationDirectives(args);
     }
 }
@@ -133,7 +133,7 @@ void    ServerFill::fillCGIExecutable(locations_args & args)
         if (args.tmp_directive.empty())
             continue;   
         if (args.tmp_directive.size() != 2)
-            throw(std::invalid_argument("Bad config file: single bad  directive args"));
+            throw(std::invalid_argument("Bad config file: fillCGIExecutable :single bad  directive args"));
         if (args.tmp_directive[0] != "index")
             throw(std::invalid_argument("Bad config file: CGI executable directive"));
          servers.servers[i][args.path] = servers.servers[i]["root"] + args.tmp_directive[1];
@@ -150,8 +150,10 @@ void    ServerFill::fillCgiBinLocation(locations_args & args)
         args.tmp_directive = split(*it, " ");
         if (args.tmp_directive.empty())
             continue;
+        std::cout << args.tmp_directive[0] << std::endl;
+        std::cout << args.tmp_directive[1] << std::endl;
         if (args.tmp_directive.size() < 2 || !inSet(args.cgi_essential, args.tmp_directive[0]))
-            throw(std::invalid_argument("Bad config file: single bad  directive args CGI"));
+            throw(std::invalid_argument("Bad config file: fillCgiBinLocation single bad  directive args CGI"));
         fillCGIRootLocation(args);
         fillCGIErrorLocation(args);
     }
