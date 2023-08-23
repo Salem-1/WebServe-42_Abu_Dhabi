@@ -96,8 +96,9 @@ void    run_server(char **env)
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
     locations.clear();
-    essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; index       index.html;";    
+    essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; client_max_body_size 5; index       index.html;";    
     locations.push_back("location / ; index   index.html; error_page 404 not_found.html;");
+    locations.push_back("location  /post_backend ;  client_max_body_size 50;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
    
     locations.clear();
