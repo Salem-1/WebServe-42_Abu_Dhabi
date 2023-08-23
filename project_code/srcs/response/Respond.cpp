@@ -273,7 +273,7 @@ void   Respond::fillSupportedMethods(
     else if (path.find("?") == std::string::npos)
         dir = path;
     else if (path.find("?") != 0)
-        dir = path.substr(0, path.find("?" - 1));
+        dir = path.substr(0, path.find("?") - 1);
 	else
 		dir = path;
     response["dir"].clear();  

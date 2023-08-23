@@ -438,8 +438,8 @@ void    ServerFill::fillIndex(std::vector<std::string> &index_vec,  std::set<std
 {
     if(essentials_arg.find("index") == essentials_arg.end() || index_vec.size() < 2)
         throw(std::invalid_argument("Bad config file: bad index param  💩"));
-        multiple_index.clear();
-        server["index"] =  "";
+    multiple_index.clear();
+    server["index"] =  "";
     for (std::vector<std::string>::iterator it = index_vec.begin();
         it != index_vec.end(); ++it)
     {

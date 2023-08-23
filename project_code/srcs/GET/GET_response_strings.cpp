@@ -117,13 +117,12 @@ bool    GET_response::redirectedPacket(stringmap &server_info, std::string &file
         std::cout << "winning redirection = " << winning_redirection << std::endl;
         if (winning_redirection == "")
             return (false);
-
-            std::vector<std::string> tmp = split(winning_redirection, " ");
-            // std::cout << "response chcek path 1" << reponse_check["Path"][1] << std::endl;
-            if (tmp.size() != 3)
-                return (false);
-            if (fill_redirection_vector(tmp))
-                return (true);
+		std::vector<std::string> tmp = split(winning_redirection, " ");
+		// std::cout << "response chcek path 1" << reponse_check["Path"][1] << std::endl;
+		if (tmp.size() != 3)
+			return (false);
+		if (fill_redirection_vector(tmp))
+			return (true);
     }
     return (false);
 }
