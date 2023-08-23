@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 08:34:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/23 11:42:16 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,18 @@ std::string ErrResponse::code(
     //err = 404
     //server_info[err] = file_name
     std::string dir = server_info["constructed path dir"];
+    std::cout << "inside dir " << dir << std::endl;
+    visualize_string_map(server_info);
     if (!inMap(server_info, dir + " error_page"))
     {
-        std::cout << "didn't foudn err " << server_info[err] << std::endl;
-        return (erroredResponse(err));
+       if (!inMap(server_info, "/ error_page")) 
+        {
+            std::cout << "didn't foudn err " << server_info[err] << std::endl;
+            // exit(0);
+            return (erroredResponse(err));
+        }
+        else
+            dir = "/";
     }
     std::string error_path = constructErroPath(server_info[dir + " error_page"], err);
     std::ifstream infile(error_path.c_str());
@@ -106,7 +114,7 @@ std::string ErrResponse::erroredResponse(std::string err)
     response_str += "</body>\r\n";
     response_str += "</html>\r\n";
     response_str += "<p>\r\n";
-    response_str += " -------- &&& &&  &amp; &amp; <>\r\n";
+    response_str += "   ---- &&& &&  &amp; &amp; <>\r\n\n";
     response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
     response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
     response_str += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";
@@ -143,6 +151,7 @@ void    ErrResponse::statusCodes()
     StatusCodes["403"] =  "Forbidden";
     StatusCodes["404"] =  "Not Found";
     StatusCodes["405"] =  "Method Not Allowed";
+    StatusCodes["413"] =  "Request Entity Too Large";
     StatusCodes["500"] =  "Internal Server Error";
     StatusCodes["501"] =  "Not Implemented";
     StatusCodes["502"] =  "Bad Gateway";

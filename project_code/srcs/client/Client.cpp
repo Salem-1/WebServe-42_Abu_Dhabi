@@ -112,7 +112,7 @@ std::string Client::getPort(int client_socket)
 
     // Get the local address that the socket is bound to
     if (getsockname(client_socket, (struct sockaddr*)&addr, &addr_len) == -1) {
-        perror("getsockname");
+        print_error("getsockname");
         return ("no port attached");
     }
     // Convert the IP address to a human-readable string

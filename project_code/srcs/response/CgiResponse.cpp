@@ -83,7 +83,7 @@ std::string readFromChild(int fd)
 		char buffer[10];
 		ssize_t count = read(fd, buffer, sizeof(buffer));
 		if (count == -1) {
-			perror("read failed");
+			print_error("read failed");
 			throw(std::runtime_error("read faild"));
 		} else if (count == 0) 
 		{

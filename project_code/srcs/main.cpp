@@ -4,16 +4,6 @@
 
 tokenized_conf    dummy_intra_token_fill();
 
-void handle_pipes(int sig)
-{
-    if (sig == SIGPIPE)
-        std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
-    else if (sig == SIGSEGV)
-        std::cout << MAGENTA  << "\nSEGV: I should be running at all cost " << RESET <<std::endl;
-    else if (sig == 15)
-        std::cout << MAGENTA  << "\nSEGINTERRUPT: I should be running at all cost " << RESET <<std::endl;
-}
-
 int main(int argc, char **argv, char **env)
 {
     (void)argc;
@@ -106,8 +96,9 @@ void    run_server(char **env)
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
     locations.clear();
-    essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; index       index.html;";    
+    essentials = " listen      5555; server_name 127.0.0.1 localhost; root        /intra/website; client_max_body_size 5; index       index.html;";    
     locations.push_back("location / ; index   index.html; error_page 404 not_found.html;");
+    locations.push_back("location  /post_backend ;  client_max_body_size 50;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
    
     locations.clear();
@@ -122,9 +113,8 @@ void    run_server(char **env)
     filled_servers.servers.visualize_config();
     filled_servers.servers.fillPorts();
     fillEnvPath(filled_servers.servers.servers, env);
-    signal(SIGPIPE, &handle_pipes);
-    signal(SIGSEGV, &handle_pipes);
-    signal(15, &handle_pipes);
+    runAtAllCost();
+
 
     for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
             it != filled_servers.servers.ports.end(); ++it)
@@ -138,3 +128,4 @@ void    run_server(char **env)
     socket_manager.watchFds(filled_servers.servers.servers);
 
 }
+
