@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 08:34:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/23 08:54:15 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ std::string ErrResponse::erroredResponse(std::string err)
     response_str += "</body>\r\n";
     response_str += "</html>\r\n";
     response_str += "<p>\r\n";
-    response_str += " -------- &&& &&  &amp; &amp; <>\r\n";
+    response_str += "   ---- &&& &&  &amp; &amp; <>\r\n\n";
     response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;  && &amp;--&amp;-|&amp; (🍎)|- @, &amp;&amp; <br>\r\n";
     response_str += "    &nbsp;&nbsp;&nbsp;&nbsp;  &amp;--(-&amp;&amp;-||-&amp; -_-)_&amp;-_&amp;<br>\r\n";
     response_str += "    &nbsp; &amp;(🍎) &amp;--&amp;|(🍎)|-&amp;-- '% &amp; ()🍌🐒<br>\r\n";

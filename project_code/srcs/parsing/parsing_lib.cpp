@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 21:49:42 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/23 09:10:18 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,28 @@ void    fillPath(packet_map &request,response_packet &response, std::string meth
             response["Path"].push_back(*it);
         }
     }
+}
+
+
+void    print_error(std::string msg)        
+{
+    const char* errorMessage = strerror(errno);
+    std::cerr << msg << errorMessage << std::endl;   
+}
+
+void handle_pipes(int sig)
+{
+    if (sig == SIGPIPE)
+        std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
+    else if (sig == SIGSEGV)
+        std::cout << MAGENTA  << "\nSEGV: I should be running at all cost " << RESET <<std::endl;
+    else if (sig == 15)
+        std::cout << MAGENTA  << "\nSEGINTERRUPT: I should be running at all cost " << RESET <<std::endl;
+}
+
+void    runAtAllCost()
+{
+    signal(SIGPIPE, &handle_pipes);
+    // signal(SIGSEGV, &handle_pipes);
+    // signal(15, &handle_pipes);
 }

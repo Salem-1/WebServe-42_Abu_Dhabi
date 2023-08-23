@@ -175,7 +175,7 @@ void    Respond::sendAll(connection_state &state)
     response_bytes_sent += send_ret;
     if (send_ret < 0)
     {
-        perror("send failed");
+        print_error("send failed");
         flushResponse();
         state = KILL_CONNECTION;
     }

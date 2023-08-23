@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 16:55:15 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/23 09:03:22 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ int    Kque::accepting(int  fd)
 	socklen_t  len = sizeof(client_address);
     int accepted_connection = accept(fd, (struct sockaddr*)&client_address, &len);
     if (accepted_connection < 0)
-        perror("accept failed");
+        print_error("accept failed");
     return (accepted_connection);
 }
 
@@ -175,7 +175,7 @@ void    Kque::deleteFdEvent(int fd)
 
 void   Kque::kqueError(std::string msg)
 {
-    perror(msg.c_str());
+    print_error(msg.c_str());
     // throw(std::runtime_error("Kque error"));
 }
 
@@ -212,7 +212,7 @@ std::string  Kque::socketInfo(int sockfd)
     socklen_t addr_len = sizeof(addr);
     if (getsockname(sockfd, (struct sockaddr*)&addr, (socklen_t*)&addr_len) == -1)
     {
-        perror("getsockname");
+        print_error("getsockname");
         throw(std::runtime_error("getsockname error"));
     }
     char ip_str[INET_ADDRSTRLEN];

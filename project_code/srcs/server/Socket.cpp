@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/20 10:58:11 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/23 09:03:22 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void    Socket::openSocket(struct  addrinfo    *try_addr)
     sockfd = socket(try_addr->ai_family,  try_addr->ai_socktype, try_addr->ai_protocol);
 
     if (sockfd < 0)
-        perror("openSocket Error: ");
+        print_error("openSocket Error: ");
     else
         try_again = 0;
 }
@@ -79,7 +79,7 @@ void    Socket::nonBlockSock(void)
 }
 void    Socket::errorInSocket(std::string err)
 {
-    perror(err.c_str());
+    print_error(err.c_str());
     freeaddrinfo(res);
     throw(std::runtime_error("Socket opening error"));  
 }

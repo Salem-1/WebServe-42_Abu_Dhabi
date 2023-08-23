@@ -90,7 +90,7 @@ void	ChildExec::childExecute(std::string path)
 		*args = NULL;
 		if (execve(path.c_str(), args, _env) ==  -1)
 		{
-			perror("execve failed: ");
+			print_error("execve failed: ");
 			std::cerr << "It freakin faild to execute " << path << std::endl;
 		}
 		delete [] args;

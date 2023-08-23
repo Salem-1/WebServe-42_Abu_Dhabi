@@ -132,6 +132,8 @@ bool                        inSet(std::set<std::string> data_set, std::string it
 bool                        inMap(stringmap data_set, std::string item);
 bool                        inVector(std::vector<std::string> data_set, std::string item);
 void                        fillEnvPath(conf &servers, char **env);
+void                        print_error(std::string msg);
+void                        handle_pipes(int sig);
 //---------------------------------------------
 
 
