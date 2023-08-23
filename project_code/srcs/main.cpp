@@ -116,16 +116,27 @@ void    run_server(char **env)
     runAtAllCost();
 
 
-    for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
-            it != filled_servers.servers.ports.end(); ++it)
-    {
-        std::cout << "port " << *it << std::endl;
-        Listner binded_sock(*it);
-        filled_servers.servers.sockets.push_back(binded_sock.sockfd);
-    }
-    std::cout << "server waiting for connection....\n" << std::endl;
-    Kque socket_manager(filled_servers.servers.sockets);
-    socket_manager.watchFds(filled_servers.servers.servers);
+    try 
+	{
+		for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
+				it != filled_servers.servers.ports.end(); ++it)
+		{
+			std::cout << "port " << *it << std::endl;
+			Listner binded_sock(*it);
+			binded_sock.bindFD();
+			filled_servers.servers.sockets.push_back(binded_sock.sockfd);
+		}
+		std::cout << "server waiting for connection....\n" << std::endl;
+		Kque socket_manager(filled_servers.servers.sockets);
+		socket_manager.watchFds(filled_servers.servers.servers);
+		
+	}
+	catch (const std::exception& e)
+	{
+		std::string err(e.what());
+		std::cout << e.what();
+	}
+	return ;
 
 }
 
