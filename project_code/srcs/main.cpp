@@ -7,9 +7,11 @@ tokenized_conf    dummy_intra_token_fill();
 void handle_pipes(int sig)
 {
     if (sig == SIGPIPE)
-    {
         std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
-    }
+    else if (sig == SIGSEGV)
+        std::cout << MAGENTA  << "\nSEGV: I should be running at all cost " << RESET <<std::endl;
+    else if (sig == 15)
+        std::cout << MAGENTA  << "\nSEGINTERRUPT: I should be running at all cost " << RESET <<std::endl;
 }
 
 int main(int argc, char **argv, char **env)
@@ -121,6 +123,8 @@ void    run_server(char **env)
     filled_servers.servers.fillPorts();
     fillEnvPath(filled_servers.servers.servers, env);
     signal(SIGPIPE, &handle_pipes);
+    signal(SIGSEGV, &handle_pipes);
+    signal(15, &handle_pipes);
 
     for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
             it != filled_servers.servers.ports.end(); ++it)
