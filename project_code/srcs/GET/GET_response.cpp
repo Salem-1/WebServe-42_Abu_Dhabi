@@ -30,6 +30,10 @@ void    GET_response::fillOkResponse(stringmap &server_info)
 {
     response_packet = "";
     std::string file_path = constructPath(server_info);
+    std::cout << BOLDMAGENTA << "requested file path = "
+    		<< RESET << file_path << std::endl << RESET;
+    
+    // exit(0);
     if(redirectedPacket(server_info, file_path))
     {
         fillRedirectedPacket();
@@ -116,25 +120,27 @@ bool    GET_response::fillBadPath(stringmap &server_info)
 
 std::string    GET_response::constructPath(stringmap &server_info)
 {
-
     std::string path = reponse_check["Path"][1];
     std::cout << MAGENTA << "requested path = " << path << std::endl << RESET ;
-
+    std::string dir;
     if (path == "/")
         return (server_info[path]);
     if (std::count(path.begin(), path.end(), '/') < 2)
     {
-        if (server_info.find(path) != server_info.end())
+        if (inMap(server_info, path))
         {
             if (server_info.find(path + " index") != server_info.end())
                 return (server_info[path] +server_info[path + " index"]);
+            else
+                return (server_info[path]);
         }
-        // else
+       
         //     return (server_info["root"] + path);
     }
-    std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
-    // exit(0);
+    else
+        dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
+    std::cout << MAGENTA << "dir == " << dir  << std::endl << " path = " << path << std::endl << RESET;
+
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
         std::cout << "yes it's only dir" << std::endl;
@@ -154,6 +160,8 @@ std::string    GET_response::constructPath(stringmap &server_info)
         print_to_file("testers/our_tester/logs/dir_path.txt", server_info[dir]);
         return (server_info[dir] + rest_of_path);
     }
+    std::cout << "didn't found strike" << std::endl;
+
     return (server_info["root"] + path);
 }
 
