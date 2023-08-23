@@ -21,12 +21,12 @@ int main(int argc, char **argv)
 	if (argc == 2)
 	{
 		ConfigHandler config(argv[1]);
-		config.readConfigFile();
+		config.handleConfig();
 		exit(0);
 	}
 
     Config  servers;
-    Config.fillPorts();
+    // Config.fillPorts();
     signal(SIGPIPE, &handle_pipes);
 
     for (std::set<std::string>::iterator it = servers.ports.begin();
