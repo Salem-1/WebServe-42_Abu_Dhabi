@@ -53,16 +53,11 @@ void    Receive::readPacket(char *buffer)
 
     if (bytes_read == -1)
     {
-        perror("recv Error: ");
+        print_error("recv Error: ");
         state = KILL_CONNECTION;
         bytes_read= 0;
         return ;
     }
-}
-// ?? it is already public
-packet_map       &Receive::get_request_packet()
-{
-    return (parser.request);
 }
 
 void    Receive::flushReceive()

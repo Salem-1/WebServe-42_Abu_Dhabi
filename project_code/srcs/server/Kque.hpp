@@ -33,7 +33,6 @@ class Kque
         struct sockaddr_in		client_address;
         struct kevent			event[2];
         struct kevent			events[MAX_EVENTS];
-        socklen_t				client_address_len;
         int						kq;
         int						active_fds;
         int						tmp_fd;

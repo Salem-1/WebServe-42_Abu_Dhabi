@@ -4,7 +4,6 @@ ChildExec::ChildExec(packet_map &request_map, t_request &full_request, stringmap
 			PUT(request_map, full_request, server_info), _fd(fd)
 	{
 		_env = NULL;
-		i_env = 0;
 	}
 
 ChildExec::~ChildExec(){}
@@ -41,6 +40,7 @@ std::string ChildExec::vectorStr(std::vector<std::string> &vec)
 char **ChildExec::envMaker(std::string path)
 {
 	std::string method ;
+	size_t		i = 0;
 
 	_request_map.find("GET") != _request_map.end()? method="GET" : method="POST";
 	std::vector<std::string> env_vector;
@@ -48,10 +48,11 @@ char **ChildExec::envMaker(std::string path)
 	env_vector.push_back(std::string("SERVER_PROTOCOL=") + _request_map[method][1]);
 	env_vector.push_back("GATEWAY_INTERFACE=CGI/1.1");
 	env_vector.push_back("SERVER_NAME=Phantoms");
-	env_vector.push_back(std::string("SERVER_POR=") +  _server_info["Port"]);
+	env_vector.push_back(std::string("SERVER_PORT=") +  _server_info["Port"]);
 	env_vector.push_back(std::string("PATH_INFO=") + path);
 	if (_server_info.find("query") != _server_info.end())
 		env_vector.push_back(std::string("QUERY_STRING=") + _server_info["query"]);
+	env_vector.push_back(std::string("PATH=") + _server_info["path to path"]);
 	_request_map.erase(method);
 	_request_map.erase("Status-Code");
 	for(packet_map::iterator it = _request_map.begin(); it != _request_map.end(); ++it)
@@ -61,13 +62,17 @@ char **ChildExec::envMaker(std::string path)
 	_env[env_vector.size()] = NULL;
 	for (std::vector<std::string>::iterator it = env_vector.begin(); it  != env_vector.end(); ++it)
 	{
-		_env[i_env] = new char[it->size()];
-		strcpy(_env[i_env], it->c_str());
-		++i_env;
+		_env[i] = NULL;
+		_env[i] = new char[it->size() + 1];
+		bzero(_env[i], it->size() + 1);
+		strcpy(_env[i], it->c_str());
+		++i;
 	}
 	
 	return _env;
 }
+
+
 
 void	ChildExec::childExecute(std::string path)
 {
@@ -85,11 +90,11 @@ void	ChildExec::childExecute(std::string path)
 		*args = NULL;
 		if (execve(path.c_str(), args, _env) ==  -1)
 		{
-			perror("execve failed: ");
+			print_error("execve failed: ");
 			std::cerr << "It freakin faild to execute " << path << std::endl;
 		}
 		delete [] args;
-		for (int i = 0; i < i_env; ++i)
+		for (int i = 0; _env[i] != NULL; ++i)
 			delete [] _env[i];
 		delete[] _env;
 		std::cout<< "404";
@@ -99,9 +104,9 @@ void	ChildExec::childExecute(std::string path)
 	{
 		close(_fd[1]);
 		close(_fd[0]);
-		for (int i = 0; i < i_env; ++i)
+		for (int i = 0; _env != NULL && _env[i] != NULL; ++i)
 			delete [] _env[i];
-		if (i_env > 0)
+		if (_env != NULL)
 			delete[] _env;
 		if (args != NULL)
 			delete[] args;

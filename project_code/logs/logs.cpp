@@ -115,6 +115,14 @@ void    visualize_servers(
     std::cout << BOLDRED << "\n---------------------------------------\n\n";
     std::cout << "servers visualization ends" << std::endl << RESET;
 }
+void    visualize_string_vector(std::vector<std::string> &vec, std::string vec_name)
+{
+    std::cout << BOLDYELLOW << vec_name << " = [\n" << RESET;
+    for (std::vector<std::string>::iterator it = vec.begin();
+        it != vec.end(); ++it)
+        std::cout << "\""<< *it << "\",\n" <<std::endl;
+    std::cout <<"    ]\n visualization end";
+}
 
 void    visualize_string_map(std::map<std::string, std::string>  &map)
 {
@@ -197,4 +205,27 @@ void    print_to_file(std::string path, std::string str)
     }
     outFile << str << std::endl;
     outFile.close(); 
+}
+
+bool    inSet(std::set<std::string> data_set, std::string item)
+{
+    if (data_set.find(item) == data_set.end())
+        return (false);
+    return (true);
+}
+bool    inVector(std::vector<std::string> data_set, std::string item)
+{
+    for (std::vector<std::string>::iterator it = data_set.begin()
+        ; it != data_set.end(); ++it)
+    {
+        if (*it == item)
+            return (true);
+    }
+    return (false);
+}
+bool    inMap(stringmap data_set, std::string item)
+{
+    if (data_set.find(item) == data_set.end())
+        return (false);
+    return (true);
 }

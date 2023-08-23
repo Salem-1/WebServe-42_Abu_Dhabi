@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:52 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/01 18:18:02 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/22 08:18:41 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ class ErrResponse
         void		statusCodes();
         std::string	erroredResponse(std::string err);
         std::string	constructCustomErrPacket(std::string err, std::string &full_file_to_string);
-
-        std::string	response_packet;
-        stringmap	StatusCodes;
+        std::string	    response_str;
+        stringmap	    StatusCodes;
+    private:
+        std::string constructErroPath(std::string server_eror_info, std::string err);
         
 };
 #endif

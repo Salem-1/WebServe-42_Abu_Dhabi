@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/12 17:01:51 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/23 09:10:18 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,27 @@ std::vector<std::string> split(std::string str, std::string delimeter)
     }
     if (str.substr(0, str.find(delimeter))[0])
         result.push_back(str.substr(0, str.find(delimeter)));
+    return (result);
+}
+
+std::set<std::string> split_to_set(std::string str, std::string delimeter)
+{
+    std::set<std::string>    result;
+
+    if (!str.length())
+        return (result);
+   else if (str.find(delimeter) == std::string::npos || !delimeter.length())
+        result.insert(str);
+    if (str.find(delimeter) == std::string::npos || !str.length() || !delimeter.length())
+        return (result);
+    while (str.find(delimeter) != std::string::npos)
+    {
+        if (str.substr(0, str.find(delimeter))[0])
+            result.insert(str.substr(0, str.find(delimeter)));
+        str = str.substr(str.find(delimeter) + delimeter.length(), str.length());   
+    }
+    if (str.substr(0, str.find(delimeter))[0])
+        result.insert(str.substr(0, str.find(delimeter)));
     return (result);
 }
 
@@ -74,4 +95,28 @@ void    fillPath(packet_map &request,response_packet &response, std::string meth
             response["Path"].push_back(*it);
         }
     }
+}
+
+
+void    print_error(std::string msg)        
+{
+    const char* errorMessage = strerror(errno);
+    std::cerr << msg << errorMessage << std::endl;   
+}
+
+void handle_pipes(int sig)
+{
+    if (sig == SIGPIPE)
+        std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
+    else if (sig == SIGSEGV)
+        std::cout << MAGENTA  << "\nSEGV: I should be running at all cost " << RESET <<std::endl;
+    else if (sig == 15)
+        std::cout << MAGENTA  << "\nSEGINTERRUPT: I should be running at all cost " << RESET <<std::endl;
+}
+
+void    runAtAllCost()
+{
+    signal(SIGPIPE, &handle_pipes);
+    // signal(SIGSEGV, &handle_pipes);
+    // signal(15, &handle_pipes);
 }

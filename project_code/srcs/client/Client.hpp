@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:22 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 10:33:52 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/23 07:17:07 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class Client
         Client &operator= (const Client &obj2);
         ~Client();
         
-		void				handleRequest(struct kevent event);
+		void				handleRequest(struct kevent &event);
         int					getTimeout();
         std::string			getPort(int client_socket);
 		connection_state	state;

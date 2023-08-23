@@ -53,7 +53,7 @@ Client::~Client()
 {};
 
 
-void Client::handleRequest(struct kevent event)
+void Client::handleRequest(struct kevent &event)
 {
     start_time = clock();
     receiver.read_sock = client_socket;
@@ -79,8 +79,8 @@ void Client::handleRequest(struct kevent event)
 			// std::cout << "read again value  = " << receiver.parser.read_again << std::endl;
 			if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
 			{
-				vis_str(receiver.parser.packet, "Start packet parsing");
-				responder.respond(receiver.get_request_packet(), receiver.parser.full_request, servers, getPort(client_socket));
+				// vis_str(receiver.parser.packet, "Start packet parsing");
+				responder.respond(receiver.parser.request, receiver.parser.full_request, servers, getPort(client_socket));
 			}
 		}
 		catch(const std::exception& e)
@@ -112,7 +112,7 @@ std::string Client::getPort(int client_socket)
 
     // Get the local address that the socket is bound to
     if (getsockname(client_socket, (struct sockaddr*)&addr, &addr_len) == -1) {
-        perror("getsockname");
+        print_error("getsockname");
         return ("no port attached");
     }
     // Convert the IP address to a human-readable string

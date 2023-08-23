@@ -94,8 +94,6 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("Warning:");
     valid_headers.insert("Non-standard headers:");
     valid_headers.insert("Dnt:");
-    valid_headers.insert("X-Requested-With:");
-    valid_headers.insert("X-CSRF-Token:");
     valid_headers.insert("Postman-Token:");
     valid_headers.insert("Sec-Fetch-Dest:");
     valid_headers.insert("Sec-Fetch-Mode:");

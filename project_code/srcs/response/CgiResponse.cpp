@@ -35,10 +35,12 @@ std::string	Respond::isCGI(stringmap &server_info, packet_map &request)
 	std::string file_extension = path.substr(path.rfind("."));
 	if (server_info.find(file_extension) != server_info.end() && it->first == "POST")
 		path = server_info[file_extension];
-	return (path);
+	if (path.find("/cgi-bin/") != std::string::npos)
+		return (path);
+	return ("");
 }
 
-std::string	Respond::fillingResponsePacket(packet_map &request, stringmap &server_info, std::string &full_file_to_string)
+std::string	Respond::fillingResponsePacket(stringmap &server_info, std::string &full_file_to_string)
 {
 	if (full_file_to_string.rfind("50", 1) == 0 || full_file_to_string.rfind("40", 1) == 0)
 		return (err.code(server_info, full_file_to_string));
@@ -66,8 +68,6 @@ std::string	Respond::fillingResponsePacket(packet_map &request, stringmap &serve
 	response_packet += "Date: ";
 	response_packet += getTimeBuffer();
 	response_packet += "Content-Type:" + type;
-	if (request.find("X-Secret-Header-For-Test:") !=  request.end())
-		response_packet += "X-Secret-Header-For-Test: 1\r\n";
 	std::stringstream ss;
 	ss << body.length();
 	response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
@@ -83,7 +83,7 @@ std::string readFromChild(int fd)
 		char buffer[10];
 		ssize_t count = read(fd, buffer, sizeof(buffer));
 		if (count == -1) {
-			perror("read failed");
+			print_error("read failed");
 			throw(std::runtime_error("read faild"));
 		} else if (count == 0) 
 		{
@@ -103,7 +103,7 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 	int status = 0;
 	int id = 0;
 	std::string output;
-
+	std::cout << BOLDYELLOW << "inside child, cgi path is \n" << path <<  RESET << std::endl;
 	try 
 	{
 		if (pipe(fd) == -1)
@@ -130,7 +130,7 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 			return (err.code(server_info, "501"));
 		}
 		// vis_str(output, "inside CGI response");
-		return (fillingResponsePacket(request, server_info, output));
+		return (fillingResponsePacket(server_info, output));
 	}
 	catch (std::exception &e)
 	{
@@ -184,7 +184,7 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 				return (err.code(server_info, "404"));
 		}
 		// vis_str(output, "inside CGI response");
-		return (fillingResponsePacket(request, server_info, output));
+		return (fillingResponsePacket(server_info, output));
 	}
 	catch (std::exception &e)
 	{

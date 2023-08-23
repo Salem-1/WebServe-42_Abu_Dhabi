@@ -105,25 +105,32 @@ std::string    PUT::fillOkResponse()
 
 std::string    PUT::constructPath(stringmap &server_info)
 {
-
     std::string path = _response_pack["Path"][1];
     std::cout << MAGENTA << "requested path = " << path << std::endl << RESET ;
-
+    std::string dir;
     if (path == "/")
         return (server_info[path]);
-    if (std::count(path.begin(), path.end(), '/') < 2)
+    if (std::count(path.begin(), path.end(), '/') == 2  && path[path.length() - 1] == '/')
+        path = path.substr(0, path.length() - 1);
+    if (std::count(path.begin(), path.end(), '/') < 2 )
     {
-        if (server_info.find(path) != server_info.end())
+        if (inMap(server_info, path))
         {
+            std::cout << BOLDYELLOW<<"it's in map " << path<<  std::endl;
+            std::cout << BOLDYELLOW<<"it's in map " << server_info[path] <<  std::endl;
+            std::cout << BOLDYELLOW<<server_info[path] << std::endl;
             if (server_info.find(path + " index") != server_info.end())
-                return (server_info[path] +server_info[path + " index"]);
+                return (server_info[path] + server_info[path + " index"]);
+            else
+                return (server_info[path]);
         }
-        // else
+       
         //     return (server_info["root"] + path);
     }
-    std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
-    // exit(0);
+    else
+        dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
+    std::cout << MAGENTA << "dir == " << dir  << std::endl << " path = " << path << std::endl << RESET;
+
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
         std::cout << "yes it's only dir" << std::endl;
@@ -140,9 +147,10 @@ std::string    PUT::constructPath(stringmap &server_info)
 
     if (server_info.find(dir) != server_info.end())
     {
-        print_to_file("testers/our_tester/logs/dir_path.txt", server_info[dir]);
         return (server_info[dir] + rest_of_path);
     }
+    std::cout << "didn't found strike" << std::endl;
+
     return (server_info["root"] + path);
 }
 

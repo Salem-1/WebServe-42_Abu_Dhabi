@@ -80,6 +80,77 @@ void    GET_response::constructDirResponse(std::vector<std::string> &ls,
     full_file_to_string += "</html>";
 }
 
+/*
+if redirectedPAcket:
+    fillRedirectedPacket;
+    
+getting filename
+    size_t  file_location = file_path.rfind("/");
+    if (file_location == std::string::npos || file_location == file_path.length() - 1)
+        return ("text/html");
+    std::string file_name = file_path.substr(file_location + 1, file_path.length());
+
+
+    need the
+    dir
+    raw request->> last file (I believe from mime types)
+    then will do the math inshalla
+*/
+bool    GET_response::redirectedPacket(stringmap &server_info, std::string &file_path)
+{
+    std::vector<std::string> redirection_vec;
+    std::string file_name;
+    size_t  file_location = file_path.rfind("/");
+    std::string dir = server_info["constructed path dir"] ;
+    if (file_location == std::string::npos || file_location == file_path.length() - 1)
+        file_name = "/";
+    else
+        file_name = file_path.substr(file_location , file_path.length());
+    std::string fetch_redirection = dir + " redirection";
+    std::cout << "searching for " << fetch_redirection << std::endl;
+    if (inMap(server_info, fetch_redirection))
+    {
+        if (server_info[fetch_redirection].find(file_name) != std::string::npos)
+        redirection_vec = split(server_info[fetch_redirection], " , ");
+        std::cout << "file name = " << file_name << std::endl;
+        std::string winning_redirection = fetchWinningRedirection(redirection_vec, file_name);
+        std::cout << "winning redirection = " << winning_redirection << std::endl;
+        if (winning_redirection == "")
+            return (false);
+		std::vector<std::string> tmp = split(winning_redirection, " ");
+		// std::cout << "response chcek path 1" << reponse_check["Path"][1] << std::endl;
+		if (tmp.size() != 3)
+			return (false);
+		if (fill_redirection_vector(tmp))
+			return (true);
+    }
+    return (false);
+}
+
+std::string    GET_response::fetchWinningRedirection(
+                    std::vector<std::string> redirection_vec, std::string file_name)
+{
+    for (std::vector<std::string>::iterator it = redirection_vec.begin();
+        it != redirection_vec.end(); it++)
+    {
+        std::cout << "searching for " << file_name << " in " << *it << std::endl;
+        std::cout << file_name << " ==  " << split(*it, " ")[0] <<  std::endl;
+        // exit(0);
+        if (file_name == split(*it, " ")[0])
+            return (*it);
+    }
+    return ("");
+}
+
+int GET_response::fill_redirection_vector(std::vector<std::string> tmp)
+{
+    redirection["old_path"] = tmp[0];
+    redirection["new_path"] = tmp[1];
+    redirection["Status-code"] = tmp[2];
+    return (1);
+}
+
+
 void   GET_response::fillRedirectedPacket(void)
 {
     response_packet = "HTTP/1.1 ";
@@ -92,5 +163,6 @@ void   GET_response::fillRedirectedPacket(void)
     response_packet += "Connection: close\r\n";
     response_packet += "Content-Length: 0\r\n";
     response_packet += "Content-Type: text/html; charset=UTF-8 \r\n\r\n";
-   
+    std::cout << response_packet << std::endl;
+    // exit (1);
 }

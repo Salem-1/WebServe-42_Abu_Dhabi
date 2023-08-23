@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:12 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/03 09:08:20 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/23 15:13:13 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void GET::fillRequestLine(packet_map &request)
     if ((request["GET"][0].length() + request["GET"][1].length()) > HEADER_MAX_LENGTH
             && fillStatuCode(response, "414", "URI Too Long"))
         return ;
-    if (!(request["GET"][1] == "HTTP/1.1")
-        && (fillStatuCode(response, "505", "version not supported")))
+    if (request["GET"][1].find("HTTP/1.") == std::string::npos
+        && fillStatuCode(response, "505", "version not supported"))
         return ;
     if ((request["GET"].size() != 2) 
         && (fillStatuCode(response, "400", "get vec has wrong number items bad request")))

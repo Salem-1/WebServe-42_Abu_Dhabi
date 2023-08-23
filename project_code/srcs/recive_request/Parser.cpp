@@ -2,7 +2,7 @@
 #include "Parser.hpp"
 
 
-Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0), is_post(false)
+Parser::Parser(): read_again(0), bytes_read(0), read_sock(0)
 {
 	Parser::full_request.body_content_length = 0;
 	Parser::full_request.request_is_valid = 1;
@@ -12,24 +12,10 @@ Parser::Parser(): read_again(0), bytes_read(0), read_sock(0), packet_counter(0),
 	fullbody = false;
 	fullheader = false;
 	ischunked = false;
-	ischunkbody = false;
     fillValidHeaders();
 }
 
 
-Parser::Parser(const Parser &obj2)
-{
-    *this = obj2;
-}
-
-Parser &Parser::operator= (const Parser &obj2)
-{
-    if (this != &obj2)
-    {
-
-    }
-    return (*this);
-}
 Parser::~Parser()
 {
 
@@ -42,24 +28,22 @@ void	Parser::purgeParsing()
 	Parser::full_request.header = "";
 	Parser::full_request.body = "";
 	Parser::body_start_pos = 0;
+	body_start_pos = 0;
 	fullbody = false;
 	fullheader = false;
 	ischunked = false;
-	ischunkbody = false;
-	is_post = false;
+	read_again = 0;
+	bytes_read = 0;
+	valid_headers.clear();
+	packet.clear();
 	flushParsing();
-    fillValidHeaders();
 
 }
 
 void    Parser::flushParsing()
 {
         read_again = 0;
-        reponse_packet = ""; 
-        packet_counter++;
         request.clear();
-        response.clear();
-        filled_response = "";
 }
 
 
@@ -94,7 +78,7 @@ void    Parser::parse(char *new_buffer)
 				print_to_file("/Users/ayassin/Desktop/green.txt", full_request.header);
 			}
 			full_request.request_is_valid = checkHeaders();
-			if (full_request.header.find("HTTP/1.1") == std::string::npos)
+			if (full_request.header.find("HTTP/1.") == std::string::npos)
 				throw(std::runtime_error("505"));
 			if (Parser::request.find("GET") != request.end() 
 				||  Parser::request.find("DELETE") != request.end())
@@ -115,8 +99,7 @@ void    Parser::parse(char *new_buffer)
 				std::istringstream iss(it->second[0]);
 				iss >> full_request.body_content_length;
 
-				if ((full_request.body_content_length == 0 && it->second[0] != "0") 
-					||full_request.body_content_length > MAX_BODY_SIZE)
+				if ((full_request.body_content_length == 0 && it->second[0] != "0") )
 					throw(std::runtime_error("400"));
 			}
 			else if (Parser::request.find("Transfer-Encoding:") != request.end())

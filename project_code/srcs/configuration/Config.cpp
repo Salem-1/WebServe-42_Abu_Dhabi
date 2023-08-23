@@ -18,14 +18,19 @@ void   intra_config(conf &servers);
 Config::Config()
 {
     char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
-    intra_and_dummy_fill_till_config_parsing(servers);
+    std::string tmp(getcwd(buff, sizeof(buff)));
+    pwd = tmp;
     // intra_config(servers);
-    // list_dir_options(servers);
-
+    // intra_and_dummy_fill_till_config_parsing(servers);
+    // if (servers.empty())
+    //     throw(std::runtime_error("Empty server configuration "));
+    // else
     fillPorts();
 }
-
+std::string Config::getPwd() const
+{
+    return (pwd);    
+}
 
 Config::~Config()
 {
@@ -44,7 +49,7 @@ void    Config::fillPorts()
             std::cout << "inserted " << servers[i]["Port"] << std::endl;
         }
         else
-            throw(std::invalid_argument("Error in reading configuration file, missing port number in a server"));
+            throw(std::invalid_argument("Config: Error in  configuration file,"));
     }
 }
 
@@ -90,10 +95,10 @@ void    python_tester_config(conf &servers)
 
 void    intra_and_dummy_fill_till_config_parsing(conf &servers)
 {
-    char buff[4000];
+char buff[4000];
     std::string pwd(getcwd(buff, sizeof(buff)));
     servers.push_back(std::map<std::string, std::string>());
-     servers[0]["server_name"] = "127.0.0.1";
+    servers[0]["server_name"] = "127.0.0.1";
     servers[0]["Port"] = "3490";
     servers[0]["root"] = pwd + "/intra/YoupiBanane";
     servers[0]["index"] = "youpi.bad_extension";
@@ -101,15 +106,15 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[0]["/ methods"] = "GET";
     servers[0]["Max-Body"] = "10000000000";
     servers[0]["/post_body Max-Body"] = "100";
+    servers[0]["/post_body methods"] = "POST";
     servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
     // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
-	servers[0]["/cgi-bin"] = pwd + "/intra";
+	servers[0]["/cgi-bin"] = servers[0]["root"]  + "../intra";
 	servers[0][".bla"] = servers[0]["root"]+ "/../cgi-bin/cgi_tester";
-    
    
    
     servers.push_back(std::map<std::string, std::string>());
@@ -119,13 +124,9 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[1]["Port"] = "4444";
     servers[1]["root"] = pwd + "/intra/YoupiBanane";
     servers[1]["index"] = "youpi.bad_extension";
+    servers[1]["/ index"] = "youpi.bad_extension";
     servers[1]["/"] = servers[1]["root"] + "/" + servers[1] ["index"];
-    servers[1]["/images"] = servers[1]["root"] + "/path_to_images/";
-    servers[1]["/images index"] = servers[1]["/images"] + "base_image.jpg";
-    servers[1]["/styles"] = servers[1]["root"] + "/styles/";
-    servers[1]["/styles index"] = servers[1]["root"] + "/styles/" + "styles.css";
-    servers[1]["/js"] = servers[1]["root"] + "/js/";
-    servers[1]["/js index"] = servers[1]["root"] + "/js/" + "script.js";
+    servers[1]["Max-Body"] = MAX_BODY_SIZE_STR;
     
    
     servers.push_back(std::map<std::string, std::string>());
@@ -135,15 +136,12 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[2]["Port"] = "5555";
     servers[2]["root"] = pwd + "/intra/website";
     servers[2]["index"] = "index.html";
+    servers[2]["/ index"] = "index.html";
     servers[2]["/"] = servers[2]["root"] + "/" + servers[2] ["index"];
-    servers[2]["/images"] = servers[2]["root"] + "/path_to_images/";
-    servers[2]["/images index"] = servers[2]["/images"] + "base_image.jpg";
-    servers[2]["/styles"] = servers[2]["root"] + "/styles/";
-    servers[2]["/styles index"] = servers[2]["root"] + "/styles/" + "styles.css";
-    servers[2]["/js"] = servers[2]["root"] + "/js/";
-    servers[2]["/js index"] = servers[2]["root"] + "/js/" + "script.js";
-    servers[2]["404"] = servers[2]["root"] +  "/" + "not_found.html";
-	servers[2]["cgi-bin"] = pwd + "/intra";
+    servers[2]["/ error_page"] = "404 " +  servers[2]["root"] +  "/" + "not_found.html";
+	servers[2]["/cgi-bin"] =  servers[2]["root"]+ "../.";
+	servers[2]["Max-Body"] = MAX_BODY_SIZE_STR;
+    servers[2]["DELETE path"] = "POST";
     
     servers.push_back(std::map<std::string, std::string>());
     servers[3]["DELETE path"] = "POST";
@@ -152,13 +150,8 @@ void    intra_and_dummy_fill_till_config_parsing(conf &servers)
     servers[3]["root"] = pwd + "/intra/website";
     servers[3]["index"] = "index.html";
     servers[3]["/"] = servers[3]["root"] + "/" + servers[3] ["index"];
-    servers[3]["/images"] = servers[3]["root"] + "/path_to_images/";
-    servers[3]["/images index"] = servers[3]["/images"] + "base_image.jpg";
-    servers[3]["/styles"] = servers[3]["root"] + "/styles/";
-    servers[3]["/styles index"] = servers[3]["root"] + "/styles/" + "styles.css";
-    servers[3]["/js"] = servers[3]["root"] + "/js/";
-    servers[3]["/js index"] = servers[3]["root"] + "/js/" + "script.js";
-    servers[3]["Methods"] = "GET DELETE";
+    servers[3]["/ methods"] = "GET DELETE";
+	servers[3]["Max-Body"] = MAX_BODY_SIZE_STR;
         
 }
 
@@ -173,14 +166,15 @@ void   intra_config(conf &servers)
     servers[0]["index"] = "youpi.bad_extension";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0]["index"];
     servers[0]["/ methods"] = "GET";
-    servers[0]["Max-Body"] = "10000000000";
-    servers[0]["/post_body Max-Body"] = "100";
+    servers[0]["Max-Body"] = "100";
     servers[0]["/directory"] = servers[0]["root"] + "/";
     servers[0]["/directory index"] = "youpi.bad_extension" ;
     servers[0]["/put_test methods"] = "PUT" ;
     servers[0]["/put_test"] = servers[0]["root"] + "/PUT/";
     // servers[0]["/Yeah autoindex"] = "off";
     servers[0]["DELETE path"] = "POST";
+	servers[0]["/cgi-bin"] = servers[0]["root"]  + "../intra";
+	servers[0][".bla"] = servers[0]["root"]+ "/../cgi-bin/cgi_tester";
 }
 
 
@@ -198,7 +192,7 @@ void   intra_config(conf &servers)
     servers[0]["/js"] = servers[0]["root"] + "/js/";
     servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
     servers[0]["DELETE path"] = "POST";
-    servers[3]["Methods"] = "GET";
+    servers[3]["methods"] = "GET";
 
 
 
@@ -247,4 +241,13 @@ void    list_dir_options(conf &servers)
     
     servers[0]["Max-Body"] = "100000000000";
     servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos attacks/ddos.html 301";
+}
+
+
+
+void    Config::visualize_config()
+{
+    for (std::vector<stringmap>::iterator it = servers.begin();
+        it != servers.end(); it++)
+        visualize_string_map(*it);
 }
