@@ -78,7 +78,7 @@ void    Parser::parse(char *new_buffer)
 				print_to_file("/Users/ayassin/Desktop/green.txt", full_request.header);
 			}
 			full_request.request_is_valid = checkHeaders();
-			if (full_request.header.find("HTTP/1.1") == std::string::npos)
+			if (full_request.header.find("HTTP/1.") == std::string::npos)
 				throw(std::runtime_error("505"));
 			if (Parser::request.find("GET") != request.end() 
 				||  Parser::request.find("DELETE") != request.end())
