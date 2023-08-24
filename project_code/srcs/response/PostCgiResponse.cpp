@@ -8,8 +8,8 @@ std::string ReadAndWirte(int infd, int outfd, std::string &body)
 	size_t 		write_size = 1000;
 	size_t 		read_size = 260000;
 	size_t		pos = 0;
-	fcntl(infd, F_SETFL, O_NONBLOCK);
-	fcntl(outfd, F_SETFL, O_NONBLOCK);
+	fcntl(infd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
+	fcntl(outfd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	if (kq == -1)
 	{
 		close(infd);
