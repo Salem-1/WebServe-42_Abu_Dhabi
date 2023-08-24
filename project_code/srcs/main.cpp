@@ -12,8 +12,8 @@ int main(int argc, char **argv, char **env)
         run_default(env);
 	if (argc == 2)
         run_server(env, argv[1]);
-    else
-        throw(std::invalid_argument("wron conf file"));
+    // else
+    //     throw(std::invalid_argument("wron conf file"));
 
 
     return (0);
