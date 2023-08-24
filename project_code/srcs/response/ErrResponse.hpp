@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:52 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 08:18:41 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/24 20:29:30 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@ class ErrResponse
         stringmap	    StatusCodes;
     private:
         std::string constructErroPath(std::string server_eror_info, std::string err);
-        
-};
+        bool    readFileToString(std::string file_path, 
+                                std::string &full_file_to_string);        
+        std::string             full_file_to_string;
+        std::string             regularErroredResponse(std::string err);
+};      
 #endif

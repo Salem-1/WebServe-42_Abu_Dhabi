@@ -145,10 +145,9 @@ static bool fileExists(const std::string& name)
 	return file.good();
 }
 
-void Post::handleUpload()
+void Post::handleUpload(std::string path)
 {
-	char buff[4000];
-    std::string pwd(getcwd(buff, sizeof(buff)));
+
     // Parse the request header to get the content boundary
     std::string boundary = this->_request.header.substr(this->_request.header.find("boundary=") + 9);
 	boundary = boundary.substr(0, boundary.find("\n"));
@@ -168,7 +167,9 @@ void Post::handleUpload()
     size_t filenameStart = this->_request.body.find("filename=\"", start) + 10;
     size_t filenameEnd = this->_request.body.find("\"", filenameStart);
     std::string filename = this->_request.body.substr(filenameStart, filenameEnd - filenameStart);
-	filename = pwd + "/intra/website/uploads/" + filename;
+	if (!isDirectory(path))
+		throw(std::runtime_error("501"));
+	filename = path + filename;
 
 	// Check if the file already exists
 	std::string newFileName = filename;
@@ -209,14 +210,13 @@ void Post::handlePost()
 {
     std::string path = constructPath(_server_info);
 	std::cout << "post path = " << path << std::endl;
-
 	if (this->_request_map.find("Content-Type:") == this->_request_map.end() 
 		|| this->_request_map["Content-Type:"].empty())
 		return ;
-	if (this->_request_map["Content-Type:"][0] == "application/x-www-form-urlencoded")
-		Post::sendToBackend();
-	else if (this->_request_map["Content-Type:"][0] == "multipart/form-data;")
-		Post::handleUpload();
+	// if (this->_request_map["Content-Type:"][0] == "application/x-www-form-urlencoded")
+	// 	Post::sendToBackend();
+	if (this->_request_map["Content-Type:"][0] == "multipart/form-data;")
+		Post::handleUpload(path);
 	else
     {
         if (!sanitizedPath(path))
@@ -237,6 +237,19 @@ bool    Post::postBody(std::string path)
     _response = fillOkResponse();
     std::cout << _response << std::endl;
     return (true);
+}
+ 
+bool	Post::isDirectory(std::string path)
+{
+	DIR *dir;
+    if ((dir  = opendir(path.c_str())) != NULL)
+    {
+		closedir(dir);
+		std::cout << "is dir" << std::endl;
+		return (true);
+	}
+	std::cout << "is not directory " << std::endl;
+	return (false);
 }
 
 /*
