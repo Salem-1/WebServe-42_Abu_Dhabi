@@ -86,17 +86,22 @@ void	ChildExec::childExecute(std::string path)
 		_fd = NULL;
 		_env = envMaker(path);
 		
-		args = new char*[1];
-		*args = NULL;
+		args = new char*[2];
+		args[0] = NULL; 
+		args[1] = NULL;
+		args[0] = new char[path.size() + 1];
+		bzero(args[0], path.size() + 1);
+		strcpy(args[0], path.c_str()); 
 		if (execve(path.c_str(), args, _env) ==  -1)
 		{
 			print_error("execve failed: ");
 			std::cerr << "It freakin faild to execute " << path << std::endl;
 		}
-		delete [] args;
 		for (int i = 0; _env[i] != NULL; ++i)
 			delete [] _env[i];
 		delete[] _env;
+		delete [] args[0];
+		delete [] args;
 		std::cout<< "404";
 		exit (127);
 	}
@@ -108,6 +113,8 @@ void	ChildExec::childExecute(std::string path)
 			delete [] _env[i];
 		if (_env != NULL)
 			delete[] _env;
+		if (args != NULL && args[0] != NULL)
+			delete [] args[0];
 		if (args != NULL)
 			delete[] args;
 		std::cout<< "500";
