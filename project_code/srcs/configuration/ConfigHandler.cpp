@@ -5,10 +5,10 @@ ConfigHandler::ConfigHandler(const std::string& filePath) : filename(filePath)
 
 void ConfigHandler::errorAndExit(const std::string& msg)
 {
-	std::cerr << "Configuration file:\n" << msg << std::endl;
-	//TODO:
+	// std::cerr << "Configuration file:\n" << msg << std::endl;
+	// std::string error = "Error" + msg;
 	//instead of exit(1) we should throw an exception
-	exit(1);
+	throw(std::invalid_argument(msg));
 }
 
 void ConfigHandler::handleConfig()

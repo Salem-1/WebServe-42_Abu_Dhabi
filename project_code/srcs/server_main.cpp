@@ -9,7 +9,7 @@ void handle_pipes(int sig)
         std::cout << MAGENTA  << "\nBroken pipe: Client disconnected during sending " << RESET <<std::endl;
     }
 }
-
+void vvisualize_tokens(tokenized_conf &tokens);
 int main(int argc, char **argv)
 {
 	if (argc > 2)
@@ -18,13 +18,17 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	std::vector<std::pair<std::string, std::vector<std::string> > > configstarter;
+	tokenized_conf configstarter;
 
 	if (argc == 2)
 	{
 		ConfigHandler config(argv[1]);
 		config.handleConfig();
 		configstarter = config.getConfigstarter();
+        vvisualize_tokens(configstarter);
+        ServerFill filler(configstarter);
+        filler.parseTokens();
+    
 	}
 
     
@@ -45,4 +49,19 @@ int main(int argc, char **argv)
     Kque socket_manager(servers.sockets);
     socket_manager.watchFds(servers.servers);
     return (0);
+}
+
+
+void vvisualize_tokens(tokenized_conf &tokens)
+{
+    for (tokenized_conf::iterator it = tokens.begin(); it != tokens.end(); it++)
+    {
+        std::cout << BOLDYELLOW << "essentials: " << RESET << std::endl;
+        std::cout << BOLDMAGENTA << it->first << RESET << std::endl;
+        for (size_t i = 0; i < it->second.size(); i++)
+        {
+            std::cout << BOLDYELLOW << "Location " << i << RESET << std::endl;
+            std::cout << it->second[i] << RESET << std::endl;
+        }
+    }
 }
