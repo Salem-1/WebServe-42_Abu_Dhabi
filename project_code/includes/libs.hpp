@@ -120,7 +120,7 @@ typedef struct locations_args
 
 std::vector<std::string>    split(std::string str, std::string delimeter);
 std::string                 getTimeBuffer();
-void                        run_server(char **env);
+void                        run_server(char **env, tokenized_conf filled_tokens);
 void                        printAddrInfo( struct addrinfo *ai);
 void                        visualize_servers(
                                 std::vector<std::map<std::string, std::string> > servers);
@@ -134,6 +134,7 @@ bool                        inVector(std::vector<std::string> data_set, std::str
 void                        fillEnvPath(conf &servers, char **env);
 void                        print_error(std::string msg);
 void                        handle_pipes(int sig);
+
 //---------------------------------------------
 
 
