@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Socket.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/23 09:03:22 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/24 09:24:30 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void    Socket::tryOpenSocketAgain( struct  addrinfo *try_another_info)
         try_addr = addr;
         openSocket(addr);
     }
-    if (!try_addr)
+    if (!try_addr || !try_another_info)
         errorInSocket("couldn't open socket: ");
     nonBlockSock();
 }
