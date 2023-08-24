@@ -207,6 +207,9 @@ void Post::handleUpload()
 
 void Post::handlePost()
 {
+    std::string path = constructPath(_server_info);
+	std::cout << "post path = " << path << std::endl;
+
 	if (this->_request_map.find("Content-Type:") == this->_request_map.end() 
 		|| this->_request_map["Content-Type:"].empty())
 		return ;
@@ -216,7 +219,6 @@ void Post::handlePost()
 		Post::handleUpload();
 	else
     {
-        std::string path = constructPath(_server_info);
         if (!sanitizedPath(path))
             return ;
         postBody(path);
