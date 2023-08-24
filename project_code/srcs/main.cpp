@@ -134,7 +134,7 @@ void    run_server(char **env)
 	catch (const std::exception& e)
 	{
 		std::string err(e.what());
-		std::cout << e.what();
+		std::cout << BOLDRED << e.what() << RESET << std::endl;
 	}
 	return ;
 
