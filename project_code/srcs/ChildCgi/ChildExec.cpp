@@ -79,6 +79,8 @@ void	ChildExec::childExecute(std::string path)
 	char **args = NULL;
 	try
 	{
+		if (sanitizedPath(path) == false)
+			throw(std::runtime_error("400"));
 		if (dup2(_fd[1], STDOUT_FILENO) == -1)
 			throw(std::runtime_error("dup failed"));
 		close(_fd[1]);
@@ -104,6 +106,12 @@ void	ChildExec::childExecute(std::string path)
 		delete [] args;
 		std::cout<< "404";
 		exit (127);
+	}
+	catch (std::runtime_error &e)
+	{
+		close(_fd[1]);
+		close(_fd[0]);
+		exit(2);
 	}
 	catch (std::bad_alloc &e)
 	{
