@@ -3,12 +3,13 @@
 
 
 tokenized_conf    dummy_intra_token_fill();
-
+void visualize_tokens(tokenized_conf &tokens);
 int main(int argc, char **argv, char **env)
 {
     (void)argc;
     (void)argv;
     (void)env;
+    tokenized_conf filled_tokens;
 	if (argc > 2)
 	{
 		std::cerr << "Error: too many arguments" << std::endl;
@@ -18,11 +19,12 @@ int main(int argc, char **argv, char **env)
 	if (argc == 2)
 	{
 		ConfigHandler config(argv[1]);
-		config.readConfigFile();
-		exit(0);
+		 config.handleConfig();
+		filled_tokens =  config.getConfigstarter();
+		// exit(0);
 	}
 
-    run_server(env);
+    run_server(env, filled_tokens);
 
     return (0);
 }
@@ -66,9 +68,9 @@ void    fillEnvPath(conf &servers, char **env)
         (*it)["path to path"] = path;
 }
 
-void    run_server(char **env)
+void    run_server(char **env, tokenized_conf filled_tokens)
 {
-    // Config  servers;
+    Config  servers;
 // tokenized_conf tokenized_server;
 //     std::vector<std::string> locations;
 //     std::string              essentials = "listen 3490;server_name 127.0.0.1  ;root /intra/YoupiBanane;index youpi.bad_extension;\nDELETE_path POST; client_max_body_size 10000000000;";    
@@ -91,7 +93,7 @@ void    run_server(char **env)
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
     locations.clear();
-    essentials = " listen      4444; server_name 127.0.0.1 localhost; root        /intra/YoupiBanane; DELETE_path POST; index       youpi.bad_extension;";    
+    essentials = " listen      4444; server_name 127.0.0.1 localhost; root /intra/YoupiBanane; DELETE_path POST; index       youpi.bad_extension;";    
     locations.push_back("location /;  index   youpi.bad_extension;;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
@@ -107,9 +109,10 @@ void    run_server(char **env)
     locations.push_back("location  /attacks ;  autoindex off;root /attacks/ ;index ddos.html;");
     locations.push_back("location /strike;         root /attacks/; redirection /fall /nightmares/fall.html  301; redirection  /another_redir  /attacks/ransom.html 301;redirection /ransomware /strike/another_redir 302;  autoindex on;");
     // redirection /monseter nightmares/monster.html  301; error_page 404 not_found.html; error_page 403 monster;redirection  /another_redir  attacks/ransom.html 301; redirection /ddos attacks/ddos.html 301;
-    tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
+//     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
    
-    ServerFill filled_servers(tokenized_server);
+    ServerFill filled_servers(filled_tokens);
+    visualize_tokens(filled_tokens);
     filled_servers.servers.visualize_config();
     filled_servers.servers.fillPorts();
     fillEnvPath(filled_servers.servers.servers, env);
@@ -140,3 +143,19 @@ void    run_server(char **env)
 
 }
 
+
+
+
+void visualize_tokens(tokenized_conf &tokens)
+{
+    for (tokenized_conf::iterator it = tokens.begin(); it != tokens.end(); it++)
+    {
+        std::cout << BOLDYELLOW << "essentials: " << RESET << std::endl;
+        std::cout << BOLDMAGENTA << it->first << RESET << std::endl;
+        for (size_t i = 0; i < it->second.size(); i++)
+        {
+            std::cout << BOLDYELLOW << "Location " << i << RESET << std::endl;
+            std::cout << it->second[i] << RESET << std::endl;
+        }
+    }
+}
