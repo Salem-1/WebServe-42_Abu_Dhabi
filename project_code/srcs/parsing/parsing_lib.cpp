@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/24 10:28:40 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/24 21:49:04 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ std::vector<std::string> split(std::string str, std::string delimeter)
     std::vector<std::string>    result;
 
     if (!str.length())
-        result.push_back("");
-   else if (str.find(delimeter) == std::string::npos || !delimeter.length())
+        result.push_back(str);
+	else if (str.find(delimeter) == std::string::npos || !delimeter.length())
         result.push_back(str);
     if (str.find(delimeter) == std::string::npos || !str.length() || !delimeter.length())
         return (result);
@@ -28,7 +28,7 @@ std::vector<std::string> split(std::string str, std::string delimeter)
             result.push_back(str.substr(0, str.find(delimeter)));
         str = str.substr(str.find(delimeter) + delimeter.length(), str.length());   
     }
-    if (str.substr(0, str.find(delimeter))[0])
+    if (str[0]) // .substr(0, str.find(delimeter))[0])
         result.push_back(str.substr(0, str.find(delimeter)));
     return (result);
 }
@@ -49,6 +49,7 @@ std::set<std::string> split_to_set(std::string str, std::string delimeter)
             result.insert(str.substr(0, str.find(delimeter)));
         str = str.substr(str.find(delimeter) + delimeter.length(), str.length());   
     }
+	if (str[0] != '\0')
     if (str.substr(0, str.find(delimeter))[0])
         result.insert(str.substr(0, str.find(delimeter)));
     return (result);
