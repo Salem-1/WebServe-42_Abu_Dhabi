@@ -38,6 +38,7 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     {
         fillRedirectedPacket();
         std::cout << "filled redirection packet" << std::endl;
+
         return ;
     }
         std::cout << "failed to fill redirection packet" << std::endl;
@@ -57,6 +58,7 @@ void    GET_response::fillOkResponse(stringmap &server_info)
         if (reponse_check["dir"].size() != 1)
         {
             response_packet = err.code(server_info, "400");
+            closedir(dir);
             return ;
         }
         if (server_info.find(dir_list_option) != server_info.end())
@@ -69,10 +71,12 @@ void    GET_response::fillOkResponse(stringmap &server_info)
                 while ((files = readdir(dir)) != NULL)
                     ls.push_back(files->d_name);
                 constructDirResponse(ls, full_file_to_string);
+                closedir(dir);
             }
             else
             {
                 response_packet = err.code(server_info, "403");
+                closedir(dir);
                 return ;
             }
         }
