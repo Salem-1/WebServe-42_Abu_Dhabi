@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:37 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/23 21:01:41 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/24 09:13:34 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void Listner::bindFD()
     {
         close(sockfd);
         print_error("server: Listner");
+		try_again = 1;
         tryOpenSocketAgain(try_addr->ai_next);
     }
     std::cout << "SOCKET binded " << std::endl;

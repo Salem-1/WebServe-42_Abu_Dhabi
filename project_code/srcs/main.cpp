@@ -133,7 +133,9 @@ void    run_server(char **env)
 	}
 	catch (const std::exception& e)
 	{
-		std::string err(e.what());
+		for(std::vector<int>::iterator it = filled_servers.servers.sockets.begin();
+					it != filled_servers.servers.sockets.end(); ++it)
+			close(*it);
 		std::cout << e.what();
 	}
 	return ;
