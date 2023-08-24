@@ -13,23 +13,25 @@ class ConfigHandler {
 private:
     std::string filename;
 	std::string fileContent;
-	std::vector<std::pair<std::string, std::string> > configstarter;
+	std::vector<std::pair<std::string, std::vector<std::string> > > configstarter;
 
     bool	isValidFile();
 	// Tries to open the file and read it into a string
     void	readConfigFile();
 	void	parseConfig();
 	bool	curlyBracesEvenCheckRemoveExtras(std::string& str);
-	void	splitAndFillVector(std::vector<std::string>& vec, const std::string& str, const std::string& delim);
+	void	splitAndFillVector(const std::string& str, const std::string& delim);
 	int		fillPair(std::string& str, std::pair<std::string, std::vector<std::string> >& pair);
-	void	errorAndExit(const std::string& msg);
+	int		prepareLocation(std::string& str);
 	void	tremString(std::string& str, const std::string& toRemove);
 	void	tremStringOnce(std::string& str, const std::string& toRemove);
-	// bool	fillServers(std::vector<std::string>& servers);
+	void	errorAndExit(const std::string& msg);
 
 public:
     ConfigHandler(const std::string& filePath);
+	~ConfigHandler(){};
 	void	handleConfig();
+	std::vector<std::pair<std::string, std::vector<std::string> > > getConfigstarter() const;
 };
 
 #endif

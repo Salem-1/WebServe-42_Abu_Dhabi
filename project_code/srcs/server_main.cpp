@@ -18,14 +18,19 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	std::vector<std::pair<std::string, std::vector<std::string> > > configstarter;
+
 	if (argc == 2)
 	{
 		ConfigHandler config(argv[1]);
 		config.handleConfig();
-		exit(0);
+		configstarter = config.getConfigstarter();
 	}
 
-    Config  servers;
+    
+	exit(0); // Remove this and remember to go to ConfigHandler.cpp and remove the exit(0)
+			// at TODO and convert the errorAndExit() to throw an exception
+	Config  servers;
     // Config.fillPorts();
     signal(SIGPIPE, &handle_pipes);
 

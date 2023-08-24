@@ -6,6 +6,8 @@ ConfigHandler::ConfigHandler(const std::string& filePath) : filename(filePath)
 void ConfigHandler::errorAndExit(const std::string& msg)
 {
 	std::cerr << "Configuration file:\n" << msg << std::endl;
+	//TODO:
+	//instead of exit(1) we should throw an exception
 	exit(1);
 }
 
@@ -49,20 +51,9 @@ void ConfigHandler::parseConfig()
 		errorAndExit("Error: curly brace/s");
 	std::vector<std::string> servers;
 	if (!fileContent.empty())
-		splitAndFillVector(servers, fileContent, "server");
+		splitAndFillVector(fileContent, "server");
 	else
 		errorAndExit("Error: empty configuration file");
-	// if (!fillServers(servers))
-	// {
-	// 	std::cerr << "Error: bad configuration argument/s" << std::endl;
-	// 	exit(1);
-	// }
-	// std::string line;
-	// std::stringstream ss(fileContent);
-	// while (std::getline(ss, line, '\n'))
-	// {
-	// 	std::cout << line << std::endl;
-	// }
 }
 
 bool ConfigHandler::curlyBracesEvenCheckRemoveExtras(std::string& str)
@@ -103,6 +94,25 @@ bool ConfigHandler::curlyBracesEvenCheckRemoveExtras(std::string& str)
 }
 
 
+// This function to put location in right format
+int	ConfigHandler::prepareLocation(std::string& str)
+{
+	str = "location " + str;
+	size_t i = str.find_first_of('{');
+	if (i != std::string::npos)
+	{
+		str[i] = ';';
+		while (--i > 0 && (str[i] == '\n'))
+			str[i] = ' ';
+	}
+	i = str.find_last_of('}');
+	if (i != std::string::npos)
+		str[i] = '\n';
+	if (!curlyBracesEvenCheckRemoveExtras(str))
+		errorAndExit("Error: loaction misconfiguration");
+	return (0);
+}
+
 int ConfigHandler::fillPair(std::string& str, std::pair<std::string, std::vector<std::string> >& pair)
 {
 	(void) pair;
@@ -111,6 +121,7 @@ int ConfigHandler::fillPair(std::string& str, std::pair<std::string, std::vector
 	size_t start = 0;
 	size_t end = str.find(delim);
 	size_t edge;
+	size_t	split_0 = 0;
 	while (end != std::string::npos)
 	{
 		edge = end + (delim.length());
@@ -121,10 +132,14 @@ int ConfigHandler::fillPair(std::string& str, std::pair<std::string, std::vector
         }
 		block = str.substr(start, end - start);
 		tremString(block, " \t\r\n");
-		if (curlyBracesEvenCheckRemoveExtras(str) && !str.empty())
+		if (!split_0++ && curlyBracesEvenCheckRemoveExtras(block) && !block.empty())
 		{
-			std::cout << block << std::endl;												// delete
-			std::cout << "##############################################" << std::endl;		// delete
+			pair.first = block;
+		}
+		else if (curlyBracesEvenCheckRemoveExtras(block) && !block.empty())
+		{
+			prepareLocation(block);
+			pair.second.push_back(block);
 		}
 		else
 			errorAndExit("Error: configuration path/s");
@@ -132,12 +147,17 @@ int ConfigHandler::fillPair(std::string& str, std::pair<std::string, std::vector
 		end = str.find(delim, start);
 	}
 	block = str.substr(start, str.length());
-	std::cout << block << std::endl;												// delete
-	std::cout << "##############################################" << std::endl;		// delete
+	if (curlyBracesEvenCheckRemoveExtras(block) && !block.empty())
+	{
+		prepareLocation(block);
+		pair.second.push_back(block);
+	}
+	else
+		errorAndExit("Error: configuration path/s");
 	return (1);
 }
 
-void	ConfigHandler::splitAndFillVector(std::vector<std::string>& vec, const std::string& str, const std::string& delim)
+void	ConfigHandler::splitAndFillVector(const std::string& str, const std::string& delim)
 {
 	size_t start = 0;
 	size_t end = str.find(delim);
@@ -176,9 +196,7 @@ void	ConfigHandler::splitAndFillVector(std::vector<std::string>& vec, const std:
 			if (!curlyBracesEvenCheckRemoveExtras(server) || server[server.length() - 1] != '}')
 				errorAndExit("Error: curly brace/s");
 			fillPair(server, pair);
-			std::cout << "========================================================" << std::endl;		// delete
-			vec.push_back(server);
-
+			this->configstarter.push_back(pair);
 		}
 		else
 			errorAndExit("Error: configuration variable/s");
@@ -193,8 +211,7 @@ void	ConfigHandler::splitAndFillVector(std::vector<std::string>& vec, const std:
 		if (!curlyBracesEvenCheckRemoveExtras(server) || server[server.length() -1] != '}')
 			errorAndExit("Error: curly brace/s");
 		fillPair(server, pair);
-		std::cout << "========================================================" << std::endl;
-		vec.push_back(server);
+		this->configstarter.push_back(pair);
 	}
 	else
 		errorAndExit("Error: configuration variable/s");
@@ -228,4 +245,9 @@ void	ConfigHandler::tremStringOnce(std::string& str, const std::string& toRemove
 	size_t end = str.find_last_of(toRemove);
 	if (end != std::string::npos)
 		str.erase(end);
+}
+
+std::vector<std::pair<std::string, std::vector<std::string> > > ConfigHandler::getConfigstarter() const
+{
+	return (this->configstarter);
 }
