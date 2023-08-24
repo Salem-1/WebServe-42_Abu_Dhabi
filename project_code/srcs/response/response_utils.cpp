@@ -5,7 +5,7 @@ bool	Respond::bodyTooBig(response_packet &response, stringmap &server_info, std:
 {
     std::string query;
 	size_t max_body = 0;
-    if (!inMap(server_info, response["dir"][0]))
+    if (response.find("dir") == response.end() || !inMap(server_info, response["dir"][0]))
         query = "/ Max-Body";
     else
 	    query = response["dir"][0] + " Max-Body";
