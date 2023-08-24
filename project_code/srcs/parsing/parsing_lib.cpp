@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/23 09:10:18 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/24 10:28:40 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,4 +119,18 @@ void    runAtAllCost()
     signal(SIGPIPE, &handle_pipes);
     // signal(SIGSEGV, &handle_pipes);
     // signal(15, &handle_pipes);
+}
+
+void visualize_tokens(tokenized_conf &tokens)
+{
+    for (tokenized_conf::iterator it = tokens.begin(); it != tokens.end(); it++)
+    {
+        std::cout << BOLDYELLOW << "essentials: " << RESET << std::endl;
+        std::cout << BOLDMAGENTA << it->first << RESET << std::endl;
+        for (size_t i = 0; i < it->second.size(); i++)
+        {
+            std::cout << BOLDYELLOW << "Location " << i << RESET << std::endl;
+            std::cout << it->second[i] << RESET << std::endl;
+        }
+    }
 }
