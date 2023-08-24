@@ -6,7 +6,7 @@
 #    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/23 07:34:44 by ahsalem          ###   ########.fr        #
+#    Updated: 2023/08/24 10:27:13 by ahsalem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ HEADER = includes/libs.hpp includs/webserve.hpp
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address -o -g
+CFLAGS =  -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address -o3 -g
 
 INCS =
 ifeq ($(shell uname), Linux)
@@ -36,7 +36,7 @@ _SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
 		Parser_utils.cpp GET.cpp GET_response.cpp DELETE.cpp DELETE_res.cpp \
 		Respond.cpp Config.cpp logger.cpp parsing_lib.cpp ErrResponse.cpp main.cpp Post.cpp \
 		CgiResponse.cpp PostCgiResponse.cpp GET_response_strings.cpp response_utils.cpp PUT.cpp \
-		ChildExec.cpp  ConfigHandler.cpp ServerFill.cpp 
+		ChildExec.cpp  ConfigHandler.cpp ServerFill.cpp serverRunners.cpp
 		
 # test_ServersFill.cpp 
 
