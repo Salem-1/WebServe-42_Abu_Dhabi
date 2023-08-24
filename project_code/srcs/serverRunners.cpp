@@ -10,8 +10,8 @@ void    run_default(char **env)
     locations.push_back("location /; methods GET   ;");
     locations.push_back("location /directory; \nroot /;\nindex youpi.bad_extension;\n");
     locations.push_back("    location /post_body ;\n methods POST ;\nclient_max_body_size 100;\n");
-    locations.push_back("location .bla;index   /../cgi-bin/cgi_tester;\n");
-    locations.push_back("location /cgi-bin; root /..;");
+    locations.push_back("location .bla;index   /cgi-bin/cgi_tester;\n");
+    locations.push_back("location /cgi-bin; root /cgi-bin/;");
     locations.push_back("location /put_test; methods PUT;  root /PUT/;");
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
     
