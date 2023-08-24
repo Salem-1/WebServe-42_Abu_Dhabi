@@ -23,14 +23,11 @@ std::string	Respond::isCGI(stringmap &server_info, packet_map &request)
 		path = path.substr(0, path.find("?"));
 		server_info["query"] = query;
 	}
-	if (it->first == "GET")
-	{
-		if (path.find("/cgi-bin/") != std::string::npos)
-			return (server_info["/cgi-bin"] + path);
-		else
-			return ("");
-	}
-	if (path.rfind(".") == path.npos)
+	if (path.find("/cgi-bin/") == 0)
+		return (server_info["/cgi-bin"] + path);
+	else if (it->first == "GET")
+		return ("");
+	else if (path.rfind(".") == path.npos)
 		return ("");
 	std::string file_extension = path.substr(path.rfind("."));
 	if (server_info.find(file_extension) != server_info.end() && it->first == "POST")
