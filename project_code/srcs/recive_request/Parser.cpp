@@ -144,13 +144,13 @@ void    Parser::setBytereadAndReadsock(int bytes, int sock)
 
 void    Parser::fillHeaderRequest(std::string &packet)
 {
-    std::vector<std::string> tmp_vec;
+    // std::vector<std::string> tmp_vec;
     std::string              header;
     std::vector<std::string> packet_lines = split(packet, "\r\n");
 
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
-        tmp_vec = split(*it, " ");
+        std::vector<std::string> tmp_vec = split(*it, " ");
         if (tmp_vec.size() < 2)
 			throw(std::runtime_error("400"));
         header = tmp_vec[0];
