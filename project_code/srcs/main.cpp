@@ -136,8 +136,10 @@ void    run_server(char **env, tokenized_conf filled_tokens)
 	}
 	catch (const std::exception& e)
 	{
-		std::string err(e.what());
-		std::cout << BOLDRED << e.what() << RESET << std::endl;
+		for(std::vector<int>::iterator it = filled_servers.servers.sockets.begin();
+					it != filled_servers.servers.sockets.end(); ++it)
+	  close(*it);
+    std::cout << BOLDRED << e.what() << RESET << std::endl;
 	}
 	return ;
 
