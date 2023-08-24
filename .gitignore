@@ -21,7 +21,6 @@ replit*
 *.out
 web_serve
 project_code/testers/our_tester/logs
-YoupiBanane
 venv
 sandbox
 intra/YoupiBanane/PUT/*

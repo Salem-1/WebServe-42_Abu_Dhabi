@@ -6,7 +6,7 @@
 /*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/23 11:42:16 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/24 20:45:34 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ std::string ErrResponse::code(
     std::string full_file_to_string = content_stream.str();
     return (constructCustomErrPacket(err, full_file_to_string));
 }
+
+
+
+
 std::string ErrResponse::constructErroPath(std::string server_eror_info, std::string err)
 {
     std::vector<std::string > error_pages;
@@ -95,6 +99,30 @@ std::string ErrResponse::constructCustomErrPacket(std::string err, std::string &
 
 std::string ErrResponse::erroredResponse(std::string err)
 {
+    if (!readFileToString("srcs/response/defualt_error.html", 
+                                        full_file_to_string))
+    {
+        std::cout << "couldn't open file" << std::endl;
+        exit(0);
+        return (regularErroredResponse(err));
+    }
+    std::string err_message =  err + " " + StatusCodes[err] ;
+    full_file_to_string.replace(full_file_to_string.find("<h1 class=\"game-title\">error_message_here</h1>"), 47, "<h1 class=\"game-title\">" +err_message + "</h1>");
+      response_str = "HTTP/1.1 " + err
+        + " " + StatusCodes[err] + "\r\n";
+    response_str += "Server: Phantoms\r\n";
+    response_str += "Date: ";
+    response_str += getTimeBuffer();
+    response_str += "Content-Type: text/html text/javascript test/css; charset=utf-8\r\n";
+    std::stringstream ss;
+	ss << full_file_to_string.length();
+    
+    response_str += "Content-Length: " + ss.str() + "\r\n\r\n";
+    response_str += full_file_to_string;
+    return (response_str);
+}
+std::string ErrResponse::regularErroredResponse(std::string err)
+{    
     response_str = "HTTP/1.1 " + err
         + " " + StatusCodes[err] + "\r\n";
     response_str += "Server: Phantoms\r\n";
@@ -167,4 +195,18 @@ std::string	getTimeBuffer() {
 	std::strftime(time_buffer, sizeof(time_buffer), "%a, %d %b %Y %H:%M:%S GMT\r\n", time_info);
 
 	return std::string(time_buffer);
+}
+
+
+bool    ErrResponse::readFileToString(std::string file_path, 
+                                        std::string &full_file_to_string)
+{
+    std::ifstream infile(file_path.c_str());
+    if (infile.fail())
+        return (false);
+    std::stringstream content_stream;
+    content_stream  << infile.rdbuf();
+    full_file_to_string = content_stream.str();
+    std::cout << full_file_to_string << std::endl;
+    return (true);
 }
