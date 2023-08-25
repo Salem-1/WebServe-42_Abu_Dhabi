@@ -49,25 +49,21 @@ Connection: keep-alive
    <pre>
  $ ./launch_ddos $DNS $PROTOCOL  | ./take_server_down &       
  $cat attack_logs | head -5 | awk 'print {$1 \n$2\n$3\n$4}'   
+
 [2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
-200 
-1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+200 1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
 10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
 [2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
-200 
-1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+200 1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
 10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
 [2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
-200 
-1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+200 1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
 10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
 [2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
-200 
-1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+200 1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
 10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
 [2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
-200 
-1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+200 1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
 10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
       </pre> 
     </div> 

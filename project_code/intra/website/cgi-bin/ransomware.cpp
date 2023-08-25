@@ -28,21 +28,17 @@ int main() {
 	std::cout << "\r\nConnection: keep-alive\r\n\r\n";
     print_html_headers();
     
-    std::cout << " <h1>DDOS on " << dns.second << " report</h1>" << std::endl;
-    std::cout << " <p>on www.42.intra.fr server is down, you will go to jail⚖️.</p>" << std::endl;
+    std::cout << " <h1>Ransomware attack on " << dns.second << " report</h1>" << std::endl;
+    std::cout << " <p>www.42.intra.fr files is encrypted, you will go to jail⚖️.</p>" << std::endl;
     std::cout << " <p>Here is the attack logs</p>" << std::endl;
     std::cout << " <div class=\"terminal\">" << std::endl;
     std::cout << "   <pre>" << std::endl;
-    std::cout << " $ ./launch_ddos $DNS $PROTOCOL  | ./take_server_down &       " << std::endl;        
-    std::cout << " $cat attack_logs | head -5 | awk 'print {$1 \\n$2\\n$3\\n$4}'   " << std::endl; 
+    std::cout << " $ ./encrypt_target $DNS $PROTOCOL  | ./generate_encryption_key       " << std::endl;        
+    std::cout << " $cat encryption_key                            .   " << std::endl; 
     std::cout << std::endl;                    
-    for (int i = 0 ; i < 5 ; i++)
-    {
-       std::cout << "[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -" << std::endl;
-       std::cout <<  "200 1234 " << dns.second   << " Mozilla/5.0 (Windows NT " << std::endl;
-       std::cout << "10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123";
-       std::cout << " 456.78.9 Safari/537.36  " << std::endl;
-    }
+       std::cout << "ZmF0YWwgZXJyb3I6IHRvbyBtYW55IGVycm9ycyBlbWl0dGVkLCBz=" << std::endl;
+       std::cout <<  "use it wisley" << std::endl;
+
     print_html_footer();
     return 0;
 }
