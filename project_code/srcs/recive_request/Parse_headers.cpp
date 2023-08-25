@@ -91,6 +91,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("User-Agent:");
     valid_headers.insert("Upgrade:");
     valid_headers.insert("Via:");
+    valid_headers.insert("Set-Cookie:");
     valid_headers.insert("Warning:");
     valid_headers.insert("Non-standard headers:");
     valid_headers.insert("Dnt:");

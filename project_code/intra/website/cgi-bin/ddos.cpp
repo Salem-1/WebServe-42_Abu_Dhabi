@@ -114,8 +114,7 @@ void    resolve_protcol_dns_vars(std::pair<std::string, std::string> &dns_pair)
     if (cpy.find('=') == std::string::npos || (cpy.find(':') == std::string::npos 
         && cpy.find("%3A%2F%2F") == std::string::npos))
     {
-        // std::cout <<"Bad url" << std::endl;
-        // std::cout <<"501" << std::endl;
+        std::cout <<"501" << std::endl;
         exit(1);
     }
     std::string site = cpy.substr(cpy.find('=') + 1, cpy.length() - 1);
@@ -124,6 +123,7 @@ void    resolve_protcol_dns_vars(std::pair<std::string, std::string> &dns_pair)
         protocol = site.substr(0, site.find("%3A%2F%2F"));
     else
         protocol = site.substr(0, site.find(":"));
+ 
     // std::cout << "Protocol:" << protocol << std::endl;
     if (site.find("w") == std::string::npos)
         dns = site.substr(site.find("%2F") + 3, site.length() - 1);
