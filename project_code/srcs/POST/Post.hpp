@@ -6,7 +6,6 @@
 class Post: public PUT
 {
 private:
-	void			sendToBackend();
 	void			handleUpload(std::string path);
 	bool    		postBody(std::string path);
 	bool		 	isDirectory(std::string path);
