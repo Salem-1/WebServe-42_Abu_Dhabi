@@ -58,6 +58,9 @@ std::string	Respond::fillingResponsePacket(stringmap &server_info, std::string &
 		temp_pos = header_fields.find("Content-Type:");
 		if (temp_pos != header_fields.npos)
 			type = header_fields.substr(temp_pos + 13, header_fields.find("\r\n", temp_pos)+ 2 - temp_pos - 13);
+		temp_pos = header_fields.find("Set-Cookie:");
+		if (temp_pos != header_fields.npos)
+			type += header_fields.substr(temp_pos, header_fields.find("\r\n", temp_pos)+ 2);
 	}
 
 	std::string response_packet;
