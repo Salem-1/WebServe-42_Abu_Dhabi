@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Action Buttons with Color Picker</title>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f5f5f5;
+      transition: background-color 0.3s;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .action-button {
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+
+    .action-button:hover {
+      transform: scale(1.1);
+    }
+
+    .color-button {
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+
+    .color-button:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="button-container">
+    <button class="action-button" onclick="sendPythonPostRequest('env_python')">Show Python Environment</button>
+    <button class="action-button" onclick="sendPostRequest('env_bash')">Show Bash Environment</button>
+    <button class="action-button" onclick="setCookieAndChangeColor()">Set Cookie and Change Color</button>
+  </div>
+
+  <div class="button-container">
+    <button class="color-button" style="background-color: red;" onclick="changeBackgroundColor('red')">Red</button>
+    <button class="color-button" style="background-color: blue;" onclick="changeBackgroundColor('blue')">Blue</button>
+    <button class="color-button" style="background-color: green;" onclick="changeBackgroundColor('green')">Green</button>
+    <button class="color-button" style="background-color: yellow;" onclick="changeBackgroundColor('yellow')">Yellow</button>
+    <button class="color-button" style="background-color: purple;" onclick="changeBackgroundColor('purple')">Purple</button>
+  </div>
+  <div id="response-container"></div>
+  <script>
+    // Function to send POST request
+    function sendPostRequest(action) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/cgi-bin/hi', true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          displayResponse(xhr.responseText);
+        }
+      };
+      
+      xhr.send(`action=${action}`);
+    }
+    function sendPythonPostRequest(action) {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', '/cgi-bin/hello', true);
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          displayResponse(xhr.responseText);
+        }
+      };
+      
+      xhr.send(`action=${action}`);
+    }
+    function displayResponse(responseText) {
+      const responseContainer = document.getElementById('response-container');
+      responseContainer.textContent = responseText;
+    }
+    // Function to change background color
+    function changeBackgroundColor(color) {
+      document.body.style.backgroundColor = color;
+      document.cookie = `bgColor=${color}`;
+    }
+
+    // Function to set cookie and change background color using stored value
+    function setCookieAndChangeColor() {
+      const bgColor = getCookieValue('bgColor');
+      if (bgColor) {
+        document.body.style.backgroundColor = bgColor;
+      }
+    }
+
+    // Function to get cookie value by name
+    function getCookieValue(name) {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.trim().split('=');
+        if (cookieName === name) {
+          return cookieValue;
+        }
+      }
+      return null;
+    }
+  </script>
+</body>
+</html>
