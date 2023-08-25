@@ -6,7 +6,7 @@
 #    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/24 20:36:46 by ahsalem          ###   ########.fr        #
+#    Updated: 2023/08/25 19:37:21 by ahsalem          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,6 @@ SUBDIRS = srcs logs includes srcs/server srcs/client srcs/recive_request srcs/GE
 	srcs/DELETE srcs/response srcs/configuration srcs/parsing srcs/POST srcs/PUT \
 	srcs/ChildCgi
 	
-#  ./testers/conf_tester
 
 
 
@@ -38,7 +37,6 @@ _SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
 		CgiResponse.cpp PostCgiResponse.cpp GET_response_strings.cpp response_utils.cpp PUT.cpp \
 		ChildExec.cpp  ConfigHandler.cpp ServerFill.cpp serverRunners.cpp
 		
-# test_ServersFill.cpp 
 
 
 # 

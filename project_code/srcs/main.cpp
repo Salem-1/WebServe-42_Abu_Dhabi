@@ -12,8 +12,8 @@ int main(int argc, char **argv, char **env)
         run_default(env);
 	if (argc == 2)
         run_server(env, argv[1]);
-    // else
-    //     throw(std::invalid_argument("wron conf file"));
+    else
+        std::cout << BOLDRED << "wrong number of arguments" << RESET <<std::endl;
 
 
     return (0);
