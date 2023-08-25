@@ -13,8 +13,8 @@ static int simpleBackend(std::string body, std::string &received_body)
 	std::string filePath = pwd + "/intra/website/post_backend/index.html";
 	std::ifstream inFile(filePath.c_str());
     if (!inFile) {
-        std::cerr << "Error: Could not open " << filePath << " for reading.\n";
-        return 1;
+		std::cout << "500" << std::endl;
+        exit (1);
     }
 
     // Read the content of the existing file into a stringstream
@@ -27,8 +27,9 @@ static int simpleBackend(std::string body, std::string &received_body)
     std::string content = contentStream.str();
     std::size_t pos = content.find(searchString);
     if (pos == std::string::npos) {
-        std::cerr << "Error: Could not find the specified comment in the file.\n";
-        return 1;
+		std::cout << "500" << std::endl;
+        exit (1);
+       
     }
 
     // Modify the content by inserting the body after the specified comment
@@ -40,7 +41,9 @@ static int simpleBackend(std::string body, std::string &received_body)
 
     std::ofstream outFile(filePath.c_str());
     if (!outFile) {
-        std::cerr << "Error: Could not open " << filePath << " for writing.\n";
+		std::cout << "500" << std::endl;
+        exit (1);
+        
         return 1;
     }
 
@@ -59,13 +62,10 @@ int main()
 	std::string contentType = std::getenv("HTTP_CONTENT_TYPE");
 
 	if (requestMethod != "POST" || contentType != "application/x-www-form-urlencoded")
+	{
 		std::cout << "500" << std::endl;
-	// for (char **env = environ; *env != 0; env++)
-	// {
-	// 	char *thisEnv = *env;
-	// 	std::cout << thisEnv << std::endl;
-	// }
-	// exit(0);
+		exit(0);
+	}
 	std::string input;
 	std::string body;
 	std::string received_body;
@@ -99,7 +99,10 @@ int main()
 		status  = simpleBackend(comment, received_body);
 	}
 	if (status)
-		std::cout << "Status: 500 Internal Server Error" << std::endl;
+	{
+		std::cout << "500" << std::endl;
+		exit(0);
+	}
 	std::ostringstream ostr;
     ostr << received_body.length();
 	std::string response = "HTTP/1.1 200 OK\r\n"
