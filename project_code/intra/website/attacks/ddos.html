@@ -62,9 +62,9 @@
   <div class="container">
       <div class="form-container">
           <h2>Launch DDOS attack:</h2>
-          <form method=>
-            <label class="form-label" for="ipAddress">Enter IP or Domain (Max 20 characters):</label>
-            <input class="form-input" type="text" id="ipAddress" name="ipAddress" maxlength="20" required>
+          <form method="post" action="/cgi-bin/dig">
+            <label class="form-label" for="ipAddress"> Domain (ex: https:www.google.com):</label>
+            <input class="form-input" type="text" id="ipAddress" name="ipAddress" maxlength="50" required >
             <button class="submit-button" type="submit">Launch</button>
               <div class="welcome-message">Launching DDOS attacks without permission is illegal act, and you hold sole responsbility</div>
       </form>
