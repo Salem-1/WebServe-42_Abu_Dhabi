@@ -66,12 +66,12 @@
     <button class="color-button" style="background-color: yellow;" onclick="changeBackgroundColor('yellow')">Yellow</button>
     <button class="color-button" style="background-color: purple;" onclick="changeBackgroundColor('purple')">Purple</button>
   </div>
-  <div id="response-container"></div>
+  <p id="response-container"></p>
   <script>
     // Function to send POST request
     function sendPostRequest(action) {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/cgi-bin/hi', true);
+      xhr.open('POST', '/cgi-bin/env.sh', true);
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       
       xhr.onreadystatechange = function() {
@@ -84,7 +84,7 @@
     }
     function sendPythonPostRequest(action) {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', '/cgi-bin/hello', true);
+      xhr.open('POST', '/cgi-bin/env.py', true);
       xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
       
       xhr.onreadystatechange = function() {
