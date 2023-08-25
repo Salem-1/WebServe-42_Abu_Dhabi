@@ -122,13 +122,8 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 		output = readFromChild(fd[0]);
 		close(fd[0]);
 		while (waitpid(-1, &status, 0) > 0) {}
-		if (WEXITSTATUS(status))
-		{
-			if (WEXITSTATUS(status) == 127)
-				return (err.code(server_info, "404"));
-			return (err.code(server_info, "501"));
-		}
-		// vis_str(output, "inside CGI response");
+		if (WEXITSTATUS(status) == 2)
+				return (err.code(server_info, "400"));
 		return (fillingResponsePacket(server_info, output));
 	}
 	catch (std::exception &e)
@@ -177,12 +172,8 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		close(infd[0]);
 		output = ReadAndWirte(infd[1], outfd[0], full_request.body);
 		while (waitpid(-1, &status, 0) > 0) {}
-		if (WEXITSTATUS(status))
-		{
-			if (WEXITSTATUS(status) == 127)
-				return (err.code(server_info, "404"));
-		}
-		// vis_str(output, "inside CGI response");
+		if (WEXITSTATUS(status) == 2)
+				return (err.code(server_info, "413"));
 		return (fillingResponsePacket(server_info, output));
 	}
 	catch (std::exception &e)
