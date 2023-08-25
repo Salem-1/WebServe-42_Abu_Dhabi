@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/24 21:49:04 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/25 19:36:16 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,8 @@ void handle_pipes(int sig)
 void    runAtAllCost()
 {
     signal(SIGPIPE, &handle_pipes);
-    // signal(SIGSEGV, &handle_pipes);
-    // signal(15, &handle_pipes);
+    signal(SIGSEGV, &handle_pipes);
+    signal(15, &handle_pipes);
 }
 
 void visualize_tokens(tokenized_conf &tokens)
