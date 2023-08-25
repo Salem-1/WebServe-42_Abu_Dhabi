@@ -1,56 +1,76 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>DDOS attack report</title>
-  <meta charset="UTF-8">
-  <style>
-    body {
-      background-color: #000;
-      font-family: 'Courier New', monospace;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 2180
+Connection: keep-alive
 
-    .terminal-container {
-      text-align: center;
-    }
-
-    .terminal {
-      width: 500px;
-      background-color: #333;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
-      color: #fff;
-      overflow: auto;
-    }
-    h1{
-        color: #fff;
-    }
-    p{
-        color: #fff;
-    }
-  </style>
-</head>
-<body>
-  <div class="terminal-container">
-    <h1>DDOS on www.42.intra.fr report</h1>
-    <p>on www.42.intra.fr server is down, you will go to jail⚖️.</p>
-    <p>Here is the attack logs</p>
-    <div class="terminal">
-      <pre>
-$ ./launch_ddos $DNS $PROTOCOL  | ./take_server_down&               
-$cat attack_logs | head -100 | awk 'print {$1$2$3$}'                   
-[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1    
-1234 - www.42.intra.fr Mozilla/5.0 (Windows NT 10.0;                                 
-Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.      
-456.78.9 Safari/537.36                                                              
-
-      </pre>
-    </div>
-  </div>
-</body>
-</html>
+<!DOCTYPE html> 
+<html> 
+<head> 
+  <title>DDOS attack report</title> 
+  <meta charset="UTF-8"> 
+  <style> 
+    body { 
+      background-color: #000; 
+      font-family: 'Courier New', monospace; 
+      margin: 0; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      height: 100vh; 
+    } 
+ 
+    .terminal-container { 
+      text-align: center; 
+    } 
+ 
+    .terminal { 
+      width: 500px; 
+      background-color: #333; 
+      border-radius: 10px; 
+      padding: 20px; 
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); 
+      color: #fff; 
+      overflow: auto; 
+    } 
+    h1{ 
+        color: #fff; 
+    } 
+    p{ 
+        color: #fff; 
+    } 
+  </style> 
+ </head> 
+ <body> 
+  <div class="terminal-container"> 
+ <h1>DDOS on www.42.intra.fr report</h1>
+ <p>on www.42.intra.fr server is down, you will go to jail⚖️.</p>
+ <p>Here is the attack logs</p>
+ <div class="terminal">
+   <pre>
+ $ ./launch_ddos $DNS $PROTOCOL  | ./take_server_down &       
+ $cat attack_logs | head -5 | awk 'print {$1 \n$2\n$3\n$4}'   
+[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
+200 
+1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
+[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
+200 
+1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
+[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
+200 
+1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
+[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
+200 
+1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
+[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -
+200 
+1234 www.42.intra.fr Mozilla/5.0 (Windows NT 
+10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 456.78.9 Safari/537.36  
+      </pre> 
+    </div> 
+  </div> 
+</body> 
+</html> 

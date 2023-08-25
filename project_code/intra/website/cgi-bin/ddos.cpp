@@ -16,23 +16,90 @@ extern char** environ;
 void    printAddrInfo(const struct addrinfo *ai) ;
 void    resolve_dns(std::pair<std::string, std::string> dns);
 void    resolve_protcol_dns_vars(std::pair<std::string, std::string> &dns);
+void    print_html_headers();
+void    print_html_footer();
 int main() {
     std::pair<std::string, std::string> dns;
     resolve_protcol_dns_vars(dns);
     resolve_dns(dns);
-    std::cout << "attacking " << dns.second << "  " << std::endl;
-    std::cout << "<h1>" << dns.second << " Server is down, this incedent will be reported, you will go to jail</h1>" << std::endl;
-    std::cout << "<h1>Here are the attack logsl</h1>" << std::endl;
-    for (int i = 0 ; i < 100 ; i++)
+    std::cout << "HTTP/1.1 200 OK\r\n";
+	std::cout << "Content-Type: text/html\r\n";
+	std::cout << "Content-Length: 2180" ;
+	std::cout << "\r\nConnection: keep-alive\r\n\r\n";
+    print_html_headers();
+    
+    std::cout << " <h1>DDOS on " << dns.second << " report</h1>" << std::endl;
+    std::cout << " <p>on www.42.intra.fr server is down, you will go to jail⚖️.</p>" << std::endl;
+    std::cout << " <p>Here is the attack logs</p>" << std::endl;
+    std::cout << " <div class=\"terminal\">" << std::endl;
+    std::cout << "   <pre>" << std::endl;
+    std::cout << " $ ./launch_ddos $DNS $PROTOCOL  | ./take_server_down &       " << std::endl;        
+    std::cout << " $cat attack_logs | head -5 | awk 'print {$1 \\n$2\\n$3\\n$4}'   " << std::endl; 
+    std::cout << std::endl;                    
+    for (int i = 0 ; i < 5 ; i++)
     {
-       std::cout << "[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1" << std::endl;
-       std::cout <<  "200 1234 - " << dns.second   << " Mozilla/5.0 (Windows NT 10.0;" << std::endl;
-       std::cout << "Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123." << std::endl;
-       std::cout << "456.78.9 Safari/537.36" << std::endl;
-       
+       std::cout << "[2023-08-25 12:34:56] 192.168.1.101 - GET /page1.html HTTP/1.1   -" << std::endl;
+       std::cout <<  "200 1234 " << dns.second   << " Mozilla/5.0 (Windows NT " << std::endl;
+       std::cout << "10.0; Win64; x64) .AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123";
+       std::cout << " 456.78.9 Safari/537.36  " << std::endl;
     }
+    print_html_footer();
     return 0;
 }
+
+void    print_html_headers()
+{
+    std::cout <<"<!DOCTYPE html> " << std::endl;
+    std::cout <<"<html> " << std::endl;
+    std::cout <<"<head> " << std::endl;
+    std::cout <<"  <title>DDOS attack report</title> " << std::endl;
+    std::cout <<"  <meta charset=\"UTF-8\"> " << std::endl;
+    std::cout <<"  <style> " << std::endl;
+    std::cout <<"    body { " << std::endl;
+    std::cout <<"      background-color: #000; " << std::endl;
+    std::cout <<"      font-family: 'Courier New', monospace; " << std::endl;
+    std::cout <<"      margin: 0; " << std::endl;
+    std::cout <<"      display: flex; " << std::endl;
+    std::cout <<"      align-items: center; " << std::endl;
+    std::cout <<"      justify-content: center; " << std::endl;
+    std::cout <<"      height: 100vh; " << std::endl;
+    std::cout <<"    } " << std::endl;
+    std::cout <<" " << std::endl;
+    std::cout <<"    .terminal-container { " << std::endl;
+    std::cout <<"      text-align: center; " << std::endl;
+    std::cout <<"    } " << std::endl;
+    std::cout <<" " << std::endl;
+    std::cout <<"    .terminal { " << std::endl;
+    std::cout <<"      width: 500px; " << std::endl;
+    std::cout <<"      background-color: #333; " << std::endl;
+    std::cout <<"      border-radius: 10px; " << std::endl;
+    std::cout <<"      padding: 20px; " << std::endl;
+    std::cout <<"      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6); " << std::endl;
+    std::cout <<"      color: #fff; " << std::endl;
+    std::cout <<"      overflow: auto; " << std::endl;
+    std::cout <<"    } " << std::endl;
+    std::cout <<"    h1{ " << std::endl;
+    std::cout <<"        color: #fff; " << std::endl;
+    std::cout <<"    } " << std::endl;
+    std::cout <<"    p{ " << std::endl;
+    std::cout <<"        color: #fff; " << std::endl;
+    std::cout <<"    } " << std::endl;
+    std::cout <<"  </style> " << std::endl;
+    std::cout <<" </head> " << std::endl;
+    std::cout <<" <body> " << std::endl;
+    std::cout <<"  <div class=\"terminal-container\"> " << std::endl;
+}
+                                                        
+
+void    print_html_footer()
+{
+    std::cout << "      </pre> " << std::endl;
+    std::cout << "    </div> " << std::endl;
+    std::cout << "  </div> " << std::endl;
+    std::cout << "</body> " << std::endl;
+    std::cout << "</html> " << std::endl;
+}
+
 
 void    resolve_protcol_dns_vars(std::pair<std::string, std::string> &dns_pair)
 {
@@ -42,27 +109,27 @@ void    resolve_protcol_dns_vars(std::pair<std::string, std::string> &dns_pair)
      std::string dns;
     while (std::getline(std::cin, input)) {
         cpy += input;
-        std::cout << "" << input << std::endl;
+        // std::cout << "" << input << std::endl;
     }
     if (cpy.find('=') == std::string::npos || (cpy.find(':') == std::string::npos 
         && cpy.find("%3A%2F%2F") == std::string::npos))
     {
-        std::cout <<"Bad url" << std::endl;
-        std::cout <<"501" << std::endl;
+        // std::cout <<"Bad url" << std::endl;
+        // std::cout <<"501" << std::endl;
         exit(1);
     }
     std::string site = cpy.substr(cpy.find('=') + 1, cpy.length() - 1);
-    std::cout << "site:" << site << std::endl;
+    // std::cout << "site:" << site << std::endl;
     if (cpy.find(':') == std::string::npos )
         protocol = site.substr(0, site.find("%3A%2F%2F"));
     else
         protocol = site.substr(0, site.find(":"));
-    std::cout << "Protocol:" << protocol << std::endl;
+    // std::cout << "Protocol:" << protocol << std::endl;
     if (site.find("w") == std::string::npos)
         dns = site.substr(site.find("%2F") + 3, site.length() - 1);
     else
         dns = site.substr(site.find("w"), site.length() - 1);
-    std::cout << "DNS:" << dns << std::endl;
+    // std::cout << "DNS:" << dns << std::endl;
 
     dns_pair.first = protocol;
     dns_pair.second = dns;
@@ -73,10 +140,10 @@ void    resolve_dns(std::pair<std::string, std::string> dns)
   
 
     // for (int i = 0; environ[i] != nullptr; ++i) {
-    //     std::cout << environ[i] << std::endl;
+        // std::cout << environ[i] << std::endl;
     // }
 
-    std::cout << "------------------------" << std::endl;
+    // std::cout << "------------------------" << std::endl;
     struct addrinfo hints, *result, *rp;
     int status;
     // Clear the hints structure
@@ -200,3 +267,4 @@ void printAddrInfo(const struct addrinfo *ai) {
     
         printf("Next: %p\n", ai->ai_next);
 }
+
