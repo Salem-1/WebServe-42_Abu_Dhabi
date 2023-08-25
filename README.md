@@ -53,3 +53,4 @@ After this step we should have more clarity what kind of data to be parsed and h
 10. Handle signals
 
 (only nesseccary step to start with is the server, all other steps can work parallel to each other)   
+Thanks to https://github.com/straker for the amazing single page games.
