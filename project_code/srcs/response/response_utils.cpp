@@ -13,9 +13,6 @@ bool	Respond::bodyTooBig(response_packet &response, stringmap &server_info, std:
 		query = "Max-Body";
 	std::istringstream max(server_info[query]);
 	max >> max_body;
-    std::cout << max_body << std::endl;
-    std::cout << body.length() << std::endl;
- 
 	if (max_body < body.length())
 		return (true);
 	return(false);		

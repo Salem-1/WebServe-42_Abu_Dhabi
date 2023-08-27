@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kque.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/23 09:03:22 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/25 21:03:02 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void    Kque::watchFds(conf &servers)
     {
         active_fds = kevent(kq, NULL, 0, events, MAX_EVENTS, NULL);
         if (active_fds == -1)
-            kqueError("Kevent loop failed: ");
+            kqueError(" ");
         for (int i = 0; i < active_fds; i++)
         {
             if (!server_running)
@@ -218,8 +218,8 @@ std::string  Kque::socketInfo(int sockfd)
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
     
-    std::cout << "Socket Local Address: " << ip_str << std::endl;
-    std::cout << "Socket Local Port: " <<  ntohs(addr.sin_port)<< std::endl;  
+    // std::cout << "Socket Local Address: " << ip_str << std::endl;
+    // std::cout << "Socket Local Port: " <<  ntohs(addr.sin_port)<< std::endl;  
     std::stringstream ss;
     ss << ntohs(addr.sin_port);
 

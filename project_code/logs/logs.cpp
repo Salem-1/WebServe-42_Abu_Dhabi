@@ -197,16 +197,6 @@ void    vis_str(std::string packet, std::string message)
             std::cout << MAGENTA  << message << RESET;
 }
 
-void    print_to_file(std::string path, std::string str)
-{
-    std::ofstream outFile(path.c_str(), std::ios::app);
-    if (!outFile.is_open()) {
-        std::cout << "Error opening the file!" << std::endl;
-    }
-    outFile << str << std::endl;
-    outFile.close(); 
-}
-
 bool    inSet(std::set<std::string> data_set, std::string item)
 {
     if (data_set.find(item) == data_set.end())

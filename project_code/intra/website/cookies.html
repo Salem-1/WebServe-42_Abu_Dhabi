@@ -126,6 +126,12 @@
       }
       return null;
     }
+
+	var savedTheme = getCookieValue('bgColor');
+	console.log(savedTheme);
+    if (savedTheme) {
+        changeBackgroundColor(savedTheme);
+	}
   </script>
 </body>
 </html>

@@ -18,7 +18,7 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
     
     //here should extract the port and hostname to give to the corresponding method
     stringmap server_info = getServerInfo(request, servers, port);
-    visualize_string_map(server_info);
+    // visualize_string_map(server_info);
     fillResponse(request, full_request, server_info);
     sending = true;
     
@@ -45,7 +45,6 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
     response["Status-code"].push_back("200");
 	std::string cgi_path = isCGI(server_info, request);    
 	std::set<std::string> supported_methods;
-    std::string msg;
 
 	if (request.find("GET") != request.end()
         && isSupportedMethod("GET", supported_methods))
@@ -53,13 +52,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         fillSupportedMethods(supported_methods, server_info, "GET" ,  request);
         if(!(isSupportedMethod("GET", supported_methods)))
         {
-            msg =  "( GET is not supported method for"  + (response.find("dir") != response.end() ? response["dir"][0] : "");
-            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
             response_string = err.code(server_info, "405");
             return ;
         }   
-            msg =  ":) GET is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
-            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
 		if (bodyTooBig(response, server_info, full_request.body) == true)
 			response_string = err.code(server_info, "413");
 	    else if (cgi_path != "")
@@ -72,13 +67,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         fillSupportedMethods(supported_methods, server_info, "POST" ,  request);
         if(!(isSupportedMethod("POST", supported_methods)))
                  {
-            msg =  ":) POST is not supported method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
-            print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
             response_string = err.code(server_info, "405");
             return ;
         } 
-		msg =  ":) POST is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
-		print_to_file("/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/logs/dirs.txt", msg);
 		if (bodyTooBig(response, server_info, full_request.body) == true)
 			response_string = err.code(server_info, "413");
         else if (cgi_path != "")
@@ -95,13 +86,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         fillSupportedMethods(supported_methods, server_info, "PUT" ,  request);
         if(!(isSupportedMethod("PUT", supported_methods)))
                  {
-            msg =  ":( PUT is not supported method for "  + response["dir"][0];
-            std::cout << msg<< std::endl;
             response_string = err.code(server_info, "405");
             return ;
         } 
-            msg =  ":) PUT is Allowed method for "  + (response.find("dir") != response.end() ? response["dir"][0] : "");
-            std::cout << msg<< std::endl;
         PUT put(request, full_request, server_info, response);
 		// put.printPUTBody();
 		put.handlePUT();
@@ -112,11 +99,9 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
         fillSupportedMethods(supported_methods, server_info, "DELETE" ,  request);
         if(!(isSupportedMethod("DELETE", supported_methods)))
                  {
-            msg =  ":( DELETE is not supported method for "  + response["dir"][0];
             response_string = err.code(server_info, "405");
             return ;
         } 
-            msg =  ":) DELETE is Allowed method for "  + response["dir"][0];
             response_string = err.code(server_info, "405");
         DELETE DELETE_response;
         response_string = DELETE_response.deleteResponseFiller(request, response, server_info);
@@ -160,12 +145,12 @@ int Respond::checkPoisonedURL(packet_map &request)
 void    Respond::sendAll(connection_state &state)
 {
     size_t  packet_len = response_string.length(); 
-    std::cout << "inside send all" << std::endl;
+    // std::cout << "inside send all" << std::endl;
     
     const char *a = response_string.c_str();
     int send_ret = 0;
     // sending = true ;
-    visualizeResponse();
+    // visualizeResponse();
     vis_str(response_string, "inside send all");
     if (packet_len - response_bytes_sent > SEND_BUFFER_SIZE)
         send_ret += send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
@@ -196,13 +181,12 @@ int Respond::fillStatuCode(std::string status_code, std::string message)
 
 stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string port)
 {
-    unsigned long               n = servers.size();
 
-    std::cout << BOLDGREEN << "port  = " << port << std::endl;
-    std::cout << "we have " << n << "servers\n" << RESET;
+    // std::cout << BOLDGREEN << "port  = " << port << std::endl;
+    // std::cout << "we have " << n << "servers\n" << RESET;
     for (unsigned long i = 0; i < servers.size(); i++)
     {
-        std::cout << "config port = " << servers[i]["Port"] << std::endl ;
+        // std::cout << "config port = " << servers[i]["Port"] << std::endl ;
         if (servers[i]["Port"] == port)
             nominated_servers.push_back(i);
     }
@@ -216,7 +200,7 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
                 fillStatuCode("400", "No host");   
                 return (servers[nominated_servers[0]]);
             } 
-            if (server_names[j] == fillRequestedHostName(request, port, j))
+            if (server_names[j] == fillRequestedHostName(request, port))
             {
                 // std::cout << "our server is " << nominated_servers[j] << std::endl;
                 return (servers[nominated_servers[i]]);
@@ -226,17 +210,13 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
     return (servers[nominated_servers[0]]);
 }
 
-std::string     Respond::fillRequestedHostName(packet_map &request, std::string &port, unsigned long &j)
+std::string     Respond::fillRequestedHostName(packet_map &request, std::string &port)
 {
     std::string requested_host;
-    std::cout << "our hostname is " << request["Host:"][0] << std::endl;
-    std::cout << "server hostname " << server_names[j] << std::endl;
     if (request["Host:"][0].find(":") == std::string::npos || request["Host:"][0].find(":") == request["Host:"][0].length())
         requested_host  = request["Host:"][0];
     else
         requested_host  = request["Host:"][0].substr(0, request["Host:"][0].find(":"));
-    std::cout << "requested trimmed host = " << requested_host << std::endl;
-    std::cout << "requested port  = " << port  << std::endl;
     std::pair<std::string, std::string> host_port(requested_host, port); 
     return (requested_host);
 }
@@ -256,12 +236,12 @@ void   Respond::fillSupportedMethods(
     fillPath(request, response, method);
     if (response["Status-code"][0] != "200")
         return ;
-    for (size_t i = 0; i < response["Path"].size() ; ++i)
-        std::cout << "response['Path'][" << i << "] = " << response["Path"][i] << std::endl;
+    // for (size_t i = 0; i < response["Path"].size() ; ++i)
+    //     std::cout << "response['Path'][" << i << "] = " << response["Path"][i] << std::endl;
     std::string path = response["Path"][1];
 
-    std::cout << "Given path = " << path << std::endl;
-    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
+    // std::cout << "Given path = " << path << std::endl;
+    // std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
     
     std::string dir;
     if (path == "/")
@@ -279,20 +259,15 @@ void   Respond::fillSupportedMethods(
     response["dir"].clear();  
     response["dir"].push_back(dir);
     server_info["constructed path dir"] = dir;
-    std::cout <<   "dir = " <<  dir << "             path = " << path << std::endl;
     std::string allowed_methods = dir + " methods";
-    std::cout << YELLOW << "serched item = \"" << allowed_methods <<  "\""<<RESET << std::endl;
     if (server_info.find(allowed_methods) != server_info.end())
     {
-        std::cout <<  GREEN << "allowed method = " << server_info[allowed_methods] <<  RESET <<std::endl;
         if (server_info[allowed_methods].empty())
             supported_methods.insert("nothing");
         else
             supported_methods = split_to_set(server_info[allowed_methods], " ");
         return ;
     }
-    else
-        std::cout << "didn't find allowed method" << std::endl;
     supported_methods.insert("GET");
     supported_methods.insert("POST");
     supported_methods.insert("DELETE");

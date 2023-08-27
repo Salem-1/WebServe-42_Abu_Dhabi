@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+         #
+#    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/24 20:36:46 by ahsalem          ###   ########.fr        #
+#    Updated: 2023/08/25 21:07:48 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ HEADER = includes/libs.hpp includs/webserve.hpp
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror -std=c++98 -g3 -fsanitize=address -o3 -g
+CFLAGS =  -Wall -Wextra -Werror -std=c++98 
 
 INCS =
 ifeq ($(shell uname), Linux)
@@ -27,7 +27,6 @@ SUBDIRS = srcs logs includes srcs/server srcs/client srcs/recive_request srcs/GE
 	srcs/DELETE srcs/response srcs/configuration srcs/parsing srcs/POST srcs/PUT \
 	srcs/ChildCgi
 	
-#  ./testers/conf_tester
 
 
 
@@ -38,7 +37,6 @@ _SRC = Kque.cpp Listner.cpp Socket.cpp Client.cpp Parser.cpp \
 		CgiResponse.cpp PostCgiResponse.cpp GET_response_strings.cpp response_utils.cpp PUT.cpp \
 		ChildExec.cpp  ConfigHandler.cpp ServerFill.cpp serverRunners.cpp
 		
-# test_ServersFill.cpp 
 
 
 # 
