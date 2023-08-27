@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserve.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ymohamed <ymohamed@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:03 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/13 20:25:14 by ymohamed         ###   ########.fr       */
+/*   Updated: 2023/08/27 13:13:31 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,6 @@
 # include "../srcs/POST/Post.hpp"
 # include "../srcs/PUT/PUT.hpp"
 
-#include "request/Request.hpp"
-#include "request/RequestHandler.hpp"
 # include "../srcs/DELETE/DELETE.hpp"
 
 # include "../srcs/server/Kque.hpp"
