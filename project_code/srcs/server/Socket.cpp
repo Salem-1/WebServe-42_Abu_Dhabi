@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:28 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/24 10:24:25 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/25 20:40:09 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 Socket::Socket(): try_again(1)
 {
-    std::cout << "Hello from the socket" << std::endl;
 }
 
 Socket::Socket(std::string port): port(port), sockfd(0), try_again(1)

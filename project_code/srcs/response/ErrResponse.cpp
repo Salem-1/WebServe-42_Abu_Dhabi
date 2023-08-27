@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/24 20:45:34 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/27 13:00:08 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ std::string ErrResponse::code(
     //server_info[err] = file_name
     std::string dir = server_info["constructed path dir"];
     std::cout << "inside dir " << dir << std::endl;
-    visualize_string_map(server_info);
+    // visualize_string_map(server_info);
     if (!inMap(server_info, dir + " error_page"))
     {
        if (!inMap(server_info, "/ error_page")) 
@@ -103,7 +103,6 @@ std::string ErrResponse::erroredResponse(std::string err)
                                         full_file_to_string))
     {
         std::cout << "couldn't open file" << std::endl;
-        exit(0);
         return (regularErroredResponse(err));
     }
     std::string err_message =  err + " " + StatusCodes[err] ;

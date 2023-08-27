@@ -30,26 +30,19 @@ void    GET_response::fillOkResponse(stringmap &server_info)
 {
     response_packet = "";
     std::string file_path = constructPath(server_info);
-    std::cout << BOLDMAGENTA << "requested file path = "
-    		<< RESET << file_path << std::endl << RESET;
     
     // exit(0);
     if(redirectedPacket(server_info, file_path))
     {
         fillRedirectedPacket();
-        std::cout << "filled redirection packet" << std::endl;
-
         return ;
     }
-        std::cout << "failed to fill redirection packet" << std::endl;
     
-    std::cout << BOLDMAGENTA << "requested file path = "
-    		<< RESET << file_path << std::endl << RESET;
         
     if (!sanitizedPath(file_path)&& fillBadPath(server_info))
         return ;
     
-    std::cout << MAGENTA << "constructed path = " << file_path << std::endl << RESET;
+
     DIR *dir;
     std::string full_file_to_string;
     if ((dir  = opendir(file_path.c_str())) != NULL)
@@ -117,7 +110,6 @@ bool    GET_response::fillBadPath(stringmap &server_info)
 {
         fillStatuCode(reponse_check , "404", "file not found ya basha!");
         response_packet = err.code(server_info, reponse_check["Status-code"][0]);
-        vis_str(response_packet, "inside GET_response has large response not gonna visualize\n");
         return (true);
 
 }
@@ -125,7 +117,6 @@ bool    GET_response::fillBadPath(stringmap &server_info)
 std::string    GET_response::constructPath(stringmap &server_info)
 {
     std::string path = reponse_check["Path"][1];
-    std::cout << MAGENTA << "requested path = " << path << std::endl << RESET ;
     std::string dir;
     if (path == "/")
         return (server_info[path]);
@@ -135,20 +126,14 @@ std::string    GET_response::constructPath(stringmap &server_info)
     {
         if (inMap(server_info, path))
         {
-            std::cout << BOLDYELLOW<<"it's in map " << path<<  std::endl;
-            std::cout << BOLDYELLOW<<"it's in map " << server_info[path] <<  std::endl;
-            std::cout << BOLDYELLOW<<server_info[path] << std::endl;
             if (server_info.find(path + " index") != server_info.end())
                 return (server_info[path] + server_info[path + " index"]);
             else
                 return (server_info[path]);
         }
-       
-        //     return (server_info["root"] + path);
     }
     else
         dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << MAGENTA << "dir == " << dir  << std::endl << " path = " << path << std::endl << RESET;
 
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
@@ -206,10 +191,8 @@ std::string GET_response::getContentType(std::string file_path)
         return ("text/html");
     std::string file_extension = file_name.substr(dot_location + 1, file_name.length() - 1);
     get_mime(mimes);
-        std::cout << "\n\n\nfile extension is " << file_extension << std::endl;
     if (mimes.find(file_extension) != mimes.end())
     {
-        std::cout << "encoding is " << mimes[file_extension] << std::endl;
         return (mimes[file_extension]);
     }
 

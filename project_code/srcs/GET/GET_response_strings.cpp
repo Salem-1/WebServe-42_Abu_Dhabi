@@ -40,7 +40,7 @@ void    get_mime(std::map<std::string, std::string> &mimes)
             continue ;
         mimes[tmp[1]] = tmp[0]; 
     }
-    visualize_string_map(mimes);
+    // visualize_string_map(mimes);
     // mimes += "application/x-www-form-urlencoded (No specific file extension)\n";
     // mimes += "multipart/form-data (No specific file extension)\n";
 }
@@ -107,7 +107,6 @@ bool    GET_response::redirectedPacket(stringmap &server_info, std::string &file
     else
         file_name = file_path.substr(file_location , file_path.length());
     std::string fetch_redirection = dir + " redirection";
-    std::cout << "searching for " << fetch_redirection << std::endl;
     if (inMap(server_info, fetch_redirection))
     {
         if (server_info[fetch_redirection].find(file_name) != std::string::npos)
@@ -135,7 +134,6 @@ std::string    GET_response::fetchWinningRedirection(
     {
         std::cout << "searching for " << file_name << " in " << *it << std::endl;
         std::cout << file_name << " ==  " << split(*it, " ")[0] <<  std::endl;
-        // exit(0);
         if (file_name == split(*it, " ")[0])
             return (*it);
     }

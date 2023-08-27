@@ -75,7 +75,6 @@ void    Parser::parse(char *new_buffer)
 				std::cout << BLUE << full_request.header << RESET;
 				fillHeaderRequest(full_request.header);
 				fullheader = true;
-				print_to_file("/Users/ayassin/Desktop/green.txt", full_request.header);
 			}
 			full_request.request_is_valid = checkHeaders();
 			if (full_request.header.find("HTTP/1.") == std::string::npos)

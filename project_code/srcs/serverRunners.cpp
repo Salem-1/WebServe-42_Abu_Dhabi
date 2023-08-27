@@ -87,7 +87,6 @@ void    run_server(char **env, char *conf_file)
 	}
 	catch (const std::exception& e)
 	{
-		std::string err(e.what());
 		std::cout << BOLDRED << e.what() << RESET << std::endl;
 	}
 	return ;

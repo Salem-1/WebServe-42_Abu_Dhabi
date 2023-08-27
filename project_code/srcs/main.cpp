@@ -2,8 +2,6 @@
 #include "../includes/webserve.hpp"
 
 
-tokenized_conf    dummy_intra_token_fill();
-void visualize_tokens(tokenized_conf &tokens);
 int main(int argc, char **argv, char **env)
 {
 

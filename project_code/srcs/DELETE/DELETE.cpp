@@ -3,7 +3,6 @@
 
 DELETE::DELETE()
 {
-    std::cout << "DELETE under construction" << std::endl;
 
 }
 DELETE::~DELETE()
@@ -55,12 +54,10 @@ std::string DELETE::fillOkResponse(response_packet &response, stringmap &server_
 {
     //all the heavy lifting is here inshalla
     std::string path = constructPath(response, server_info);
-    std::cout << BOLDMAGENTA << "path to delete = " << RESET << path << std::endl;
     if (!sanitizedPath(path, server_info))
         return (err.code(server_info, "403"));
     if (access(path.c_str(), F_OK) != 0)
     {
-        std::cout << "file not exist" << std::endl;
         return (err.code(server_info, "404"));
     }
     if (std::remove(path.c_str()) != 0)
@@ -102,7 +99,6 @@ std::string    DELETE::constructPath(response_packet &response , stringmap &serv
 {
 
     std::string path = server_info["DELETE path"] + response["Path"][1];
-    std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET;
     if (path == "/")
         return (server_info[path]);
     if (std::count(path.begin(), path.end(), '/') < 2)
@@ -113,17 +109,14 @@ std::string    DELETE::constructPath(response_packet &response , stringmap &serv
             return (server_info["root"] + path);
     }
     std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << MAGENTA << "dir == " << dir << " path = " << path << std::endl << RESET;
     // /images/ case
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
-        std::cout << "yes it's only dir" << std::endl;
         if (server_info.find(dir) != server_info.end())
             return (server_info[dir + " index"]);
     }
     // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
-    std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     if (server_info.find(dir) != server_info.end())
         return (server_info[dir] + rest_of_path);
     return (server_info["root"] + path);

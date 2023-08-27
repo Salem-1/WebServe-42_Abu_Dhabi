@@ -67,13 +67,9 @@ void	PUT::printPUTBody()
 
 void PUT::handlePUT()
 {
-    //my code here
-    std::cout << "let's write down put here inshalla" << std::endl;
-    //build the correct path
     std::string path = constructPath(_server_info);
     if (!sanitizedPath(path))
         return ;
-    //opne file and truckuate
     putBody(path);
 	return ;
 
@@ -81,7 +77,6 @@ void PUT::handlePUT()
 }
 bool    PUT::putBody(std::string path)
 {
-    std::cout <<  YELLOW << "PUT path = " << path << RESET << std::endl;
     std::ofstream outfile(path.c_str(), std::ios::out | std::ios::trunc);
     if (outfile.fail())
         throw(std::runtime_error("500"));
@@ -106,7 +101,6 @@ std::string    PUT::fillOkResponse()
 std::string    PUT::constructPath(stringmap &server_info)
 {
     std::string path = _response_pack["Path"][1];
-    std::cout << MAGENTA << "requested path = " << path << std::endl << RESET ;
     std::string dir;
     if (path == "/")
         return (server_info[path]);
@@ -116,9 +110,6 @@ std::string    PUT::constructPath(stringmap &server_info)
     {
         if (inMap(server_info, path))
         {
-            std::cout << BOLDYELLOW<<"it's in map " << path<<  std::endl;
-            std::cout << BOLDYELLOW<<"it's in map " << server_info[path] <<  std::endl;
-            std::cout << BOLDYELLOW<<server_info[path] << std::endl;
             if (server_info.find(path + " index") != server_info.end())
                 return (server_info[path] + server_info[path + " index"]);
             else
@@ -133,23 +124,19 @@ std::string    PUT::constructPath(stringmap &server_info)
 
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
-        std::cout << "yes it's only dir" << std::endl;
         if (server_info.find(dir) != server_info.end())
             return (server_info[dir + " index"]);
     }
     // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
 
-    std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     
     //the error is here
-    std::cout << "dir = " << dir << std::endl;
 
     if (server_info.find(dir) != server_info.end())
     {
         return (server_info[dir] + rest_of_path);
     }
-    std::cout << "didn't found strike" << std::endl;
 
     return (server_info["root"] + path);
 }

@@ -105,7 +105,6 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 	int status = 0;
 	int id = 0;
 	std::string output;
-	std::cout << BOLDYELLOW << "inside child, cgi path is \n" << path <<  RESET << std::endl;
 	try 
 	{
 		if (pipe(fd) == -1)

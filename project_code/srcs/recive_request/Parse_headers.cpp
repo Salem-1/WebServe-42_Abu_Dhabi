@@ -4,8 +4,6 @@
 int    Parser::checkHeaders()
 {
     std::vector<std::string> status;
-    std::cout << "visualizing inside Get request" << std::endl;
-    visualizeRequestPacket();
 
     if (earlyBadRequest(full_request.header) ||!validPacketHeaders() || 
 		full_request.header.length() > HEADER_MAX_LENGTH || full_request.header.length() == 0)
