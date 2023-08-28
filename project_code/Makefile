@@ -6,7 +6,7 @@
 #    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/08/28 18:32:19 by ayassin          ###   ########.fr        #
+#    Updated: 2023/08/28 19:56:46 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = webserv
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror -std=c++98  -MMD -MP
+CFLAGS =  -Wall -Wextra -Werror -std=c++98  -MMD -MP -g
 
 SUBDIRS = srcs logs includes srcs/server srcs/client srcs/recive_request srcs/GET \
 	srcs/DELETE srcs/response srcs/configuration srcs/parsing srcs/POST srcs/PUT \
@@ -61,11 +61,11 @@ $(OBJDIR)/%.o : %.cpp
 	done
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS) $(HEADERS)
+$(NAME): $(OBJS) Makefile
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME) $(INCS)
 
 run : $(NAME)
-	./$(NAME)
+	./$(NAME) confs/options.conf
 	
 -include $(DEPS)
 

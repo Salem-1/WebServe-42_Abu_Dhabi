@@ -8,22 +8,23 @@ void Respond::closePipe(int *fd)
 
 std::string	Respond::isCGI(stringmap &server_info, packet_map &request)
 {
-	std::string path = "";
+	std::string path;
 	std::string query;
+	std::string cgi_subfolder;
 	packet_map::iterator it = request.find("GET");
 	if (it == request.end())
 		it = request.find("POST");
-	if (it == request.end())
+	if (it == request.end() || server_info.find("/cgi-bin") == server_info.end())
 		return ("");
-	else 
-		path = it->second[0];
+	path = it->second[0];
 	if (path.find("?") != std::string::npos)
 	{
 		query = path.substr(path.find("?") + 1, path.length() - 1);
 		path = path.substr(0, path.find("?"));
 		server_info["query"] = query;
 	}
-	if (path.find("/cgi-bin/") == 0)
+	cgi_subfolder = server_info["/cgi-bin"].substr(server_info["root"].size());
+	if (path.find(cgi_subfolder) == 0)
 		return (server_info["/cgi-bin"] + path.substr(9));
 	else if (it->first == "GET")
 		return ("");
@@ -33,7 +34,7 @@ std::string	Respond::isCGI(stringmap &server_info, packet_map &request)
 	if (server_info.find(file_extension) != server_info.end() && it->first == "POST")
 	{
 		path = server_info[file_extension];
-		if (path.find("/cgi-bin/") != std::string::npos)
+		if (path.find(cgi_subfolder) != std::string::npos)
 			return (path);
 	}
 	return ("");
@@ -124,8 +125,13 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 		output = readFromChild(fd[0]);
 		close(fd[0]);
 		while (waitpid(-1, &status, 0) > 0) {}
-		if (WEXITSTATUS(status) == 2)
+		if (WEXITSTATUS(status))
+		{
+			if (WEXITSTATUS(status) != 3)
+				return (err.code(server_info, "501")); 
+			else 
 				return (err.code(server_info, "400"));
+		}
 		return (fillingResponsePacket(server_info, output));
 	}
 	catch (std::exception &e)
@@ -174,8 +180,13 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		close(infd[0]);
 		output = ReadAndWirte(infd[1], outfd[0], full_request.body);
 		while (waitpid(-1, &status, 0) > 0) {}
-		if (WEXITSTATUS(status) == 2)
-				return (err.code(server_info, "413"));
+		if (WEXITSTATUS(status))
+		{
+			if (WEXITSTATUS(status) != 3)
+				return (err.code(server_info, "501")); 
+			else 
+				return (err.code(server_info, "400"));
+		}
 		return (fillingResponsePacket(server_info, output));
 	}
 	catch (std::exception &e)
