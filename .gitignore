@@ -18,6 +18,7 @@ project_code/testers/webserv_tester
 .replit
 replit*
 *.o
+*.d
 *.out
 web_serve
 project_code/testers/our_tester/logs
