@@ -68,11 +68,8 @@ char **ChildExec::envMaker(std::string path)
 		strcpy(_env[i], it->c_str());
 		++i;
 	}
-	
 	return _env;
 }
-
-
 
 void	ChildExec::childExecute(std::string path)
 {
@@ -104,14 +101,13 @@ void	ChildExec::childExecute(std::string path)
 		delete[] _env;
 		delete [] args[0];
 		delete [] args;
-		std::cout<< "404";
 		exit (127);
 	}
 	catch (std::runtime_error &e)
 	{
 		close(_fd[1]);
 		close(_fd[0]);
-		exit(2);
+		exit(3);
 	}
 	catch (std::bad_alloc &e)
 	{
@@ -125,7 +121,6 @@ void	ChildExec::childExecute(std::string path)
 			delete [] args[0];
 		if (args != NULL)
 			delete[] args;
-		std::cout<< "500";
 		exit(1);
 	}
 }
