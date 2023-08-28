@@ -23,16 +23,16 @@ void    run_default(char **env)
     tokenized_server.push_back(std::pair<std::string, std::vector<std::string> > (essentials, locations));
 
    
-    ServerFill filled_servers(tokenized_server);
-    visualize_tokens(tokenized_server);
-    filled_servers.servers.visualize_config();
-    filled_servers.servers.fillPorts();
-    fillEnvPath(filled_servers.servers.servers, env);
-    runAtAllCost();
 
 
     try 
 	{
+        ServerFill filled_servers(tokenized_server);
+        visualize_tokens(tokenized_server);
+        filled_servers.servers.visualize_config();
+        filled_servers.servers.fillPorts();
+        fillEnvPath(filled_servers.servers.servers, env);
+        runAtAllCost();
 		for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
 				it != filled_servers.servers.ports.end(); ++it)
 		{
@@ -59,19 +59,19 @@ void    run_default(char **env)
 
 void    run_server(char **env, char *conf_file)
 {
-   	ConfigHandler config(conf_file);
-	config.handleConfig();
-	tokenized_conf filled_tokens =  config.getConfigstarter();
-    ServerFill filled_servers(filled_tokens);
-    visualize_tokens(filled_tokens);
-    filled_servers.servers.visualize_config();
-    filled_servers.servers.fillPorts();
-    fillEnvPath(filled_servers.servers.servers, env);
-    runAtAllCost();
 
 
     try 
 	{
+        ConfigHandler config(conf_file);
+        config.handleConfig();
+        tokenized_conf filled_tokens =  config.getConfigstarter();
+        ServerFill filled_servers(filled_tokens);
+        visualize_tokens(filled_tokens);
+        filled_servers.servers.visualize_config();
+        filled_servers.servers.fillPorts();
+        fillEnvPath(filled_servers.servers.servers, env);
+        runAtAllCost();
 		for (std::set<std::string>::iterator it = filled_servers.servers.ports.begin();
 				it != filled_servers.servers.ports.end(); ++it)
 		{
