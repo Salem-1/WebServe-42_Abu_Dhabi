@@ -5,7 +5,6 @@
 int main(int argc, char **argv, char **env)
 {
 
-    tokenized_conf filled_tokens;
 	if (argc < 2)
         run_default(env);
 	if (argc == 2)

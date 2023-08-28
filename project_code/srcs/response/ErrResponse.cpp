@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
+/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/27 13:00:08 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/08/27 18:05:48 by ahsalem          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ std::string ErrResponse::code(
        if (!inMap(server_info, "/ error_page")) 
         {
             std::cout << "didn't foudn err " << server_info[err] << std::endl;
-            // exit(0);
             return (erroredResponse(err));
         }
         else

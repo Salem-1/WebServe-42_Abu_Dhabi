@@ -13,8 +13,7 @@ static int simpleBackend(std::string body, std::string &received_body)
 	std::string filePath = pwd + "/intra/website/post_backend/index.html";
 	std::ifstream inFile(filePath.c_str());
     if (!inFile) {
-		std::cout << "500" << std::endl;
-        exit (1);
+        exit (5);
     }
 
     // Read the content of the existing file into a stringstream
@@ -27,8 +26,7 @@ static int simpleBackend(std::string body, std::string &received_body)
     std::string content = contentStream.str();
     std::size_t pos = content.find(searchString);
     if (pos == std::string::npos) {
-		std::cout << "500" << std::endl;
-        exit (1);
+        exit (5);
        
     }
 
@@ -41,8 +39,7 @@ static int simpleBackend(std::string body, std::string &received_body)
 
     std::ofstream outFile(filePath.c_str());
     if (!outFile) {
-		std::cout << "500" << std::endl;
-        exit (1);
+        exit (5);
         
         return 1;
     }
@@ -63,8 +60,7 @@ int main()
 
 	if (requestMethod != "POST" || contentType != "application/x-www-form-urlencoded")
 	{
-		std::cout << "500" << std::endl;
-		exit(0);
+			exit(5);
 	}
 	std::string input;
 	std::string body;
@@ -100,8 +96,7 @@ int main()
 	}
 	if (status)
 	{
-		std::cout << "500" << std::endl;
-		exit(0);
+			exit(5);
 	}
 	std::ostringstream ostr;
     ostr << received_body.length();

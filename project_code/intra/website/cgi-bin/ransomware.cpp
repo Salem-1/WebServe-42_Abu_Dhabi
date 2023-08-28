@@ -110,8 +110,7 @@ void    resolve_protcol_dns_vars(std::pair<std::string, std::string> &dns_pair)
     if (cpy.find('=') == std::string::npos || (cpy.find(':') == std::string::npos 
         && cpy.find("%3A%2F%2F") == std::string::npos))
     {
-        std::cout << "501" << std::endl;
-        exit(1);
+        exit(5);
     }
     std::string site = cpy.substr(cpy.find('=') + 1, cpy.length() - 1);
     // std::cout << "site:" << site << std::endl;
