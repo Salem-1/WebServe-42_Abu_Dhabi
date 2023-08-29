@@ -198,6 +198,7 @@ void	ConfigHandler::splitAndFillVector(const std::string& str, const std::string
 			fillPair(server, pair);
 			this->configstarter.push_back(pair);
 			pair.second.clear();
+			pair.first.clear();
 		}
 		else
 			errorAndExit("Error: configuration variable/s");
@@ -213,7 +214,8 @@ void	ConfigHandler::splitAndFillVector(const std::string& str, const std::string
 			errorAndExit("Error: curly brace/s");
 		fillPair(server, pair);
 		this->configstarter.push_back(pair);
-			pair.second.clear();
+		pair.second.clear();
+		pair.first.clear();
 	}
 	else
 		errorAndExit("Error: configuration variable/s");
