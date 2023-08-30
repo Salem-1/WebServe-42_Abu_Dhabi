@@ -66,8 +66,8 @@ void    run_server(char **env, char *conf_file)
         ConfigHandler config(conf_file);
         config.handleConfig();
         tokenized_conf filled_tokens =  config.getConfigstarter();
-        ServerFill filled_servers(filled_tokens);
         visualize_tokens(filled_tokens);
+        ServerFill filled_servers(filled_tokens);
         filled_servers.servers.visualize_config();
         filled_servers.servers.fillPorts();
         fillEnvPath(filled_servers.servers.servers, env);

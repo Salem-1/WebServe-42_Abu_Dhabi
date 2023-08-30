@@ -49,7 +49,7 @@ void ConfigHandler::parseConfig()
 {
 	if (!curlyBracesEvenCheckRemoveExtras(fileContent))
 		errorAndExit("Error: curly brace/s");
-	std::vector<std::string> servers;
+	//  std::vector<std::string> servers;
 	if (!fileContent.empty())
 		splitAndFillVector(fileContent, "server");
 	else
@@ -197,6 +197,8 @@ void	ConfigHandler::splitAndFillVector(const std::string& str, const std::string
 				errorAndExit("Error: curly brace/s");
 			fillPair(server, pair);
 			this->configstarter.push_back(pair);
+			pair.second.clear();
+			pair.first.clear();
 		}
 		else
 			errorAndExit("Error: configuration variable/s");
@@ -212,6 +214,8 @@ void	ConfigHandler::splitAndFillVector(const std::string& str, const std::string
 			errorAndExit("Error: curly brace/s");
 		fillPair(server, pair);
 		this->configstarter.push_back(pair);
+		pair.second.clear();
+		pair.first.clear();
 	}
 	else
 		errorAndExit("Error: configuration variable/s");
