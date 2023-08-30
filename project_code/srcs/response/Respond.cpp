@@ -158,7 +158,7 @@ void    Respond::sendAll(connection_state &state)
         send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
     std::cout << send_ret << " bytes sent , packet len = " << packet_len << "\n";
     response_bytes_sent += send_ret;
-    if (send_ret < 0)
+    if (send_ret <= 0)
     {
         print_error("send failed");
         flushResponse();
@@ -168,6 +168,7 @@ void    Respond::sendAll(connection_state &state)
     {
         state = KILL_CONNECTION;
         flushResponse();
+		response_string.clear();
     }
 }
 

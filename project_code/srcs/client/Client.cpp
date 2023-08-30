@@ -67,6 +67,9 @@ void Client::handleRequest(struct kevent &event)
         {
             receiver.flushReceive();
         }
+		// flushReceive();
+		//flushResponse(void);
+
     }
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
