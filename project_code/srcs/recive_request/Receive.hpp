@@ -6,15 +6,13 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:56 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 22:27:01 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/09/04 21:02:30 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RECEIVE_HPP
 # define RECEIVE_HPP
 
-// # include "../../includes/libs.hpp"
-// # include "../../includes/webserve.hpp"
 # include "Parser.hpp"
 class Receive
 {

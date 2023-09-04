@@ -109,13 +109,11 @@ std::string    DELETE::constructPath(response_packet &response , stringmap &serv
             return (server_info["root"] + path);
     }
     std::string dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    // /images/ case
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {
         if (server_info.find(dir) != server_info.end())
             return (server_info[dir + " index"]);
     }
-    // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
     if (server_info.find(dir) != server_info.end())
         return (server_info[dir] + rest_of_path);

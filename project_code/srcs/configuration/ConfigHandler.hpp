@@ -16,7 +16,6 @@ private:
 	std::vector<std::pair<std::string, std::vector<std::string> > > configstarter;
 
     bool	isValidFile();
-	// Tries to open the file and read it into a string
     void	readConfigFile();
 	void	parseConfig();
 	bool	curlyBracesEvenCheckRemoveExtras(std::string& str);

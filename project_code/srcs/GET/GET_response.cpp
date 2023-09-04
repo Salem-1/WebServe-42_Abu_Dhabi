@@ -31,7 +31,6 @@ void    GET_response::fillOkResponse(stringmap &server_info)
     response_packet = "";
     std::string file_path = constructPath(server_info);
     
-    // exit(0);
     if(redirectedPacket(server_info, file_path))
     {
         fillRedirectedPacket();
@@ -141,12 +140,10 @@ std::string    GET_response::constructPath(stringmap &server_info)
         if (server_info.find(dir) != server_info.end())
             return (server_info[dir + " index"]);
     }
-    // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
 
     std::cout << MAGENTA << "rest of path = " << rest_of_path << std::endl << RESET;
     
-    //the error is here
     std::cout << "dir = " << dir << std::endl;
 
     if (server_info.find(dir) != server_info.end())

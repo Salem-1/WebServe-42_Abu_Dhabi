@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/25 21:03:02 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/09/04 20:59:48 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,9 @@ void    Kque::watchFds(conf &servers)
 
 bool    Kque::inActiveClients(int tmp_fd)
 {
-    // for(std::set<int>::iterator it = active_clients.begin(); 
-    //     it != active_clients.end(); it++)
-    // {
-    //     std::cout << "active fd " << *it << std::endl;
-    // }
-    for(std::set<int>::iterator it = active_clients.begin(); 
-        it != active_clients.end(); it++)
-    {
-        if (*it == tmp_fd)
-            return (true);
-    }
-    return (false);
+	if (active_clients.find(tmp_fd) != active_clients.end())
+		return true;
+	return false;
 }
 
 bool Kque::tmpFdInServerSocket(int tmp_fd)
@@ -133,7 +124,6 @@ void    Kque::handleRequestByClient(struct kevent event)
     int client_socket = event.ident;
     active_clients.insert(client_socket);
     clients[client_socket].handleRequest(event);
-    // clients[client_socket].getPort(client_socket);
     if (clients[event.ident].state == KILL_CONNECTION)
     {
         removeClient(client_socket);
@@ -170,13 +160,11 @@ void    Kque::deleteFdEvent(int fd)
     if (kevent(kq, &event[1], 1, NULL, 0, NULL) < 0)
         kqueError("failed to remove write  event kque: ");
     close(fd);
-    // sleep(1);
 }
 
 void   Kque::kqueError(std::string msg)
 {
     print_error(msg.c_str());
-    // throw(std::runtime_error("Kque error"));
 }
 
 bool    Kque::removeClient(int client_socket)
@@ -194,16 +182,13 @@ bool    Kque::closeServer(void)
          it != active_clients.end(); it++)
     {
         deleteFdEvent(*it);
-        // removeClient(*it);
     }
     for (std::vector<int>::iterator it = server_sockets.begin();
          it != server_sockets.end(); ++it)
     {
         deleteFdEvent(*it);
-        // deleteFdEvent(*it);
     }
     
-    // active_clients.clear();
     return (true);
 }
 std::string  Kque::socketInfo(int sockfd)
@@ -218,8 +203,6 @@ std::string  Kque::socketInfo(int sockfd)
     char ip_str[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(addr.sin_addr), ip_str, INET_ADDRSTRLEN);
     
-    // std::cout << "Socket Local Address: " << ip_str << std::endl;
-    // std::cout << "Socket Local Port: " <<  ntohs(addr.sin_port)<< std::endl;  
     std::stringstream ss;
     ss << ntohs(addr.sin_port);
 

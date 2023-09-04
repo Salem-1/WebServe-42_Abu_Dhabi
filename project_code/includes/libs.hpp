@@ -34,8 +34,6 @@
 # include <kqueue/sys/event.h>
 #include <event.h>
 #endif
-// # include<thread>
-// # include <chrono>
 
 struct ciLessLibC : public std::binary_function<std::string, std::string, bool> {
     bool operator()(const std::string &lhs, const std::string &rhs) const {
@@ -60,7 +58,6 @@ typedef std::map<std::string, std::vector<std::string> >			    response_type;
 # define URL_MAX 8000
 # define MAX_BODY_SIZE 100000000000000    
 # define MAX_BODY_SIZE_STR "100000000000000" 
-// # define PORT "3490"
 # define DEFAULT_PATH "/Users/ahsalem/projects/cursus/webserve/project_code/testers/our_tester/website"
 # define DEFAULT_LOCATION "index.html"
 #define CRLF "\r\n"
@@ -136,7 +133,6 @@ void                        fillEnvPath(conf &servers, char **env);
 void                        print_error(std::string msg);
 void                        handle_pipes(int sig);
 void                        visualize_tokens(tokenized_conf &tokens);
-//---------------------------------------------
 
 
 

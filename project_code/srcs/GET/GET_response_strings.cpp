@@ -40,9 +40,6 @@ void    get_mime(std::map<std::string, std::string> &mimes)
             continue ;
         mimes[tmp[1]] = tmp[0]; 
     }
-    // visualize_string_map(mimes);
-    // mimes += "application/x-www-form-urlencoded (No specific file extension)\n";
-    // mimes += "multipart/form-data (No specific file extension)\n";
 }
 
 void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  std::string file_path)
@@ -54,7 +51,6 @@ void     GET_response::fillingResponsePacket(std::string &full_file_to_string,  
     response_packet += "Content-Type: " + getContentType(file_path) +" \r\n";
 	std::stringstream ss;
 	ss << full_file_to_string.length();
-    //For CGI this can be chunked if you @Ahmed MAhdi decided to do so 
     response_packet += "Content-Length: " + ss.str() + "\r\n\r\n";
     response_packet += full_file_to_string; 
 }
@@ -117,7 +113,6 @@ bool    GET_response::redirectedPacket(stringmap &server_info, std::string &file
         if (winning_redirection == "")
             return (false);
 		std::vector<std::string> tmp = split(winning_redirection, " ");
-		// std::cout << "response chcek path 1" << reponse_check["Path"][1] << std::endl;
 		if (tmp.size() != 3)
 			return (false);
 		if (fill_redirection_vector(tmp))
@@ -162,5 +157,4 @@ void   GET_response::fillRedirectedPacket(void)
     response_packet += "Content-Length: 0\r\n";
     response_packet += "Content-Type: text/html; charset=UTF-8 \r\n\r\n";
     std::cout << response_packet << std::endl;
-    // exit (1);
 }

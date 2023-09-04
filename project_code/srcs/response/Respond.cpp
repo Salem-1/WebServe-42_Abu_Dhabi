@@ -18,7 +18,6 @@ void    Respond::respond(packet_map &request, t_request &full_request,  conf &se
     
     //here should extract the port and hostname to give to the corresponding method
     stringmap server_info = getServerInfo(request, servers, port);
-    // visualize_string_map(server_info);
     fillResponse(request, full_request, server_info);
     sending = true;
     
@@ -90,7 +89,6 @@ void    Respond::fillResponse(packet_map &request, t_request &full_request, stri
             return ;
         } 
         PUT put(request, full_request, server_info, response);
-		// put.printPUTBody();
 		put.handlePUT();
 		response_string = put._response;
     }
@@ -145,12 +143,9 @@ int Respond::checkPoisonedURL(packet_map &request)
 void    Respond::sendAll(connection_state &state)
 {
     size_t  packet_len = response_string.length(); 
-    // std::cout << "inside send all" << std::endl;
     
     const char *a = response_string.c_str();
     int send_ret = 0;
-    // sending = true ;
-    // visualizeResponse();
     vis_str(response_string, "inside send all");
     if (packet_len - response_bytes_sent > SEND_BUFFER_SIZE)
         send_ret += send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
@@ -183,11 +178,8 @@ int Respond::fillStatuCode(std::string status_code, std::string message)
 stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string port)
 {
 
-    // std::cout << BOLDGREEN << "port  = " << port << std::endl;
-    // std::cout << "we have " << n << "servers\n" << RESET;
     for (unsigned long i = 0; i < servers.size(); i++)
     {
-        // std::cout << "config port = " << servers[i]["Port"] << std::endl ;
         if (servers[i]["Port"] == port)
             nominated_servers.push_back(i);
     }
@@ -203,7 +195,6 @@ stringmap  Respond::getServerInfo(packet_map &request,conf &servers, std::string
             } 
             if (server_names[j] == fillRequestedHostName(request, port))
             {
-                // std::cout << "our server is " << nominated_servers[j] << std::endl;
                 return (servers[nominated_servers[i]]);
             }
         }
@@ -237,12 +228,8 @@ void   Respond::fillSupportedMethods(
     fillPath(request, response, method);
     if (response["Status-code"][0] != "200")
         return ;
-    // for (size_t i = 0; i < response["Path"].size() ; ++i)
-    //     std::cout << "response['Path'][" << i << "] = " << response["Path"][i] << std::endl;
     std::string path = response["Path"][1];
 
-    // std::cout << "Given path = " << path << std::endl;
-    // std::cout << MAGENTA << "construcing path = " << path << std::endl << RESET ;
     
     std::string dir;
     if (path == "/")

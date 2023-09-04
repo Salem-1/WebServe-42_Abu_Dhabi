@@ -62,6 +62,5 @@ void    Receive::readPacket(char *buffer)
 
 void    Receive::flushReceive()
 {
-    // Parser		parser;
     parser.purgeParsing();
-};
+}

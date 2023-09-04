@@ -17,9 +17,6 @@ PUT::PUT(packet_map &request_map, t_request &full_request, stringmap &server_inf
                        "    <p>The server encountered an unexpected condition that prevented it from fulfilling the request.</p>\n"
                        "</body>\n"
                        "</html>\n";
-	// this->_request_map = request_map;
-	// this->_request = full_request;
-	// this->_server_info = server_info;
 }
 
 PUT::PUT(packet_map &request_map, t_request &full_request, stringmap &server_info, response_packet &response):
@@ -39,9 +36,6 @@ PUT::PUT(packet_map &request_map, t_request &full_request, stringmap &server_inf
                        "    <p>The server encountered an unexpected condition that prevented it from fulfilling the request.</p>\n"
                        "</body>\n"
                        "</html>\n";
-	// this->_request_map = request_map;
-	// this->_request = full_request;
-	// this->_server_info = server_info;
 }
 
 PUT::~PUT()
@@ -116,7 +110,6 @@ std::string    PUT::constructPath(stringmap &server_info)
                 return (server_info[path]);
         }
        
-        //     return (server_info["root"] + path);
     }
     else
         dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
@@ -127,7 +120,6 @@ std::string    PUT::constructPath(stringmap &server_info)
         if (server_info.find(dir) != server_info.end())
             return (server_info[dir + " index"]);
     }
-    // images/cat.jpeg
     std::string rest_of_path = path.substr(dir.length() + 1, path.length());
 
     

@@ -11,7 +11,6 @@
 
 
 # include "../../includes/libs.hpp"
-// # include "../../includes/webserve.hpp"
 
 
 std::string ReadAndWirte(int infd, int outfd, std::string &body);
@@ -58,6 +57,5 @@ class Respond
         bool                        isput;
     
 };
-// void* sendAll_thread(void* arg);
 
 #endif

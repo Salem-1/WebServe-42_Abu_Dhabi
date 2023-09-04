@@ -81,7 +81,6 @@ void Client::handleRequest(struct kevent &event)
 			
 			if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
 			{
-				// vis_str(receiver.parser.full_request.header, "Start packet parsing");
 				responder.respond(receiver.parser.request, receiver.parser.full_request, servers, getPort(client_socket));
 			}
 		}
@@ -124,8 +123,5 @@ std::string Client::getPort(int client_socket)
     std::stringstream ss;
 	ss << ntohs(addr.sin_port);
 	std::string port(ss.str());
-    // Print the local address information
-    // std::cout << "Socket Local Address: " << ip_str << std::endl;
-    // std::cout << "Socket Local Port: " << ntohs(addr.sin_port) << std::endl;
     return (port);
 }

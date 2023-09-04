@@ -11,9 +11,6 @@ class ServerFill
         ServerFill &operator= (ServerFill const &obj2);
         ~ServerFill();
         bool                    parseTokens();
-        // std::vector<std::string> getMultiplePorts() const;
-        // std::vector<std::string> getMultipleindex() const;
-        // Config                      getServers();
         tokenized_conf              _conf_tokens;
         Config                      servers;
         void                        essentialsBasicCheck(

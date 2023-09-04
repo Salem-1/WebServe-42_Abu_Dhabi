@@ -3,9 +3,6 @@
 # define PARSING_LIB
 # include "../../includes/libs.hpp"
 
-// typedef std::map<std::string, std::vector<std::string> >    packet_map;
-// typedef std::map<std::string, std::vector<std::string> >    response_packet;
-// typedef std::vector<stringmap >    conf; 
 std::vector<std::string>	split(std::string str, std::string delimeter);
 std::set<std::string>		split_to_set(std::string str, std::string delimeter);
 
