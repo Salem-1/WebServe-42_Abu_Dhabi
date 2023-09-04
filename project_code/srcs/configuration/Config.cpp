@@ -1,16 +1,6 @@
 #include "Config.hpp"
 
-/*
-    servers[0][".bla options"] = "post_cgi get_cgi";
-    
-   std::string extension;
-   if (server_info.find(extension + " options") != server_info.end())
-   {
-        std::vector<std::string> options = split(server_info[extension + " options"], " ");
-        if (options.find(post_cgi) != options.end())
-        //dosomething
-   }
-*/
+
 void    intra_and_dummy_fill_till_config_parsing(conf &server);
 void    python_tester_config(conf &server);
 void    list_dir_options(conf &servers);
@@ -20,11 +10,6 @@ Config::Config()
     char buff[4000];
     std::string tmp(getcwd(buff, sizeof(buff)));
     pwd = tmp;
-    // intra_config(servers);
-    // intra_and_dummy_fill_till_config_parsing(servers);
-    // if (servers.empty())
-    //     throw(std::runtime_error("Empty server configuration "));
-    // else
     fillPorts();
 }
 std::string Config::getPwd() const
@@ -177,44 +162,6 @@ void   intra_config(conf &servers)
 	servers[0][".bla"] = servers[0]["root"]+ "/../cgi-bin/cgi_tester";
 }
 
-
-/**
-     servers.push_back(std::map<std::string, std::string>());
-    servers[0]["server_name"] = "127.0.0.1";
-    servers[0]["Port"] = "3490";
-    servers[0]["root"] = pwd + "/intra/YoupiBanane";
-    servers[0]["index"] = "youpi.bad_extension";
-    servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
-    servers[0]["/directory"] = servers[0]["root"];
-    servers[0]["//directory index"] = servers[0]["/"] ;
-    servers[0]["/styles"] = servers[0]["root"] + "/styles/";
-    servers[0]["/styles index"] = servers[0]["root"] + "/styles/" + "styles.css";
-    servers[0]["/js"] = servers[0]["root"] + "/js/";
-    servers[0]["/js index"] = servers[0]["root"] + "/js/" + "script.js";
-    servers[0]["DELETE path"] = "POST";
-    servers[3]["methods"] = "GET";
-
-
-
-
-    ["server_name"] = "127.0.0.1";
-    ["Port"] = "3490";
-    ["root"] = pwd + "/intra/YoupiBanane";
-    ["index"] = "youpi.bad_extension";
-    ["/"] = servers[0]["root"] + "/" + servers[0]["index"];
-    ["/ methods"] = "GET";
-    ["Max-Body"] = "10000000000";
-    ["/directory"] = servers[0]["root"] + "/";
-    ["/directory index"] = "youpi.bad_extension" ;
-    ["/put_test methods"] = "PUT" ;
-    ["/put_test"] = servers[0]["root"] + "/PUT/";
-    ["/Yeah autoindex"] = "off";
-    ["/post_body max_lenghth"] = "100";
-    ["/post_body methods"] = "POST";
-    ["DELETE path"] = "POST";
-*/
-
-
 void    list_dir_options(conf &servers)
 {
     char buff[4000];
@@ -227,7 +174,6 @@ void    list_dir_options(conf &servers)
     servers[0]["index"] = "index.html";
     servers[0]["/"] = servers[0]["root"] + "/" + servers[0] ["index"];
     servers[0]["404"] = servers[0]["root"] +  "/" + "not_found.html";
-    
     servers[0]["/attacks methods"] = "GET POST";
     servers[0]["/dir methods"] = "DELETE";
     servers[0]["/POST methods"] = "POST";
@@ -242,8 +188,6 @@ void    list_dir_options(conf &servers)
     servers[0]["Max-Body"] = "100000000000";
     servers[0]["Redirections"] = "/ransomware attacks/ransom.html  302 , /ddos attacks/ddos.html 301";
 }
-
-
 
 void    Config::visualize_config()
 {

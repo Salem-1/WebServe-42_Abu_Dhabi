@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrResponse.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 17:21:17 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/27 18:05:48 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/09/04 21:02:14 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,8 @@ ErrResponse::~ErrResponse()
 std::string ErrResponse::code(
         stringmap &server_info, std::string err)
 {
-    //err = 404
-    //server_info[err] = file_name
     std::string dir = server_info["constructed path dir"];
     std::cout << "inside dir " << dir << std::endl;
-    // visualize_string_map(server_info);
     if (!inMap(server_info, dir + " error_page"))
     {
        if (!inMap(server_info, "/ error_page")) 

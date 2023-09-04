@@ -20,7 +20,7 @@ replit*
 *.o
 *.d
 *.out
-web_serve
+webserv
 project_code/testers/our_tester/logs
 venv
 sandbox

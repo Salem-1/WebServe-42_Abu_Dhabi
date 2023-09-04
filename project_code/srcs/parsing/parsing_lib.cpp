@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_lib.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:09 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/25 19:36:16 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/09/04 21:10:45 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ std::vector<std::string> split(std::string str, std::string delimeter)
             result.push_back(str.substr(0, str.find(delimeter)));
         str = str.substr(str.find(delimeter) + delimeter.length(), str.length());   
     }
-    if (str[0]) // .substr(0, str.find(delimeter))[0])
+    if (str[0])
         result.push_back(str.substr(0, str.find(delimeter)));
     return (result);
 }

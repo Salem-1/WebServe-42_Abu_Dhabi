@@ -137,7 +137,6 @@ void    ServerFill::fillCGIExecutable(locations_args & args)
         if (args.tmp_directive[0] != "index")
             throw(std::invalid_argument("Bad config file: CGI executable directive"));
          servers.servers[i][args.path] = servers.servers[i]["root"] + args.tmp_directive[1];
-        // std::cout << servers.servers[i][args.path] << std::endl;
     }
 }
 void    ServerFill::fillCgiBinLocation(locations_args & args)
@@ -415,7 +414,6 @@ void        ServerFill::fillEssentials(std::vector<std::string> &essentials)
         servers.servers[i]["Max-Body"] = MAX_BODY_SIZE_STR;
     if (inSet(essentials_arg, "DELETE_path"))
         servers.servers[i]["DELETE path"] = "POST";
-    // std::cout << "inside the function we have servers = " << servers.servers.size();
 }
 void    ServerFill::fillDELETE_path(std::vector<std::string> &DELETE_path_vec,  std::set<std::string> &essentials_arg, 
         stringmap &server)
@@ -448,7 +446,6 @@ void    ServerFill::fillIndex(std::vector<std::string> &index_vec,  std::set<std
         multiple_index.push_back(*it);
         server["index"] += *it + " ";
     }
-    // server["index"].erase(server["index"].find_last_of(' '), 1);
     server["index"] = index_vec[1];
     essentials_arg.erase("index");
 }
@@ -515,10 +512,6 @@ int ServerFill::isAllDigit(std::string str)
     return (true);
 }
 
-// void    fillListen(std::set<std::string> essentials_arg, std::vector<std::string> single_essential)
-// {
-
-// }
 
 void    ServerFill::fillEssentialArg(std::set<std::string>  &essentials_arg)
 {

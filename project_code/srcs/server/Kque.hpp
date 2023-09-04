@@ -3,9 +3,6 @@
 
 # include "../../includes/libs.hpp"
 # include "../../includes/webserve.hpp"
-// # include "../client/Client.hpp"
-//Will need to keep track for the time out and keep alive to disconnect the clients inshalla
-//I am thinking about make it in big map that hold all client data and keep track of time
 class Kque
 {
     public:

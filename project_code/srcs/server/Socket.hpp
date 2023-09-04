@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:25 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/07/29 11:08:08 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/09/04 20:55:36 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ class Socket
         struct addrinfo	*res;
         struct addrinfo	*try_addr;
         int				try_again;
-        // conf                server;
     private:
         Socket();
 

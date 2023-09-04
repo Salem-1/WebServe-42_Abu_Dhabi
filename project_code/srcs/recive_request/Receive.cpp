@@ -38,7 +38,7 @@ void    Receive::receiveAll()
     if (bytes_read == 0)
     {
         std::cout << "byter read = " << bytes_read << "will kill connection\n";
-        // state = KILL_CONNECTION;
+        state = KILL_CONNECTION;
         return ;
     }
     if (parser.read_again)
@@ -51,7 +51,7 @@ void    Receive::readPacket(char *buffer)
 {
     bytes_read = recv(read_sock, buffer, READ_BUFFER_SIZE - 1, 0);
 
-    if (bytes_read == -1)
+    if (bytes_read <= 0)
     {
         print_error("recv Error: ");
         state = KILL_CONNECTION;
@@ -62,6 +62,5 @@ void    Receive::readPacket(char *buffer)
 
 void    Receive::flushReceive()
 {
-    // Parser		parser;
     parser.purgeParsing();
-};
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:22 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/23 07:17:07 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/08/30 14:36:30 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class Client
 		void				handleRequest(struct kevent &event);
         int					getTimeout();
         std::string			getPort(int client_socket);
+		
 		connection_state	state;
         int					client_socket;
         clock_t				start_time;

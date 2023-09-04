@@ -5,9 +5,6 @@ ConfigHandler::ConfigHandler(const std::string& filePath) : filename(filePath)
 
 void ConfigHandler::errorAndExit(const std::string& msg)
 {
-	// std::cerr << "Configuration file:\n" << msg << std::endl;
-	// std::string error = "Error" + msg;
-	//instead of exit(1) we should throw an exception
 	throw(std::invalid_argument(msg));
 }
 
@@ -49,7 +46,6 @@ void ConfigHandler::parseConfig()
 {
 	if (!curlyBracesEvenCheckRemoveExtras(fileContent))
 		errorAndExit("Error: curly brace/s");
-	//  std::vector<std::string> servers;
 	if (!fileContent.empty())
 		splitAndFillVector(fileContent, "server");
 	else
@@ -115,7 +111,6 @@ int	ConfigHandler::prepareLocation(std::string& str)
 
 int ConfigHandler::fillPair(std::string& str, std::pair<std::string, std::vector<std::string> >& pair)
 {
-	(void) pair;
 	std::string delim = "location";
 	std::string block;
 	size_t start = 0;

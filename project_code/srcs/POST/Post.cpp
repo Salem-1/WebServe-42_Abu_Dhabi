@@ -25,7 +25,6 @@ void	Post::printPostBody()
 void Post::printReceivedRequestMap()
 {
 	std::cout << YELLOW << "\nPOST request header map is: " << std::endl << RESET;
-	// visualizeStringMap(this->_request_map);
 }
 
 void Post::visualizeStringMap(packet_map &map)

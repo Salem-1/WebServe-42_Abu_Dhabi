@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GET_response.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ahsalem <ahsalem@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:38:14 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/08/22 10:12:15 by ahsalem          ###   ########.fr       */
+/*   Updated: 2023/09/04 21:09:43 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define GET_RESPONSE_HPP
 # include "../../includes/libs.hpp"
 # include "../parsing/parsing_lib.hpp"
-// # include "../../includes/webserve.hpp"
 # include "../response/ErrResponse.hpp"
 
 
@@ -25,10 +24,10 @@ class GET_response
         GET_response(response_type &res);
         ~GET_response();
         std::string	    fillGetResponse(stringmap &server_info);
-        std::string	    erroredResponse(); // repeated code
-        std::string	    constructPath(stringmap &server_info); // repeated code
-        void		    fillOkResponse(stringmap &server_info); // repeated code
-        bool		    sanitizedPath(std::string path); // repeated code
+        std::string	    erroredResponse();
+        std::string	    constructPath(stringmap &server_info);
+        void		    fillOkResponse(stringmap &server_info);
+        bool		    sanitizedPath(std::string path);
         bool		    fillBadPath(std::map<std::string, std::string> &server_info);
         void		    fillingResponsePacket(std::string &full_file_to_string, std::string file_path);
         void		    constructDirResponse(std::vector<std::string> &ls, std::string &full_file_to_string);
