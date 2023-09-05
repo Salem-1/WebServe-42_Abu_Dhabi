@@ -1,6 +1,6 @@
 #include "Respond.hpp"
 
-std::string ReadAndWirte(int infd, int outfd, std::string &body)
+std::string ReadAndWrite(int infd, int outfd, std::string &body)
 {
 
 	int 		kq = kqueue(); // Create a new kernel event queue
@@ -74,6 +74,56 @@ std::string ReadAndWirte(int infd, int outfd, std::string &body)
 		EV_SET(&kev[1], infd, EVFILT_WRITE , EV_DELETE, 0, 0, NULL);
 		std::cerr << e.what() << '\n';
 
+	}
+	return "501";
+}
+
+std::string Read(int fd)
+{
+	int 		kq = kqueue(); // Create a new kernel event queue
+	std::string	output;
+	size_t 		read_size = 260000;
+	fcntl(fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
+	if (kq == -1)
+	{
+		close(fd);
+		std::cerr << "Failed to create kqueue" << std::endl;
+		return("501");
+	}
+	struct kevent kev;
+	try
+	{
+		EV_SET(&kev, fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+		int ret = kevent(kq, &kev, 1, NULL, 0, NULL);
+		if (ret == -1)
+			throw(std::runtime_error("Failed to register kevents with kqueue"));
+		while (true) {
+			struct kevent events; 
+			// Wait for events to occur
+			int nevents = kevent(kq, NULL, 0, &events, 1, NULL);
+			if (nevents == -1)
+				throw(std::runtime_error("Failed to wait for events"));
+			if (events.filter == EVFILT_READ)
+			{
+				char buffer[read_size];
+				ssize_t count = read(fd, buffer, read_size);
+				if (count <= 0) 
+				{
+					close(fd);
+					EV_SET(&kev, fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
+					return output;
+				} else if (count != 0)
+				{
+					output.append(buffer, count);
+				}
+			} 
+		}
+	}
+	catch(const std::exception& e)
+	{
+		close(fd);
+		EV_SET(&kev, fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
+		std::cerr << e.what() << '\n';
 	}
 	return "501";
 }
