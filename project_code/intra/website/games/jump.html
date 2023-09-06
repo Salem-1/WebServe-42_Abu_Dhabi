@@ -28,17 +28,17 @@ const canvas = document.getElementById('game');
 const context = canvas.getContext('2d');
 
 // width and height of each platform and where platforms start
-const platformWidth = 65;
+const platformWidth = 25;
 const platformHeight = 20;
 const platformStart = canvas.height - 50;
 
 // player physics
-const gravity = 0.33;
+const gravity = 1.1;
 const drag = 0.3;
-const bounceVelocity = -12.5;
+const bounceVelocity = -40.5;
 
 // minimum and maximum vertical space between each platform
-let minPlatformSpace = 15;
+let minPlatformSpace = 35;
 let maxPlatformSpace = 20;
 
 // information about each platform. the first platform starts in the

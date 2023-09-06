@@ -161,7 +161,7 @@ void    Respond::sendAll(connection_state &state)
     }
     if (response_bytes_sent >= packet_len)
     {
-        state = KILL_CONNECTION;
+        // state = KILL_CONNECTION; // TODO: fix for keep alive
         flushResponse();
 		response_string.clear();
     }

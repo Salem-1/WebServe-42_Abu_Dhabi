@@ -66,6 +66,7 @@ void Client::handleRequest(struct kevent &event)
         if (!responder.sending)
         {
             receiver.flushReceive();
+			
         }
 		// flushReceive();
 		//flushResponse(void);
