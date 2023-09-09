@@ -21,9 +21,7 @@
 Client::Client(int  client_socket, conf  servers): state(KEEP_ALIVE), client_socket(client_socket),
     start_time(clock()), receiver(client_socket), responder(client_socket), servers(servers)
 {
-
-    connection_duration = static_cast<int>(start_time) / TIME_PER_SEC;
-    std::cout << "connectino started at " << connection_duration << std::endl;
+    std::cout << "connectino started with " << client_socket << std::endl;
 };
 Client &Client::operator= (const Client &obj2)
 {
@@ -64,13 +62,12 @@ void Client::handleRequest(struct kevent &event)
     {
         responder.sendAll(receiver.state);
         if (!responder.sending)
-        {
+		{
+			if (receiver.parser.request.find("connection:") != receiver.parser.request.end() 
+					&& receiver.parser.request["connection:"].front() == "keep-alive")
+				state = KEEP_ALIVE;
             receiver.flushReceive();
-			
-        }
-		// flushReceive();
-		//flushResponse(void);
-
+		}
     }
     else if (event.filter == EVFILT_READ 
         && receiver.state == KEEP_ALIVE)
@@ -82,7 +79,8 @@ void Client::handleRequest(struct kevent &event)
 			
 			if (!receiver.parser.read_again && receiver.state == KEEP_ALIVE)
 			{
-				responder.respond(receiver.parser.request, receiver.parser.full_request, servers, getPort(client_socket));
+				responder.respond(receiver.parser.request, 
+					receiver.parser.full_request, servers, getPort(client_socket));
 			}
 		}
 		catch(const std::exception& e)
@@ -95,13 +93,9 @@ void Client::handleRequest(struct kevent &event)
 			std::cerr << BOLDRED<<  e.what() << '\n' << RESET;
 		}
 		
-    }
-    
-    // else 
-    //     receiver.state = KILL_CONNECTION;
+    }    
     if (receiver.state == KILL_CONNECTION)
     {
-        // std::cout << "Killing connection inside client" << std::endl;
         this->state = KILL_CONNECTION;
         return ;
     }

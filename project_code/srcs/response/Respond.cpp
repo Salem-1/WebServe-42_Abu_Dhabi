@@ -143,25 +143,19 @@ int Respond::checkPoisonedURL(packet_map &request)
 void    Respond::sendAll(connection_state &state)
 {
     size_t  packet_len = response_string.length(); 
-    
     const char *a = response_string.c_str();
     int send_ret = 0;
+
     vis_str(response_string, "inside send all");
     if (packet_len - response_bytes_sent > SEND_BUFFER_SIZE)
-        send_ret += send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
+        send_ret = send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
     else
-        send_ret += send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
+        send_ret = send(client_socket, &a[response_bytes_sent], packet_len - response_bytes_sent, 0);  
     std::cout << send_ret << " bytes sent , packet len = " << packet_len << "\n";
     response_bytes_sent += send_ret;
-    if (send_ret <= 0)
+    if (send_ret <= 0 || response_bytes_sent > packet_len)
     {
-        print_error("send failed");
-        flushResponse();
         state = KILL_CONNECTION;
-    }
-    if (response_bytes_sent >= packet_len)
-    {
-        // state = KILL_CONNECTION; // TODO: fix for keep alive
         flushResponse();
 		response_string.clear();
     }

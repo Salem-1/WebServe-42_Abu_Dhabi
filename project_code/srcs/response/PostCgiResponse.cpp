@@ -2,11 +2,10 @@
 
 std::string ReadAndWrite(int infd, int outfd, std::string &body)
 {
-
 	int 		kq = kqueue(); // Create a new kernel event queue
 	std::string	output;
 	size_t 		write_size = 1000;
-	size_t 		read_size = 260000;
+	size_t 		read_size = 1000;
 	size_t		pos = 0;
 	fcntl(infd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	fcntl(outfd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
@@ -29,10 +28,14 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 		while (true) {
 			struct kevent events[2]; 
 			// Wait for events to occur
-			int nevents = kevent(kq, NULL, 0, events, 2, NULL);
+			struct timespec timeout = {100, 0}; // 60 seconds timeout
+			int nevents = kevent(kq, NULL, 0, events, 2, &timeout);
 			if (nevents == -1)
 				throw(std::runtime_error("Failed to wait for events"));
-			for (int i = 0; i < nevents; i++) {
+			if (nevents ==  0)
+				break;
+			for (int i = 0; i < nevents; i++)
+			{
 				if (events[i].filter == EVFILT_READ)
 				{
 					char buffer[read_size];
@@ -68,14 +71,13 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 	}
 	catch(const std::exception& e)
 	{
-		close(infd);
-		close(outfd);
-		EV_SET(&kev[0], outfd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
-		EV_SET(&kev[1], infd, EVFILT_WRITE , EV_DELETE, 0, 0, NULL);
 		std::cerr << e.what() << '\n';
-
 	}
-	return "501";
+	close(infd);
+	close(outfd);
+	EV_SET(&kev[0], outfd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
+	EV_SET(&kev[1], infd, EVFILT_WRITE , EV_DELETE, 0, 0, NULL);
+	return "Status: 500\r\n\r\n";
 }
 
 std::string Read(int fd)

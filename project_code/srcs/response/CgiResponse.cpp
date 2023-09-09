@@ -156,7 +156,10 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		}
 		close(outfd[1]);
 		close(infd[0]);
+		// output = "HAHAHAHAHAHpojpjiiuoi";
+		std::cerr << "the id of the child is " << id << std::endl;
 		output = ReadAndWrite(infd[1], outfd[0], full_request.body);
+		kill(id, 9);
 		while (waitpid(-1, &status, 0) > 0) {}
 		if (WEXITSTATUS(status))
 		{
