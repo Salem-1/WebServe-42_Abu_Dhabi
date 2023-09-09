@@ -113,7 +113,6 @@ std::string    PUT::constructPath(stringmap &server_info)
     }
     else
         dir = path.substr(0, path.substr(1, path.length()).find("/") + 1);
-    std::cout << MAGENTA << "dir == " << dir  << std::endl << " path = " << path << std::endl << RESET;
 
     if (path[path.length() - 1] == '/' && dir.length() == path.length() - 1)
     {

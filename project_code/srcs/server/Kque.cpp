@@ -6,7 +6,7 @@
 /*   By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 15:37:44 by ahsalem           #+#    #+#             */
-/*   Updated: 2023/09/04 20:59:48 by ayassin          ###   ########.fr       */
+/*   Updated: 2023/09/09 17:49:45 by ayassin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void    Kque::watchFds(conf &servers)
                     if(client_socket < 0)
                         continue ;
                     addReadWriteEvent(client_socket);
-                    clients[client_socket] = Client(client_socket, servers);
+                    clients[client_socket] = Client(client_socket, servers); // MMMMMM
                     active_clients.insert(client_socket);
                 }
             }

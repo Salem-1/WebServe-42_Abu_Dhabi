@@ -35,7 +35,7 @@ void    Receive::receiveAll()
     parser.setBytereadAndReadsock(bytes_read, read_sock);
     parser.parse(buffer);
     // vis_str(buffer, "inside recievea;");
-    if (bytes_read == 0)
+    if (bytes_read <= 0)
     {
         std::cout << "byter read = " << bytes_read << "will kill connection\n";
         state = KILL_CONNECTION;

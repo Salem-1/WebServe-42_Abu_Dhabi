@@ -13,7 +13,8 @@
 # include "../../includes/libs.hpp"
 
 
-std::string ReadAndWirte(int infd, int outfd, std::string &body);
+std::string ReadAndWrite(int infd, int outfd, std::string &body);
+std::string Read(int fd);
 
 class Respond
 {

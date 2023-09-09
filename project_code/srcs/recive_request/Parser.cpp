@@ -34,7 +34,7 @@ void	Parser::purgeParsing()
 	ischunked = false;
 	read_again = 0;
 	bytes_read = 0;
-	valid_headers.clear();
+	// valid_headers.clear();
 	packet.clear();
 	flushParsing();
 

@@ -78,28 +78,6 @@ std::string	Respond::fillingResponsePacket(stringmap &server_info, std::string &
 	return (response_packet);
 }
 
-
-std::string readFromChild(int fd)
-{
-	std::string output;
-	while (1) {
-		char buffer[10];
-		ssize_t count = read(fd, buffer, sizeof(buffer));
-		if (count == -1) {
-			print_error("read failed");
-			throw(std::runtime_error("read faild"));
-		} else if (count == 0) 
-		{
-			break;
-		} else 
-		{
-			output.append(buffer, count);
-		}
-	}
-	close(fd);
-	return output;
-}
-
 std::string Respond::getExecute(packet_map &request, t_request &full_request, stringmap &server_info, std::string &path)
 {
 	int fd[2];
@@ -122,7 +100,7 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 			child.childExecute(path);
 		}
 		close(fd[1]);
-		output = readFromChild(fd[0]);
+		output = Read(fd[0]);
 		close(fd[0]);
 		while (waitpid(-1, &status, 0) > 0) {}
 		if (WEXITSTATUS(status))
@@ -178,7 +156,10 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		}
 		close(outfd[1]);
 		close(infd[0]);
-		output = ReadAndWirte(infd[1], outfd[0], full_request.body);
+		// output = "HAHAHAHAHAHpojpjiiuoi";
+		std::cerr << "the id of the child is " << id << std::endl;
+		output = ReadAndWrite(infd[1], outfd[0], full_request.body);
+		kill(id, 9);
 		while (waitpid(-1, &status, 0) > 0) {}
 		if (WEXITSTATUS(status))
 		{
