@@ -100,7 +100,7 @@ std::string Read(int fd, std::string max)
 	{
 		close(fd);
 		std::cerr << "Failed to create kqueue" << std::endl;
-		return("501");
+		return "Status: 500\r\n\r\n";
 	}
 	struct kevent kev;
 	try

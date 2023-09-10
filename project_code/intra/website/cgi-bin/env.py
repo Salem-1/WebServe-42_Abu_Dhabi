@@ -2,7 +2,7 @@
 # import os
 import os
 from pprint import pprint
-print("Set-Cookie: bgColor=red\r\n\r\n")
+print("Set-Cookie: bgColor=red; Path=/ \r\n\r\n")
 
 
 def print_env_variables():

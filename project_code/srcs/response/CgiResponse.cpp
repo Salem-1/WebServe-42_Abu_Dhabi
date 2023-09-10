@@ -108,7 +108,7 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 		if (WEXITSTATUS(status))
 		{
 			if (WEXITSTATUS(status) != 3)
-				return (err.code(server_info, "501")); 
+				return (err.code(server_info, "500")); 
 			else 
 				return (err.code(server_info, "400"));
 		}
@@ -117,7 +117,7 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		return (err.code(server_info, "501"));
+		return (err.code(server_info, "500"));
 	}
 }
 
@@ -165,7 +165,7 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		if (WEXITSTATUS(status))
 		{
 			if (WEXITSTATUS(status) != 3)
-				return (err.code(server_info, "501")); 
+				return (err.code(server_info, "500")); 
 			else 
 				return (err.code(server_info, "400"));
 		}
@@ -174,6 +174,6 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		return (err.code(server_info, "501"));
+		return (err.code(server_info, "500"));
 	}
 }
