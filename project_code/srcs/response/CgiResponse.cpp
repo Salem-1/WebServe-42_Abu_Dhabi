@@ -100,7 +100,8 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 			child.childExecute(path);
 		}
 		close(fd[1]);
-		output = Read(fd[0], server_info["Max_body"]);
+		std::cerr << "the id of the child is " << id << std::endl;
+		output = Read(fd[0], server_info["Max-Body"]);
 		close(fd[0]);
 		kill(id, 9);
 		while (waitpid(-1, &status, 0) > 0) {}
@@ -157,7 +158,6 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		}
 		close(outfd[1]);
 		close(infd[0]);
-		// output = "HAHAHAHAHAHpojpjiiuoi";
 		std::cerr << "the id of the child is " << id << std::endl;
 		output = ReadAndWrite(infd[1], outfd[0], full_request.body, server_info["Max-Body"]);
 		kill(id, 9);
