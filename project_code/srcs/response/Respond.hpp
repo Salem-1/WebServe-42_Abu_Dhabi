@@ -13,8 +13,8 @@
 # include "../../includes/libs.hpp"
 
 
-std::string ReadAndWrite(int infd, int outfd, std::string &body);
-std::string Read(int fd);
+std::string ReadAndWrite(int infd, int outfd, std::string &body, std::string max);
+std::string Read(int fd, std::string max);
 
 class Respond
 {

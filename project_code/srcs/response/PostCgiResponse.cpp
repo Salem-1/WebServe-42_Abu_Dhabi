@@ -1,12 +1,16 @@
 #include "Respond.hpp"
 
-std::string ReadAndWrite(int infd, int outfd, std::string &body)
+std::string ReadAndWrite(int infd, int outfd, std::string &body, std::string max)
 {
 	int 		kq = kqueue(); // Create a new kernel event queue
 	std::string	output;
 	size_t 		write_size = 1000;
 	size_t 		read_size = 1000;
 	size_t		pos = 0;
+	std::istringstream m(max);
+	size_t		size_max;
+
+	m >> size_max;
 	fcntl(infd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	fcntl(outfd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	if (kq == -1)
@@ -14,7 +18,7 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 		close(infd);
 		close(outfd);
 		std::cerr << "Failed to create kqueue" << std::endl;
-		return("501");
+		return "Status: 500\r\n\r\n";
 		throw(std::runtime_error("Failed to create kqueue"));
 	}
 	struct kevent kev[2];
@@ -28,15 +32,12 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 		while (true) {
 			struct kevent events[2]; 
 			// Wait for events to occur
-			struct timespec timeout = {10, 0}; // 60 seconds timeout
+			struct timespec timeout = {10, 0}; // 10 seconds timeout
 			int nevents = kevent(kq, NULL, 0, events, 2, &timeout);
 			if (nevents == -1)
 				throw(std::runtime_error("Failed to wait for events"));
 			if (nevents ==  0)
-			{
-				std::cerr << "ASASASASAS\n";
 				break;
-			}
 			for (int i = 0; i < nevents; i++)
 			{
 				if (events[i].filter == EVFILT_READ)
@@ -54,6 +55,8 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 					} else if (count != 0)
 					{
 						output.append(buffer, count);
+						if (output.length() > size_max)
+							throw(std::runtime_error("Maxbody size exceeded"));
 					}
 				} else if (events[i].filter == EVFILT_WRITE)
 				{
@@ -83,11 +86,15 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 	return "Status: 500\r\n\r\n";
 }
 
-std::string Read(int fd)
+std::string Read(int fd, std::string max)
 {
 	int 		kq = kqueue(); // Create a new kernel event queue
 	std::string	output;
 	size_t 		read_size = 260000;
+	std::istringstream m(max);
+	size_t		size_max;
+
+	m >> size_max;
 	fcntl(fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	if (kq == -1)
 	{
@@ -105,9 +112,12 @@ std::string Read(int fd)
 		while (true) {
 			struct kevent events; 
 			// Wait for events to occur
-			int nevents = kevent(kq, NULL, 0, &events, 1, NULL);
+			struct timespec timeout = {10, 0}; // 10 seconds timeout
+			int nevents = kevent(kq, NULL, 0, &events, 1, &timeout);
 			if (nevents == -1)
 				throw(std::runtime_error("Failed to wait for events"));
+			if (nevents ==  0)
+				break;
 			if (events.filter == EVFILT_READ)
 			{
 				char buffer[read_size];
@@ -120,15 +130,17 @@ std::string Read(int fd)
 				} else if (count != 0)
 				{
 					output.append(buffer, count);
+					if (output.length() > size_max)
+						throw(std::runtime_error("Maxbody size exceeded"));
 				}
 			} 
 		}
 	}
 	catch(const std::exception& e)
 	{
-		close(fd);
-		EV_SET(&kev, fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
 		std::cerr << e.what() << '\n';
 	}
-	return "501";
+	close(fd);
+	EV_SET(&kev, fd, EVFILT_READ , EV_DELETE, 0, 0, NULL);
+	return "Status: 500\r\n\r\n";
 }
