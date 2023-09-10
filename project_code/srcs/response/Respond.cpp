@@ -146,7 +146,7 @@ void    Respond::sendAll(connection_state &state)
     const char *a = response_string.c_str();
     int send_ret = 0;
 
-    vis_str(response_string, "inside send all");
+    vis_str(response_string, "inside send all\n");
     if (packet_len - response_bytes_sent > SEND_BUFFER_SIZE)
         send_ret = send(client_socket, &a[response_bytes_sent], SEND_BUFFER_SIZE, 0);
     else
