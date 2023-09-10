@@ -28,12 +28,15 @@ std::string ReadAndWrite(int infd, int outfd, std::string &body)
 		while (true) {
 			struct kevent events[2]; 
 			// Wait for events to occur
-			struct timespec timeout = {100, 0}; // 60 seconds timeout
+			struct timespec timeout = {10, 0}; // 60 seconds timeout
 			int nevents = kevent(kq, NULL, 0, events, 2, &timeout);
 			if (nevents == -1)
 				throw(std::runtime_error("Failed to wait for events"));
 			if (nevents ==  0)
+			{
+				std::cerr << "ASASASASAS\n";
 				break;
+			}
 			for (int i = 0; i < nevents; i++)
 			{
 				if (events[i].filter == EVFILT_READ)
