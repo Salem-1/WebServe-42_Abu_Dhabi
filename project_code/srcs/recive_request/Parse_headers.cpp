@@ -105,6 +105,7 @@ void  Parser::fillValidHeaders()
     valid_headers.insert("Purpose:");
     valid_headers.insert("Sec-Purpose:");
 	valid_headers.insert("Transfer-Encoding:");
+	valid_headers.insert("Sec-Gpc:");
 }
 
 void    Parser::visualizeRequestPacket()
