@@ -3,6 +3,11 @@
 <head>
   <title>Action Buttons with Color Picker</title>
   <meta charset="UTF-8">
+  <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+  <link rel="stylesheet" type="text/css" href="bootstrap-5.0.2-dist/css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap-5.0.2-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="bootstrap-5.0.2-dist/css/bootstrap-grid.css">
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -53,6 +58,14 @@
   </style>
 </head>
 <body>
+	<ul class="nav navbar1">
+
+        <li class="nav-item">
+          <a class="linky active" aria-current="page" href="/">HOME</a>
+        </li>
+ 
+      </ul>  
+
   <div class="button-container">
     <button class="action-button" onclick="sendPythonPostRequest('env_python')">Show Python Environment</button>
     <button class="action-button" onclick="sendPostRequest('env_bash')">Show Bash Environment</button>
@@ -98,6 +111,11 @@
     function displayResponse(responseText) {
       const responseContainer = document.getElementById('response-container');
       responseContainer.textContent = responseText;
+	  var savedTheme = getCookieValue('bgColor');
+		console.log(savedTheme);
+    	if (savedTheme) {
+        	document.body.style.backgroundColor = savedTheme;
+    	}
     }
     // Function to change background color
     function changeBackgroundColor(color) {
@@ -130,8 +148,8 @@
 	var savedTheme = getCookieValue('bgColor');
 	console.log(savedTheme);
     if (savedTheme) {
-        changeBackgroundColor(savedTheme);
-	}
+        document.body.style.backgroundColor = savedTheme;
+    }
   </script>
 </body>
 </html>

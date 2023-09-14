@@ -100,14 +100,15 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 			child.childExecute(path);
 		}
 		close(fd[1]);
-		output = Read(fd[0], server_info["Max_body"]);
+		std::cerr << "the id of the child is " << id << std::endl;
+		output = Read(fd[0], server_info["Max-Body"]);
 		close(fd[0]);
 		kill(id, 9);
 		while (waitpid(-1, &status, 0) > 0) {}
 		if (WEXITSTATUS(status))
 		{
 			if (WEXITSTATUS(status) != 3)
-				return (err.code(server_info, "501")); 
+				return (err.code(server_info, "500")); 
 			else 
 				return (err.code(server_info, "400"));
 		}
@@ -116,7 +117,7 @@ std::string Respond::getExecute(packet_map &request, t_request &full_request, st
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		return (err.code(server_info, "501"));
+		return (err.code(server_info, "500"));
 	}
 }
 
@@ -157,7 +158,6 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		}
 		close(outfd[1]);
 		close(infd[0]);
-		// output = "HAHAHAHAHAHpojpjiiuoi";
 		std::cerr << "the id of the child is " << id << std::endl;
 		output = ReadAndWrite(infd[1], outfd[0], full_request.body, server_info["Max-Body"]);
 		kill(id, 9);
@@ -165,7 +165,7 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 		if (WEXITSTATUS(status))
 		{
 			if (WEXITSTATUS(status) != 3)
-				return (err.code(server_info, "501")); 
+				return (err.code(server_info, "500")); 
 			else 
 				return (err.code(server_info, "400"));
 		}
@@ -174,6 +174,6 @@ std::string Respond::postExecute(packet_map &request, t_request &full_request, s
 	catch (std::exception &e)
 	{
 		std::cout << e.what() << std::endl;
-		return (err.code(server_info, "501"));
+		return (err.code(server_info, "500"));
 	}
 }

@@ -2,7 +2,11 @@
 # import os
 import os
 from pprint import pprint
-print("Set-Cookie: bgColor=red\r\n\r\n")
+import secrets
+
+my_list = ['red', 'blue', 'green', 'purple', 'orange', 'teal', 'gray', 'brown', 'magenta']
+color = secrets.choice(my_list)
+print(f'''Set-Cookie: bgColor={color}; Path=/ \r\n\r\n''')
 
 
 def print_env_variables():

@@ -6,7 +6,7 @@
 #    By: ayassin <ayassin@student.42abudhabi.ae>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/06 17:54:02 by ayassin           #+#    #+#              #
-#    Updated: 2023/09/05 18:20:42 by ayassin          ###   ########.fr        #
+#    Updated: 2023/09/10 13:11:22 by ayassin          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = webserv
 
 CC = c++
 
-CFLAGS =  -Wall -Wextra -Werror -std=c++98  -MMD -MP -g -fsanitize=address
+CFLAGS =  -Wall -Wextra -Werror -std=c++98  -MMD -MP
 
 SUBDIRS = srcs logs includes srcs/server srcs/client srcs/recive_request srcs/GET \
 	srcs/DELETE srcs/response srcs/configuration srcs/parsing srcs/POST srcs/PUT \
