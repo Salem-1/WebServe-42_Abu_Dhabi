@@ -149,8 +149,8 @@ void    Parser::fillHeaderRequest(std::string &packet)
     for (std::vector<std::string>::iterator it = packet_lines.begin(); it != packet_lines.end(); it++)
     {
         std::vector<std::string> tmp_vec = split(*it, " ");
-        if (tmp_vec.size() < 2)
-			throw(std::runtime_error("400"));
+        if (tmp_vec.size() < 2 && tmp_vec[0].find("X-") == std::string::npos)
+		throw(std::runtime_error("400"));
         header = tmp_vec[0];
         tmp_vec.erase(tmp_vec.begin());
         if (request.find(header) == request.end())
